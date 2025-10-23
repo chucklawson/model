@@ -18,7 +18,7 @@ function App() {
 
   return (
     <Authenticator>
-      {({ signOut, user }) => (
+      {({ signOut }) => (
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
