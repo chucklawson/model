@@ -1,12 +1,24 @@
 import { useState } from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+
+import { Authenticator } from '@aws-amplify/ui-react';
+
+const router = createBrowserRouter([
+  {
+    path: '/'
+  },
+
+]);
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+    <Authenticator>
+      {({ signOut, user }) => (
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
@@ -28,8 +40,17 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+
+      <div className="App">
+        <RouterProvider router={router}/>
+        <button onClick={signOut}>Sign out</button>
+      </div>
+
     </>
-  )
+    )
+      }
+    </Authenticator>
+  );
 }
 
 export default App
