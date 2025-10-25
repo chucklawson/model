@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import upGreenRight from '../../srcImages/UpGreenRight.png'
 import downRedRight from '../../srcImages/DownRedRight.png'
-//import BasicTickerEvaluaton from '../../Components/BasicTickerEvaluaton/BasicTickerEvaluaton'
+import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 
 const CURRENT_HOLDINGS = 
   [
@@ -231,27 +231,27 @@ function CurrentHoldings() {
   const [slope, setSlope] = useState(0.0)
   const [currentHoldings,setCurrentHoldings]=useState(CURRENT_HOLDINGS);
 
-/*
-  const onSelectTickerButtonHandler=(tickerToEvaluate)=>
+
+  const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
   {
     setStockSymbolToFetch(tickerToEvaluate)
     //console.log("Setting stockSymbolToFetch: " +stockSymbolToFetch)
   }
 
-  const onSetHeader=(headerValueIn)=>
+  const onSetHeader=(headerValueIn:string)=>
   {
     setHeaderValue(headerValueIn)
   }
 
-  const onSetTodaysPercentageChange = (percentageChange, isChnagePositive) => {
+  const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
     setTodaysPercentageChange(percentageChange);
     setIsTodaysChangePositive(isChnagePositive);
   }
 
-  const onSetSlope = (slopeIn) => {
+  const onSetSlope = (slopeIn:number) => {
     setSlope(slopeIn)
   }
-*/
+
   useEffect(() => {
     document.title = "Current Holdings"
     setStockSymbolToFetch('AAPL');
@@ -297,12 +297,11 @@ function CurrentHoldings() {
           }
       </div>          
     </header>
-      {/*}
-    <BasicTickerEvaluaton onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Current'
+
+    <BasicTickerEvaluation onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Current'
      onSetTodaysPercentageChange={onSetTodaysPercentageChange}
                           onSetSlope = {onSetSlope} tickerEntries={currentHoldings} backgroundLeft='bg-indigo-100'
                           buttonBackgroundColor='bg-indigo-400'/>
-       */}
     </div>
   );
 }
