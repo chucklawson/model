@@ -1,5 +1,6 @@
 import React, {useState, useEffect, type ChangeEvent} from 'react';
-import { getAHistoricDateBySubtractingFromNow,convertDateForDateInputPicker,getDate_2017,getDate_2021,getDate_2025 } from '../../lib/GetValuesBasedOnDate'
+//import { getAHistoricDateBySubtractingFromNow,convertDateForDateInputPicker,getDate_2017,getDate_2021,getDate_2025 } from '../../lib/GetValuesBasedOnDate'
+import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
 //import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 
 /*
@@ -25,6 +26,7 @@ const TickerInput =( props:TickerInputProps )=> {
     const [oneYearHistoryChecked, setOneYearHistoryChecked] = React.useState(false);
     const [tFirstTermChecked, settFirstTermChecked] = React.useState(false);
     const [bidenTermChecked, setBidenTermChecked] = React.useState(false);
+    const getValuesBasedOnDate = new GetValuesBasedOnDate();
 
 
     useEffect (() => {
@@ -94,50 +96,50 @@ const TickerInput =( props:TickerInputProps )=> {
   {
     if((tFirstTermChecked===false)&&(bidenTermChecked===false))
     {
-      let tempDate=getAHistoricDateBySubtractingFromNow(60,oneYearHistoryChecked);
+      let tempDate=getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(60,oneYearHistoryChecked);
       
       //console.log('tempDate: ' + tempDate)
       tempDate.setHours(0)
       tempDate.setMinutes(0)
       tempDate.setSeconds(0)
-      setStartDate(convertDateForDateInputPicker(tempDate));
+      setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
 
       //  Originally set end date to today
       tempDate=new Date();
       tempDate.setHours(0)
       tempDate.setMinutes(0)
       tempDate.setSeconds(0)
-      setEndDate(convertDateForDateInputPicker(tempDate));
+      setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
     }
 
     if(tFirstTermChecked)
     {
-      let tempDate=getDate_2017();
+      let tempDate=getValuesBasedOnDate.getDate_2017();
       tempDate.setHours(0);
       tempDate.setMinutes(0);
       tempDate.setSeconds(0);
-      setStartDate(convertDateForDateInputPicker(tempDate));
+      setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
 
-      tempDate=getDate_2021();
+      tempDate=getValuesBasedOnDate.getDate_2021();
       tempDate.setHours(0);
       tempDate.setMinutes(0);
       tempDate.setSeconds(0);
-      setEndDate(convertDateForDateInputPicker(tempDate));
+      setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
     }
 
     if(bidenTermChecked)
       {
-        let tempDate=getDate_2021();
+        let tempDate=getValuesBasedOnDate.getDate_2021();
         tempDate.setHours(0);
         tempDate.setMinutes(0);
         tempDate.setSeconds(0);
-        setStartDate(convertDateForDateInputPicker(tempDate));
+        setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
   
-        tempDate=getDate_2025();
+        tempDate=getValuesBasedOnDate.getDate_2025();
         tempDate.setHours(0);
         tempDate.setMinutes(0);
         tempDate.setSeconds(0);
-        setEndDate(convertDateForDateInputPicker(tempDate));
+        setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
       }
 
     //setStartDateIsValid(true); 

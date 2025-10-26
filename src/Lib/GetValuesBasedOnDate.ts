@@ -1,11 +1,12 @@
 
 import type HistoricalPriceFull_V3 from './HistoricalPriceFull_V3.ts';
 
-export default class GetValuesBasedOnDate {
+//export default class GetValuesBasedOnDate {
+export class GetValuesBasedOnDate {
 
 
     constructor(){
-
+      console.log("GetValuesBasedOnDate");
     }
 
     getAHistoricDateBySubtractingFromNow(numberOfDaysToGoBack:number,oneYearHistoryChecked:boolean)
@@ -32,7 +33,7 @@ export default class GetValuesBasedOnDate {
             return -1.0;
         }
 
-        const dateToLocate = getAHistoricDateBySubtractingFromNow(numberOfDaysToGoBack,false);
+        const dateToLocate = this.getAHistoricDateBySubtractingFromNow(numberOfDaysToGoBack,false);
 
         /*
         console.log('adjustedTimeSeries stringified: '+ JSON.stringify(adjustedTimeSeries[0]))
@@ -43,7 +44,7 @@ export default class GetValuesBasedOnDate {
         }
         */
 
-        const value = findAValueBasedOnDate(dateToLocate,adjustedTimeSeries)
+        const value = this.findAValueBasedOnDate(dateToLocate,adjustedTimeSeries)
         return value;
     }
 
@@ -136,14 +137,13 @@ export default class GetValuesBasedOnDate {
 
 
   };
+
+
+
 /*
   export const { goBackSpecificNumberOfDays, getAHistoricDateBySubtractingFromNow,
                      findAValueBasedOnDate, findTheLowValueBasedOnDate, findTheHighValueBasedOnDate,
                      convertDateForDateInputPicker,getDate_2017,getDate_2021,getDate_2025 } = new GetValuesBasedOnDate(new Date())
 */
-export const { getAHistoricDateBySubtractingFromNow,
-  findAValueBasedOnDate,
-  convertDateForDateInputPicker,getDate_2017,getDate_2021,getDate_2025 } = new GetValuesBasedOnDate()
-
 
 
