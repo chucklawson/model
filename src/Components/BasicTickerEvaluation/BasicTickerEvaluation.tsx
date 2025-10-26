@@ -6,7 +6,7 @@ import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvalu
 //import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 //import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
-//import SimpleButton from '../SimpleButton/SimpleButton.jsx'
+import SimpleButton from '../SimpleButton/SimpleButton'
 //import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
 //import StockQuote from '../StockQuote/StockQuote.tsx';
@@ -288,12 +288,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         props.onSelectTickerButtonHandler(tickerIn)
         //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
     }
-/*
+
     const calculateProfitLossButtonHandler = () =>
     {
-        calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
+      // need to add this back in
+        //calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }
-*/
+
 
   /*
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
@@ -507,10 +508,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         </div>
 
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
-          {/*}
+
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
-        {calculatedTotalProfitLoss}
-        */}
+          {/*{calculatedTotalProfitLoss}*/}
+
         
         </div>
           {/*Temporary div */}
