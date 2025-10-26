@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import upGreenRight from '../../srcImages/UpGreenRight.png'
 import downRedRight from '../../srcImages/DownRedRight.png'
-//import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
+import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
 const tickersToEvaluate:TickersToEvaluate[] =
@@ -232,7 +232,7 @@ function CurrentHoldings() {
   const [slope, setSlope] = useState(0.0)
   const [currentHoldings,setCurrentHoldings]=useState(tickersToEvaluate);
 
-/*
+
   const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
   {
     setStockSymbolToFetch(tickerToEvaluate)
@@ -252,7 +252,7 @@ function CurrentHoldings() {
   const onSetSlope = (slopeIn:number) => {
     setSlope(slopeIn)
   }
-*/
+
   useEffect(() => {
     document.title = "Current Holdings"
     setStockSymbolToFetch('AAPL');
@@ -298,12 +298,12 @@ function CurrentHoldings() {
           }
       </div>          
     </header>
-      {/*}
+
     <BasicTickerEvaluation onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Current'
      onSetTodaysPercentageChange={onSetTodaysPercentageChange}
                           onSetSlope = {onSetSlope} tickerEntries={currentHoldings} backgroundLeft='bg-indigo-100'
                           buttonBackgroundColor='bg-indigo-400'/>
-                          */}
+
     </div>
   );
 }

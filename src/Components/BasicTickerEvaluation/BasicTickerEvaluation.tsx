@@ -41,6 +41,7 @@ interface  BasicTickerEvaluationProps{
   onSetTodaysPercentageChange(percentageChange:number, isChnagePositive:boolean):void
   onSetSlope(slopeIn:number):void
   tickerEntries:TickersToEvaluate[];
+  backgroundLeft:string;
   buttonBackgroundColor:string;
 }
 
