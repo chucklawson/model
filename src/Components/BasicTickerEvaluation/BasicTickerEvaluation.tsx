@@ -1,5 +1,5 @@
 
-import  { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 //import type Quote_V3 from "../../Lib/Quote_V3.ts"
 //import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
@@ -343,18 +343,18 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setPercentGainLoss(0)
         }
     */
-/*
+
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
     const bollingerChangeHandler = () => {
         setBollingerChecked(!bollingerChecked);
     };
     
-    const [lwChecked, setLwChecked] = React.useState(false);
+    //const [lwChecked, setLwChecked] = React.useState(false);
 
-    const lwChangeHandler = () => {
-        setLwChecked(!lwChecked);
-    };
+    //const lwChangeHandler = () => {
+    //    setLwChecked(!lwChecked);
+    //};
 
     const [rsiChecked, setRsiChecked] = React.useState(false);
 
@@ -372,7 +372,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPriceEquityChecked(!priceEquityChecked);
     };
     
-    */
+
 /*
     useEffect(() => {  
         //console.log("calling dailyValues, timeSeries[0]" + timeSeries[0])
@@ -451,12 +451,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     */
 
 
-    return <div className='bg-gray-100 grid grid-cols-9 gap-4'>
+    return <  div className='bg-gray-100 grid grid-cols-9 gap-4'>
 
         <div className={classValuesLeft}>
        
         {/* not really using key but defining it anyway */}
-        {props.tickerEntries.map( (tickerEntry)=> (            
+        {props.tickerEntries.map( (tickerEntry)=> (
             <TickerButton key={tickerEntry.ticker} ticker={tickerEntry.ticker}
             costBasis={tickerEntry.costBasis} currentQuantityOnHand={tickerEntry.unitsOnHand}
              selectTickerButtonHandler={selectTickerButtonHandler} backgroundColor={props.buttonBackgroundColor}/>
@@ -464,7 +464,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         </div>
 
-      {/*
+
         <div className='col-start-3 col-span-7'>
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
             <label className='pl-2 pr-2'>
@@ -507,14 +507,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         </div>
 
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
-
+          {/*}
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
         {calculatedTotalProfitLoss}
-        
+        */}
         
         </div>
-
-
+          {/*Temporary div */}
+        </div>
+         {/*
         <TickerInput  onTickerValue={onTickerChangeHandler} currentTicker={tickerToGet} startDate={startDate} endDate={endDate}
             containerBackGround= {props.buttonBackgroundColor}></TickerInput>
         <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
