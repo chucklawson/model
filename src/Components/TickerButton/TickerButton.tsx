@@ -1,4 +1,5 @@
 ﻿import  { useState, useEffect } from 'react';
+import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
 
 /*
@@ -8,9 +9,9 @@
 */
 
 interface TickerButtonProps{
-  //tickerEntry:Quote_V3;
+  tickerEntry:TickersToEvaluate;
   ticker:string;
-  costBasis:number;
+  costBasis:string;
   currentQuantityOnHand:number;
   selectTickerButtonHandler(tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void;
   backgroundColor:string;
@@ -22,13 +23,13 @@ const TickerButton = (props:TickerButtonProps) => {
 
  const [buttonClassValues,setButtonClassValues] = useState('')
   
- const onSelectHandler = (event)=> {
+ const onSelectHandler = ()=> {
      {/*props.selectTickerButtonHandler(event.target.innerText);*/}
-     let totalCost=props.currentQuantityOnHand*props.costBasis
+     const totalCost=props.currentQuantityOnHand*Number(props.costBasis)
      
      props.selectTickerButtonHandler(props.ticker,      
-      props.currentQuantityOnHand.toFixed(3),
-      totalCost.toFixed(2)
+      Number(props.currentQuantityOnHand.toFixed(3)),
+      Number(totalCost.toFixed(2))
       )
   };
 

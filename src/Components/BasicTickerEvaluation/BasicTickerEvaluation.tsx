@@ -1,8 +1,9 @@
 
 import  { useState, useEffect } from 'react';
-import type Quote_V3 from "../../Lib/Quote_V3.ts"
-import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
-import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
+import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+//import type Quote_V3 from "../../Lib/Quote_V3.ts"
+//import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
+//import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 //import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
 //import SimpleButton from '../SimpleButton/SimpleButton.jsx'
@@ -36,9 +37,10 @@ use this to define an interface for props in
 interface  BasicTickerEvaluationProps{
   onSelectTickerButtonHandler(tickerToEvaluate:string):void;
   onSetHeader(headerValueIn:string):void;
+  baseHeader:string;
   onSetTodaysPercentageChange(percentageChange:number, isChnagePositive:boolean):void
   onSetSlope(slopeIn:number):void
-  tickerEntries:Quote_V3[];
+  tickerEntries:TickersToEvaluate[];
   buttonBackgroundColor:string;
 }
 
@@ -118,6 +120,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('Sending ticker to Get: ' + tickerToGet);           
 
             setUpdateTickerValueToFalse();
+            // to get rid of warning
+            setTotalCost(totalCost);
             
             //setShowChart(true);
         }
@@ -286,6 +290,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }
 */
 
+  /*
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
     const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3,statmentAnalysisKeyMetrics:KeyMetrics_V3):void=>
     {
@@ -332,7 +337,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         {
             setPercentGainLoss(0)
         }
-    }
+    */
 /*
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
