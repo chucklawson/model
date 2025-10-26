@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import upGreenRight from '../../srcImages/UpGreenRight.png'
-import downRedRight from '../../srcImages/DownRedRight.png'
+//import upGreenRight from '../../srcImages/UpGreenRight.png'
+//import downRedRight from '../../srcImages/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
@@ -274,7 +274,7 @@ function CurrentHoldings() {
     <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-18 justify-items-center">
       <div>
         {headerValue}
-      </div>   
+      </div>
       <div>
                 {isTodaysChangePositive === true ?
                     <div className='text-green-600 text-3xl font-bold'>
@@ -284,19 +284,21 @@ function CurrentHoldings() {
                         Today's Change: {todaysPercentageChange} %
                     </div>
                     }
-      </div>     
+      </div>
+      {/*
       <div>
         {slope >= 0.0 ?
-          <div className='text-green-600 text-3xl font-bold'>            
-                {/*Exponential change: {slope}  */}              
+          <div className='text-green-600 text-3xl font-bold'>
+
                 <img className="inline-block w-10 h-8 ml-7 " src={upGreenRight} alt=""></img>                           
           </div> :
           <div className='text-red-600 text-3xl font-bold'>
-                {/*} Exponential change: {slope} */} 
+
                   <img className="inline-block w-12 h-10 ml-7" src={downRedRight} alt=""></img> 
           </div>
           }
-      </div>          
+      </div>
+  */}
     </header>
 
     <BasicTickerEvaluation onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Current'
