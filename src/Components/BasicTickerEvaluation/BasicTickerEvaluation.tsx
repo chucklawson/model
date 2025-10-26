@@ -51,8 +51,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [tickerToGet, setTickerToGet] = useState('');
     const [totalCost, setTotalCost]=useState(0.0);
     const [currentQuantityOnHand,setCurrentQuantitOnHand]=useState(0.0);
-    const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
-    const [percentGainLoss,setPercentGainLoss]=useState(0.0);
+    //const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
+    //const [percentGainLoss,setPercentGainLoss]=useState(0.0);
     //const [startDate, setStartDate] = useState('');
     //const [endDate, setEndDate] = useState('');
     //const [adjustedStartDate,setAdjustedStartDate]= useState('');
@@ -73,21 +73,21 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     //const [rangeValueOneYear, setRangeValueOneYear] = useState("50.0");
     //const [lowRangeValueOneYear, setLowRangeValueOneYear] = useState("1.00");
     //const [highRangeValueOneYear, setHighRangeValueOneYear] = useState("100");
-    const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
-    const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
+    //const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
+    //const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
     //const [todaysGain, setTodaysGain] = useState(0.0);
     //const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
     //const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
     //const [percentageChangeFromTwelveMonthHigh,setPercentageChangeFromTwelveMonthHigh] = useState(0.0);
     //const [buyPoints, setBuyPoints] = useState({});
     
-    const [updateRangeValues, setUpdateRangeValues] = useState(false);
+    //const [updateRangeValues, setUpdateRangeValues] = useState(false);
     //const [gainIsPositive, setGainIsPositive] = useState(false);
-    const [currentQuote, setcurrentQuote] = useState({});
-    const [timeSeries,setTimeSeries]  = useState({});
-    const [adjustedTimeSeries,setAdjustedTimeSeries] = useState({});
+    //const [currentQuote, setcurrentQuote] = useState({});
+    //const [timeSeries,setTimeSeries]  = useState({});
+    //const [adjustedTimeSeries,setAdjustedTimeSeries] = useState({});
 
-    const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState({});
+    //const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState({});
     
     //const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
@@ -95,6 +95,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
+    // To reduce warnings
+  useEffect(() => {
+    setCurrentQuantitOnHand(currentQuantityOnHand);
+    setClassValuesLeft('');
+  }, []);
   /*
     useEffect(()=>{
         let tempDate=getAHistoricDateBySubtractingFromNow(60,false);

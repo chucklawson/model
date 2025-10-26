@@ -1,5 +1,5 @@
 ﻿import  { useState, useEffect } from 'react';
-import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+//import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
 
 /*
@@ -9,7 +9,7 @@ import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvalu
 */
 
 interface TickerButtonProps{
-  tickerEntry:TickersToEvaluate;
+  key:string;
   ticker:string;
   costBasis:string;
   currentQuantityOnHand:number;
