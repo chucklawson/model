@@ -4,7 +4,7 @@ import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvalu
 //import type Quote_V3 from "../../Lib/Quote_V3.ts"
 //import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
 //import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
-//import TickerInput from '../TickerInput/TickerInput.jsx';
+import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
 //import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
@@ -54,9 +54,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [currentQuantityOnHand,setCurrentQuantitOnHand]=useState(0.0);
     //const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
     //const [percentGainLoss,setPercentGainLoss]=useState(0.0);
-    //const [startDate, setStartDate] = useState('');
-    //const [endDate, setEndDate] = useState('');
-    //const [adjustedStartDate,setAdjustedStartDate]= useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [adjustedStartDate,setAdjustedStartDate]= useState('');
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     //const [showChart, setShowChart] = useState(false);
 
@@ -100,6 +100,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
   useEffect(() => {
     setCurrentQuantitOnHand(currentQuantityOnHand);
     setClassValuesLeft('');
+    let tempString:string = startDate;
+    tempString = endDate;
+    tempString = adjustedStartDate;
+    setStartDate(tempString);
   }, []);
   /*
     useEffect(()=>{
@@ -180,8 +184,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const setupdateRangeValuesToFalse = () => {
         setUpdateRangeValues(false);
     }
-
-    const onTickerChangeHandler = (tickerValue,startDate,endDate,adjustedStartDate) => {
+*/
+    const onTickerChangeHandler = (tickerValue:string,startDate:string,endDate:string,adjustedStartDate:string) => {
         if ((tickerValue.trim().length > 0)&&
             (startDate.trim().length > 0) &&
             (endDate.trim().length > 0))        {
@@ -203,7 +207,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             
         }
     }
-
+/*
     useEffect(() => {  
             //console.log("Reset startDate to: " +startDate)
             //console.log("Reset endDate to: " + endDate)
@@ -517,11 +521,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         </div>
           {/*Temporary div */}
         </div>
-         {/*
+
         <TickerInput  onTickerValue={onTickerChangeHandler} currentTicker={tickerToGet} startDate={startDate} endDate={endDate}
             containerBackGround= {props.buttonBackgroundColor}></TickerInput>
+      {/*
         <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
-        
+        */}
+        {/*
         {(showChart === true && graphData.length!==undefined) ?
             <div className='justify-self-auto'>
                 <div className="text-1xl text-green-600 font-bold underline h-5">
