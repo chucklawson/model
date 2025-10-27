@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
-//import type Quote_V3 from "../../Lib/Quote_V3.ts"
+import type Quote_V3 from "../../Lib/Quote_V3.ts"
 //import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
-//import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
+import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
+import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
 //import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
 //import StockQuote from '../StockQuote/StockQuote.tsx';
@@ -22,7 +23,8 @@ import SimpleButton from '../SimpleButton/SimpleButton'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 //import PriceEarningsChart from '../InvestmentCharts/PriceEarningsChart.jsx';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
-//import {calculateBuyPoints} from '../../lib/ProfitLoss/CalculateBuyPoints.jsx'
+import {CalculateBuyPoints}  from '../../lib/ProfitLoss/CalculateBuyPoints'
+import type {BuyPoints} from '../../lib/ProfitLoss/CalculateBuyPoints'
 
 
 /*
@@ -68,25 +70,69 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     //const [stochasticData, setStochasticData] = useState({});
 
     //const widthOfStroke = 2;
-    //const [rangeValue, setRangeValue] = useState("50.0");
-    //const [lowRangeValue, setLowRangeValue] = useState("1.00");
-    //const [highRangeValue, setHighRangeValue] = useState("100");
-    //const [rangeValueOneYear, setRangeValueOneYear] = useState("50.0");
-    //const [lowRangeValueOneYear, setLowRangeValueOneYear] = useState("1.00");
-    //const [highRangeValueOneYear, setHighRangeValueOneYear] = useState("100");
-    //const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
+    const [rangeValue, setRangeValue] = useState("50.0");
+    const [lowRangeValue, setLowRangeValue] = useState("1.00");
+    const [highRangeValue, setHighRangeValue] = useState("100");
+    const [rangeValueOneYear, setRangeValueOneYear] = useState("50.0");
+    const [lowRangeValueOneYear, setLowRangeValueOneYear] = useState("1.00");
+    const [highRangeValueOneYear, setHighRangeValueOneYear] = useState("100");
+    const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
     //const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
-    //const [todaysGain, setTodaysGain] = useState(0.0);
-    //const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
-    //const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
-    //const [percentageChangeFromTwelveMonthHigh,setPercentageChangeFromTwelveMonthHigh] = useState(0.0);
-    //const [buyPoints, setBuyPoints] = useState({});
+    const [todaysGain, setTodaysGain] = useState(0.0);
+    const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
+    const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
+    const [percentageChangeFromTwelveMonthHigh,setPercentageChangeFromTwelveMonthHigh] = useState(0.0);
+    const [buyPoints, setBuyPoints] = useState<BuyPoints>({ downFivePercent:"",
+      downTenPercent:"",
+      downFifteenPercent:"",
+      downTwentyPercent:"",
+      downTwentyFivePercent:"",
+      downThirtyPercent:"",
+      downThirtyFivePercent:"",
+      downFortyPercent:"",
+      downFortyFivePercent:"",
+      downFiftyPercent:"",
+      downFiftyFivePercent:"",
+      downSixtyPercent:""});
     
     //const [updateRangeValues, setUpdateRangeValues] = useState(false);
-    //const [gainIsPositive, setGainIsPositive] = useState(false);
-    //const [currentQuote, setcurrentQuote] = useState({});
+    const [gainIsPositive, setGainIsPositive] = useState(false);
+    const [currentQuote, setcurrentQuote] = useState <Quote_V3>({           symbol: "",
+                                                                            name: "",
+                                                                            price: 0,
+                                                                            changePercentage: 0,
+                                                                            change: 0,
+                                                                            dayLow: 0,
+                                                                            dayHigh: 0,
+                                                                            yearHigh: 0,
+                                                                            yearLow: 0,
+                                                                            marketCap: 0,
+                                                                            priceAvg50: 0,
+                                                                            priceAvg200: 0,
+                                                                            exchange: "",
+                                                                            volume: 0,
+                                                                              avgVolume: 0,
+                                                                              open: 0,
+                                                                              previousClose: 0,
+                                                                              eps: 0,
+                                                                              pe: 0,
+                                                                              earningsAnnouncement:"",
+                                                                              sharesOutstanding: 0,
+                                                                              timestamp: 0});
     //const [timeSeries,setTimeSeries]  = useState({});
-    //const [adjustedTimeSeries,setAdjustedTimeSeries] = useState({});
+    const [adjustedTimeSeries,setAdjustedTimeSeries] = useState<HistoricalPriceFull_V3[]>([{date: "",
+      open: 0,
+      high: 0,
+      low: 0,
+      close: 0,
+      adjClose: 0,
+      volume: 0,
+      unadjustedVolume: 0,
+      change: 0,
+      changePercent: 0,
+      vwap: 0,
+      label: "",
+      changeOverTime: 0}]);
 
     //const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState({});
     
@@ -95,6 +141,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     //const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
+
+    const getValuesBasedOnDate=new GetValuesBasedOnDate();
 
     // To reduce warnings
   useEffect(() => {
@@ -105,24 +153,24 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     tempString = adjustedStartDate;
     setStartDate(tempString);
   }, []);
-  /*
+
     useEffect(()=>{
-        let tempDate=getAHistoricDateBySubtractingFromNow(60,false);
+        let tempDate=getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(60,false);
     tempDate.setHours(0)
     tempDate.setMinutes(0)
     tempDate.setSeconds(0)
-    setStartDate(convertDateForDateInputPicker(tempDate));
+    setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
 
     tempDate=new Date();
     tempDate.setHours(0)
     tempDate.setMinutes(0)
     tempDate.setSeconds(0)
-    setEndDate(convertDateForDateInputPicker(tempDate)); 
+    setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
         //setStartDate('2023-02-03');
         //setEndDate('2023-03-09');
         setClassValuesLeft('col-start-1 col-span-2 m-5 rounded-md' + props.backgroundLeft)
     },[])
-    */
+
     // request ticker data
     useEffect(() => {
 
@@ -156,12 +204,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
   }, [windowWidth,graphWidth]);
-/*
+
     useEffect(()=>{
-        let todaysChange=parseFloat(currentQuote.change).toFixed(2);
+        const todaysChange=Number(parseFloat(Number(currentQuote.change).toFixed(2)));
         let tempGain = false;
         setTodaysGain(todaysChange);
-        setTodaysPercentageGain(parseFloat(currentQuote.changesPercentage).toFixed(2));
+        setTodaysPercentageGain(Number(parseFloat(Number(currentQuote.changePercentage).toFixed(2))));
 
         if (todaysChange >= 0.0) {
             setGainIsPositive(true);
@@ -171,12 +219,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setGainIsPositive(false);
         }
         setRangeValues(currentQuote);
-        props.onSetTodaysPercentageChange(currentQuote.changesPercentage, tempGain);
+        props.onSetTodaysPercentageChange(currentQuote.changePercentage, tempGain);
 
     },[currentQuote]);
     
 
-*/
+
     const setUpdateTickerValueToFalse = () => {
         setUpdateTickerValue(false);
     }
@@ -207,13 +255,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             
         }
     }
-/*
+
     useEffect(() => {  
             //console.log("Reset startDate to: " +startDate)
             //console.log("Reset endDate to: " + endDate)
     }, [startDate, endDate,adjustedStartDate]);
 
-    const setRangeValues = (theCurrentQuote) => {
+    const setRangeValues = (theCurrentQuote:Quote_V3) => {
         //console.log('setRangeValues, theCurrentQuote.dayLow: ' + theCurrentQuote.dayLow)
         if(theCurrentQuote.dayLow === undefined)
         {
@@ -221,21 +269,21 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
         //if(theCurrentQuote.dayLow !== undefined)
         //{
-            setLowRangeValue(parseFloat(theCurrentQuote.dayLow).toFixed(2));
-            setHighRangeValue(parseFloat(theCurrentQuote.dayHigh).toFixed(2));
+            setLowRangeValue(parseFloat(theCurrentQuote.dayLow.toString()).toFixed(2));
+            setHighRangeValue(parseFloat(theCurrentQuote.dayHigh.toString()).toFixed(2));
         //}
-        let lowValue = parseFloat(theCurrentQuote.dayLow);
-        let highValue = parseFloat(theCurrentQuote.dayHigh);
-        let lastValue = parseFloat(theCurrentQuote.price);
+        const lowValue = parseFloat(theCurrentQuote.dayLow.toString());
+        const highValue = parseFloat(theCurrentQuote.dayHigh.toString());
+        const lastValue = parseFloat(theCurrentQuote.price.toString());
         //console.log('theCurrentQuote.price: ' + theCurrentQuote.price)
-        let currentRange = highValue - lowValue;
-        let currentDistanceFromLow = lastValue - lowValue;
+        const currentRange = highValue - lowValue;
+        const currentDistanceFromLow = lastValue - lowValue;
         if (currentRange !== 0.0) {
-            let percentage = ((currentDistanceFromLow / currentRange)*100.0);
+            const percentage = ((currentDistanceFromLow / currentRange)*100.0);
             setRangeValue(percentage.toString());
         }
 
-        let firstReferencePrice = parseFloat(firstReferenceClosingPrice);
+        const firstReferencePrice = parseFloat(firstReferenceClosingPrice);
         //let lastReferencePrice = parseFloat(lastReferenceClosingPrice);
         //let todaysChange = theCurrentQuote.change;
         //let tempGain = false;
@@ -243,39 +291,41 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         
         //props.onSetTodaysPercentageChange(todaysPercentageGain, tempGain);
 
-        let changeAcrossRange = lastValue - firstReferencePrice;
+        const changeAcrossRange = lastValue - firstReferencePrice;
         let percentageChangeFullRange = 0.0;
 
         //console.log('lastValue: ' + lastValue + ', firstReferencePrice: ' + firstReferencePrice +', changeAcrossRange: ' + changeAcrossRange + ', firstReferencePrice: ' + firstReferencePrice )
 
         if (firstReferencePrice !== 0.0) {
-            percentageChangeFullRange = ((changeAcrossRange / firstReferencePrice)*100.0).toFixed(2);
+            percentageChangeFullRange = Number(((changeAcrossRange / firstReferencePrice)*100.0).toFixed(2));
         }
         setPercentageChangeAcrossRange(percentageChangeFullRange);
 
         // Full year starts here
-        let fullYearStartingValue = goBackSpecificNumberOfDays(adjustedTimeSeries,365)
+        let fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
             //console.log('fullYearStartingValue: ' + fullYearStartingValue)
         
 
-        let lowValueOneYear = findTheLowValueBasedOnDate(getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
-        let highValueOneYear = findTheHighValueBasedOnDate(getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
+        const lowValueOneYear = getValuesBasedOnDate.findTheLowValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
+        const highValueOneYear = getValuesBasedOnDate.findTheHighValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
 
         setLowRangeValueOneYear(lowValueOneYear.toFixed(2))
         setHighRangeValueOneYear(highValueOneYear.toFixed(2))
-        let currentRangeOneYear = highValueOneYear - lowValueOneYear;
-        let currentDistanceFromLowOneYear = lastValue - lowValueOneYear;
+        const currentRangeOneYear = highValueOneYear - lowValueOneYear;
+        const currentDistanceFromLowOneYear = lastValue - lowValueOneYear;
 
         //console.log('currentRangeOneYear: ' + currentRangeOneYear + ', lowValueOneYear: ' + lowValueOneYear + ', highValueOneYear' + highValueOneYear)
 
 
         if (currentRangeOneYear !== 0.0) {
-            let percentage = ((currentDistanceFromLowOneYear / currentRangeOneYear)*100.0);
+            const percentage = ((currentDistanceFromLowOneYear / currentRangeOneYear)*100.0);
             setRangeValueOneYear(percentage.toFixed(2).toString());
-            let distanceFromHigh=theCurrentQuote.price-highValueOneYear;
-            setPercentageChangeFromTwelveMonthHigh(((distanceFromHigh/highValueOneYear)*100.0).toFixed(2).toString());
-
-            calculateBuyPoints(highValueOneYear,setBuyPoints);
+            const distanceFromHigh=theCurrentQuote.price-highValueOneYear;
+            setPercentageChangeFromTwelveMonthHigh(  Number( ((distanceFromHigh/highValueOneYear)*100.0).toFixed(2).toString() ) );
+            function setTheBuyPoints(buyPointsIn:BuyPoints) {
+              setBuyPoints(buyPointsIn);
+            }
+            CalculateBuyPoints(highValueOneYear,setTheBuyPoints);
 
             //console.log('highValueOneYear:' + highValueOneYear + ', theCurrentQuote.price: ' + theCurrentQuote.price + ', distanceFromHigh: ' + distanceFromHigh);
 
@@ -283,7 +333,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         }
     };
-*/
+
     const selectTickerButtonHandler = (tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
         setTickerToGet(tickerIn);
         setUpdateTickerValue(true);

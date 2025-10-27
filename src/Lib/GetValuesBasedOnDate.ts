@@ -6,7 +6,7 @@ export class GetValuesBasedOnDate {
 
 
     constructor(){
-      console.log("GetValuesBasedOnDate");
+      //console.log("GetValuesBasedOnDate");
     }
 
     getAHistoricDateBySubtractingFromNow(numberOfDaysToGoBack:number,oneYearHistoryChecked:boolean)
