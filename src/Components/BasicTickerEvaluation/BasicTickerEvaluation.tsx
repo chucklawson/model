@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
-//import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
+import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
@@ -10,7 +10,7 @@ import SimpleButton from '../SimpleButton/SimpleButton'
 import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
 //import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
-//import StockQuote from '../StockQuote/StockQuote.tsx';
+import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
 //import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages.jsx'
 //import upGreenRight from '../../srcImages/UpGreenRight.png'
@@ -77,7 +77,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [lowRangeValueOneYear, setLowRangeValueOneYear] = useState("1.00");
     const [highRangeValueOneYear, setHighRangeValueOneYear] = useState("100");
     const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
-    //const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
+    const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
     const [todaysGain, setTodaysGain] = useState(0.0);
     const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
     const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
@@ -119,7 +119,20 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                                                                               earningsAnnouncement:"",
                                                                               sharesOutstanding: 0,
                                                                               timestamp: 0});
-    //const [timeSeries,setTimeSeries]  = useState({});
+    const [timeSeries,setTimeSeries]  = useState<HistoricalPriceFull_V3[]>([{date: "",
+      open: 0,
+      high: 0,
+      low: 0,
+      close: 0,
+      adjClose: 0,
+      volume: 0,
+      unadjustedVolume: 0,
+      change: 0,
+      changePercent: 0,
+      vwap: 0,
+      label: "",
+      changeOverTime: 0}]);
+
     const [adjustedTimeSeries,setAdjustedTimeSeries] = useState<HistoricalPriceFull_V3[]>([{date: "",
       open: 0,
       high: 0,
@@ -134,7 +147,53 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       label: "",
       changeOverTime: 0}]);
 
-    //const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState({});
+    const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState<KeyMetrics_V3[]>([{symbol: "",
+    date: "",
+    fiscalYear: "",
+    period: "",
+    reportedCurrency: "",
+    marketCap: 0,
+    enterpriseValue: 0,
+    evToSales: 0,
+    evToOperatingCashFlow: 0,
+    evToFreeCashFlow: 0,
+    evToEBITDA: 0,
+    netDebtToEBITDA: 0,
+    currentRatio: 0,
+    incomeQuality: 0,
+    grahamNumber: 0,
+    grahamNetNet: 0,
+    taxBurden: 0,
+    interestBurden: 0,
+    workingCapital: 0,
+    investedCapital: 0,
+    returnOnAssets: 0,
+    operatingReturnOnAssets: 0,
+    returnOnTangibleAssets: 0,
+    returnOnEquity: 0,
+    returnOnInvestedCapital: 0,
+    returnOnCapitalEmployed: 0,
+    earningsYield: 0,
+    freeCashFlowYield: 0,
+    capexToOperatingCashFlow: 0,
+    capexToDepreciation: 0,
+    capexToRevenue: 0,
+    salesGeneralAndAdministrativeToRevenue: 0,
+    researchAndDevelopementToRevenue: 0,
+    stockBasedCompensationToRevenue: 0,
+    intangiblesToTotalAssets: 0,
+    averageReceivables: 0,
+    averagePayables: 0,
+    averageInventory: 0,
+    daysOfSalesOutstanding: 0,
+    daysOfPayablesOutstanding: 0,
+    daysOfInventoryOutstanding: 0,
+    operatingCycle: 0,
+    cashConversionCycle: 0,
+    freeCashFlowToEquity: 0,
+    freeCashFlowToFirm: 0,
+    tangibleAssetValue: 0,
+    netCurrentAssetValue: 0}]);
     
     //const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
@@ -168,6 +227,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setGainIsPositive(gainIsPositive);
     setcurrentQuote(currentQuote);
     setUpdateRangeValues(updateRangeValues);
+    setTimeSeries(timeSeries);
+    setLastReferenceClosingPrice(lastReferenceClosingPrice);
+    setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics);
 
 
   }, []);
@@ -249,11 +311,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const setUpdateTickerValueToFalse = () => {
         setUpdateTickerValue(false);
     }
-
-    //const setupdateRangeValuesToFalse = () => {
-    //    setUpdateRangeValues(false);
-    //}
-
+/*
+    const setupdateRangeValuesToFalse = () => {
+        setUpdateRangeValues(false);
+    }
+*/
     const onTickerChangeHandler = (tickerValue:string,startDate:string,endDate:string,adjustedStartDate:string) => {
         if ((tickerValue.trim().length > 0)&&
             (startDate.trim().length > 0) &&
@@ -373,16 +435,16 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }
 
 
-  /*
+
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
-    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3,statmentAnalysisKeyMetrics:KeyMetrics_V3):void=>
+    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:KeyMetrics_V3[]):void=>
     {
-        //console.log("onSetCurrentQuote" );
-        //console.log("currentQuoteIn" + currentQuoteIn);
+        console.log("onSetCurrentQuote" );
+        console.log("currentQuoteIn" + currentQuoteIn);
         setcurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
         setAdjustedTimeSeries(adjustedTimeSeriesIn)
-        setProfitLoss(currentQuoteIn)
+        //setProfitLoss(currentQuoteIn)
         //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
         setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics)
         //setLarryWilliams(larryWilliams)
@@ -397,7 +459,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
 
     }
-
+/*
     const setProfitLoss = (currentQuoteIn:Quote_V3)=>
     {
         //console.log("setProfitLoss" );
@@ -596,9 +658,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         <TickerInput  onTickerValue={onTickerChangeHandler} currentTicker={tickerToGet} startDate={startDate} endDate={endDate}
             containerBackGround= {props.buttonBackgroundColor}></TickerInput>
-      {/*
+
         <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
-        */}
+
         {/*
         {(showChart === true && graphData.length!==undefined) ?
             <div className='justify-self-auto'>
@@ -852,4 +914,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     </div>
 };
+
+
+
+
+
 export default BasicTickerEvaluaton;

@@ -85,9 +85,9 @@ const [currentQuote, setcurrentQuote] = useState({});
       {
         return;
       }     
-      //console.log("props startDate: " + props.latestStartDate)
-      //console.log("props endDate: " + props.latestEndDate)
-      //console.log("props adjustedStartDate: " + props.adjustedStartDate)
+      console.log("props startDate: " + props.latestStartDate)
+      console.log("props endDate: " + props.latestEndDate)
+      console.log("props adjustedStartDate: " + props.adjustedStartDate)
       if(props.latestStartDate.length > 0)
       {
       Promise.all([
@@ -137,7 +137,7 @@ const [currentQuote, setcurrentQuote] = useState({});
 
     //const setDatObjet = (theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams)=>{
     const setDatObjet = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:KeyMetrics_V3[])=>{
-        //console.log("theQuote: " + theQuote[0].open)
+        console.log("theQuote: " + theQuote[0].open)
         setcurrentQuote(theQuote)        
         setTimeSeriesEntries(timeSeries);
         setAdjustedTimeSeriesEntries(adjustedTimeSeries);
