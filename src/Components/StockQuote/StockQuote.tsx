@@ -6,7 +6,7 @@ import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 
 interface  StockQuoteProps{
   stockSymbol: string;
-  onSetCurrentQuote(currentQuoteIn: Quote_V3[], timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statmentAnalysisKeyMetrics:KeyMetrics_V3[] ):void;
+  onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statmentAnalysisKeyMetrics:KeyMetrics_V3[] ):void;
   latestStartDate: string;
   latestEndDate: string;
   adjustedStartDate: string;
@@ -26,7 +26,29 @@ const StockQuote = (props:StockQuoteProps) => {
     //console.log('props.stockSymbol: ' + props.stockSymbol)
 
 
-    const [currentQuote, setcurrentQuote] = useState<Quote_V3[]>([]);
+    const [currentQuote, setcurrentQuote] = useState <Quote_V3>({  symbol: "",
+      name: "",
+      price: 0,
+      changePercentage: 0,
+      change: 0,
+      dayLow: 0,
+      dayHigh: 0,
+      yearHigh: 0,
+      yearLow: 0,
+      marketCap: 0,
+      priceAvg50: 0,
+      priceAvg200: 0,
+      exchange: "",
+      volume: 0,
+      avgVolume: 0,
+      open: 0,
+      previousClose: 0,
+      eps: 0,
+      pe: 0,
+      earningsAnnouncement:"",
+      sharesOutstanding: 0,
+      timestamp: 0});
+
     const [timeSeriesEntries, setTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
     const [adjustedTimeSeriesEntries, setAdjustedTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
     const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState<KeyMetrics_V3[]>([]);
@@ -114,7 +136,7 @@ const [currentQuote, setcurrentQuote] = useState({});
 
 
     //const setDatObjet = (theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams)=>{
-    const setDatObjet = (theQuote:Quote_V3[],timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:KeyMetrics_V3[])=>{
+    const setDatObjet = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:KeyMetrics_V3[])=>{
         //console.log("theQuote: " + theQuote[0].open)
         setcurrentQuote(theQuote)        
         setTimeSeriesEntries(timeSeries);

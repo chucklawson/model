@@ -95,7 +95,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       downFiftyFivePercent:"",
       downSixtyPercent:""});
     
-    //const [updateRangeValues, setUpdateRangeValues] = useState(false);
+    const [updateRangeValues, setUpdateRangeValues] = useState(false);
     const [gainIsPositive, setGainIsPositive] = useState(false);
     const [currentQuote, setcurrentQuote] = useState <Quote_V3>({           symbol: "",
                                                                             name: "",
@@ -167,6 +167,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setAdjustedTimeSeries(adjustedTimeSeries);
     setGainIsPositive(gainIsPositive);
     setcurrentQuote(currentQuote);
+    setUpdateRangeValues(updateRangeValues);
 
 
   }, []);
@@ -248,11 +249,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const setUpdateTickerValueToFalse = () => {
         setUpdateTickerValue(false);
     }
-/*
-    const setupdateRangeValuesToFalse = () => {
-        setUpdateRangeValues(false);
-    }
-*/
+
+    //const setupdateRangeValuesToFalse = () => {
+    //    setUpdateRangeValues(false);
+    //}
+
     const onTickerChangeHandler = (tickerValue:string,startDate:string,endDate:string,adjustedStartDate:string) => {
         if ((tickerValue.trim().length > 0)&&
             (startDate.trim().length > 0) &&
@@ -380,7 +381,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         //console.log("currentQuoteIn" + currentQuoteIn);
         setcurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
-        setAdjustedTimeSeries(adjustedTimeSeriesIn) 
+        setAdjustedTimeSeries(adjustedTimeSeriesIn)
         setProfitLoss(currentQuoteIn)
         //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
         setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics)
@@ -404,7 +405,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         if(currentQuantityOnHand!==0)
         {
             profitLoss=((currentQuoteIn.price*currentQuantityOnHand)-totalCost)
-        }   
+        }
         setProfitLossOneEntry( Number(profitLoss.toFixed(2)) )
         let percentGainLoss= 0.0;
         if(totalCost!==0.0)
@@ -426,7 +427,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const bollingerChangeHandler = () => {
         setBollingerChecked(!bollingerChecked);
     };
-    
+
     //const [lwChecked, setLwChecked] = React.useState(false);
 
     //const lwChangeHandler = () => {
@@ -448,7 +449,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const priceEquityChangeHandler = () => {
         setPriceEquityChecked(!priceEquityChecked);
     };
-    
+
 
 /*
     useEffect(() => {  
@@ -503,7 +504,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
     }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
 */
-    
+
 /*
     useEffect( ()=>{
       if(graphData.length!==undefined)
@@ -512,7 +513,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         //console.log(JSON.stringify(graphData))
         //console.log('graphData.length: ' + graphData.length)
       }
-    
+
         if((graphData.length!==undefined) && (graphData.length>1)){
             const Y1forSlope=graphData[graphData.length-1].expMovingAverage;
             //console.log('Y1forSlope: ' + Y1forSlope)
@@ -531,7 +532,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     return <  div className='bg-gray-100 grid grid-cols-9 gap-4'>
 
         <div className={classValuesLeft}>
-       
+
         {/* not really using key but defining it anyway */}
         {props.tickerEntries.map( (tickerEntry)=> (
             <TickerButton key={tickerEntry.ticker} ticker={tickerEntry.ticker}
@@ -588,7 +589,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
           {/*{calculatedTotalProfitLoss}*/}
 
-        
+
         </div>
           {/*Temporary div */}
         </div>
@@ -848,12 +849,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
          </div>
       */}
-        
+
     </div>
 };
-
-    
-
-    
-
 export default BasicTickerEvaluaton;
