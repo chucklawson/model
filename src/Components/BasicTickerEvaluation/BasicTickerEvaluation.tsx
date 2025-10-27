@@ -138,7 +138,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     
     //const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
-    //const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
+    const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
@@ -322,10 +322,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setRangeValueOneYear(percentage.toFixed(2).toString());
             const distanceFromHigh=theCurrentQuote.price-highValueOneYear;
             setPercentageChangeFromTwelveMonthHigh(  Number( ((distanceFromHigh/highValueOneYear)*100.0).toFixed(2).toString() ) );
-            function setTheBuyPoints(buyPointsIn:BuyPoints) {
-              setBuyPoints(buyPointsIn);
-            }
-            CalculateBuyPoints(highValueOneYear,setTheBuyPoints);
+            //function setTheBuyPoints(buyPointsIn:BuyPoints) {
+           //   setBuyPoints(buyPointsIn);
+            //}
+            CalculateBuyPoints(highValueOneYear,setBuyPoints);
 
             //console.log('highValueOneYear:' + highValueOneYear + ', theCurrentQuote.price: ' + theCurrentQuote.price + ', distanceFromHigh: ' + distanceFromHigh);
 
@@ -347,7 +347,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const calculateProfitLossButtonHandler = () =>
     {
       // need to add this back in
-        //calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
+        calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }
 
 

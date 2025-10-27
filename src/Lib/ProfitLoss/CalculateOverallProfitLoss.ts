@@ -1,4 +1,11 @@
-export function calculateOverallProfitAndLoss(tickerEntries,setCalculatedTotalProfitLoss)
+import type {TickersToEvaluate} from "../TickersToEvaluate/TickersToEvaluate";
+import type {BuyPoints} from "./CalculateBuyPoints.ts";
+
+interface SetCalculatedTotalProfitLoss{
+  (profitOrLoss:''):void;
+}
+
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:SetCalculatedTotalProfitLoss)
 {  
     let ticker = ''
     let costBasis = 0
@@ -7,7 +14,7 @@ export function calculateOverallProfitAndLoss(tickerEntries,setCalculatedTotalPr
     let costEntry = {ticker: "",
                     cost: 0.0,
                     unitsPurchased: 0}
-    let tickerEntriesToSum=[];
+    let tickerEntriesToSum = [];
     let tickersToEvaluate = [];
     tickerEntries.map( (tickerEntry)=> ( 
          ticker=tickerEntry.ticker,
