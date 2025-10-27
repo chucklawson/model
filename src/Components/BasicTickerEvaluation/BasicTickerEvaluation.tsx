@@ -138,13 +138,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     
     //const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
-    const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
+    //const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
     const getValuesBasedOnDate=new GetValuesBasedOnDate();
 
-    // To reduce warnings
+    // To reduce warnings/errors
   useEffect(() => {
     setCurrentQuantitOnHand(currentQuantityOnHand);
     setClassValuesLeft('');
@@ -152,7 +152,27 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     tempString = endDate;
     tempString = adjustedStartDate;
     setStartDate(tempString);
+    setRangeValue(rangeValue);
+    setLowRangeValue(lowRangeValue);
+    setHighRangeValue(highRangeValue);
+    setRangeValueOneYear(rangeValueOneYear);
+    setLowRangeValueOneYear(lowRangeValueOneYear);
+    setHighRangeValueOneYear(highRangeValueOneYear);
+    setFirstReferenceClosingPrice("");
+    setTodaysGain(todaysGain);
+    setTodaysPercentageGain(todaysPercentageGain);
+    setPercentageChangeAcrossRange(percentageChangeAcrossRange);
+    setPercentageChangeFromTwelveMonthHigh(percentageChangeFromTwelveMonthHigh);
+    setBuyPoints(buyPoints);
+    setAdjustedTimeSeries(adjustedTimeSeries);
+    setGainIsPositive(gainIsPositive);
+    setcurrentQuote(currentQuote);
+
+
   }, []);
+
+
+
 
     useEffect(()=>{
         let tempDate=getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(60,false);
@@ -302,12 +322,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPercentageChangeAcrossRange(percentageChangeFullRange);
 
         // Full year starts here
-        let fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
+        //let fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
             //console.log('fullYearStartingValue: ' + fullYearStartingValue)
         
 
-        const lowValueOneYear = getValuesBasedOnDate.findTheLowValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
-        const highValueOneYear = getValuesBasedOnDate.findTheHighValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365),adjustedTimeSeries)
+        const lowValueOneYear = getValuesBasedOnDate.findTheLowValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365,true),adjustedTimeSeries)
+        const highValueOneYear = getValuesBasedOnDate.findTheHighValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365,true),adjustedTimeSeries)
 
         setLowRangeValueOneYear(lowValueOneYear.toFixed(2))
         setHighRangeValueOneYear(highValueOneYear.toFixed(2))
