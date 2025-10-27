@@ -1,5 +1,5 @@
 import type {TickersToEvaluate} from "../TickersToEvaluate/TickersToEvaluate";
-import type {BuyPoints} from "./CalculateBuyPoints.ts";
+import type {BuyPoints} from "./GetBuyPoints.ts";
 
 interface SetCalculatedTotalProfitLoss{
   (profitOrLoss:''):void;

@@ -23,8 +23,8 @@ import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 //import PriceEarningsChart from '../InvestmentCharts/PriceEarningsChart.jsx';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
-import {CalculateBuyPoints}  from '../../lib/ProfitLoss/CalculateBuyPoints'
-import type {BuyPoints} from '../../lib/ProfitLoss/CalculateBuyPoints'
+import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints.ts'
+import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints.ts'
 
 
 /*
@@ -325,7 +325,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //function setTheBuyPoints(buyPointsIn:BuyPoints) {
            //   setBuyPoints(buyPointsIn);
             //}
-            CalculateBuyPoints(highValueOneYear,setBuyPoints);
+          const getBuyPoints= new GetBuyPoints();
+          getBuyPoints.CalculateBuyPoints(highValueOneYear,setBuyPoints);
 
             //console.log('highValueOneYear:' + highValueOneYear + ', theCurrentQuote.price: ' + theCurrentQuote.price + ', distanceFromHigh: ' + distanceFromHigh);
 
