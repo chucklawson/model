@@ -348,7 +348,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const calculateProfitLossButtonHandler = () =>
     {
       // need to add this back in
-        calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
+        //calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }
 
 
