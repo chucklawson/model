@@ -342,7 +342,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     useEffect(() => {  
             //console.log("Reset startDate to: " +startDate)
             //console.log("Reset endDate to: " + endDate)
-    }, [startDate, endDate,adjustedStartDate]);
+            console.log("From use effect, currentQuote: symbol, " +currentQuote.symbol + ", name: " + currentQuote.name);
+    }, [startDate, endDate,adjustedStartDate,currentQuote]);
 
     const setRangeValues = (theCurrentQuote:Quote_V3) => {
         //console.log('setRangeValues, theCurrentQuote.dayLow: ' + theCurrentQuote.dayLow)
@@ -440,14 +441,20 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:KeyMetrics_V3[]):void=>
     {
         console.log("onSetCurrentQuote" );
-        console.log("currentQuoteIn" + currentQuoteIn);
+        //console.log("currentQuoteIn" + currentQuoteIn);
         setcurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
-        setAdjustedTimeSeries(adjustedTimeSeriesIn)
+        setAdjustedTimeSeries(adjustedTimeSeriesIn);
         //setProfitLoss(currentQuoteIn)
         //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
         setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics)
         //setLarryWilliams(larryWilliams)
+
+        //console.log("currentQuote symbol: " + currentQuote.symbol + ", name: " + currentQuote.name);
+
+
+
+
         
         if(timeSeriesIn.length>0)
         {
