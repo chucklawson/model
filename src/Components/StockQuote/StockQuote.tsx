@@ -57,6 +57,13 @@ const StockQuote = (props:StockQuoteProps) => {
     const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState<KeyMetrics_V3[]>([]);
     //const [larryWilliamsEntries,setLarryWilliamsEntries]= useState({});
 
+  // This is to get rid of errors
+  useEffect(() => {
+    setTimeSeriesEntries(timeSeriesEntries);
+    setAdjustedTimeSeriesEntries(adjustedTimeSeriesEntries);
+    setStatementAnalysisKeyMetricsEntries(statementAnalysisKeyMetricsEntries);
+  },[])
+
 
     useEffect(() => { 
       if(props.stockSymbol.length<1)
