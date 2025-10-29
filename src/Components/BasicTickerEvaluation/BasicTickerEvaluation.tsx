@@ -54,8 +54,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [tickerToGet, setTickerToGet] = useState('');
     const [totalCost, setTotalCost]=useState(0.0);
     const [currentQuantityOnHand,setCurrentQuantitOnHand]=useState(0.0);
-    //const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
-    //const [percentGainLoss,setPercentGainLoss]=useState(0.0);
+    const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
+    const [percentGainLoss,setPercentGainLoss]=useState(0.0);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [adjustedStartDate,setAdjustedStartDate]= useState('');
@@ -230,8 +230,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setTimeSeries(timeSeries);
     setLastReferenceClosingPrice(lastReferenceClosingPrice);
     setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics);
-
-
+    setProfitLossOneEntry(profitLossOneEntry);
+    setPercentGainLoss(percentGainLoss);
   }, []);
 
 
@@ -445,7 +445,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setcurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
         setAdjustedTimeSeries(adjustedTimeSeriesIn);
-        //setProfitLoss(currentQuoteIn)
+        setProfitLoss(currentQuoteIn)
         //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
         setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics)
         //setLarryWilliams(larryWilliams)
@@ -466,30 +466,24 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
 
     }
-/*
-    const setProfitLoss = (currentQuoteIn:Quote_V3)=>
-    {
-        //console.log("setProfitLoss" );
-        let profitLoss = 0.0;
-        if(currentQuantityOnHand!==0)
-        {
-            profitLoss=((currentQuoteIn.price*currentQuantityOnHand)-totalCost)
-        }
-        setProfitLossOneEntry( Number(profitLoss.toFixed(2)) )
-        let percentGainLoss= 0.0;
-        if(totalCost!==0.0)
-        {
-            percentGainLoss=(profitLoss/totalCost)*100.0;
-        }
-        if((!isNaN(percentGainLoss))&&(percentGainLoss!==0.0))
-        {
-            setPercentGainLoss(Number(percentGainLoss.toFixed(2)))
-        }
-        else
-        {
-            setPercentGainLoss(0)
-        }
-    */
+
+    const setProfitLoss = (currentQuoteIn:Quote_V3)=> {
+      //console.log("setProfitLoss" );
+      let profitLoss = 0.0;
+      if (currentQuantityOnHand !== 0) {
+        profitLoss = ((currentQuoteIn.price * currentQuantityOnHand) - totalCost)
+      }
+      setProfitLossOneEntry(Number(profitLoss.toFixed(2)))
+      let percentGainLoss = 0.0;
+      if (totalCost !== 0.0) {
+        percentGainLoss = (profitLoss / totalCost) * 100.0;
+      }
+      if ((!isNaN(percentGainLoss)) && (percentGainLoss !== 0.0)) {
+        setPercentGainLoss(Number(percentGainLoss.toFixed(2)))
+      } else {
+        setPercentGainLoss(0)
+      }
+    }
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
