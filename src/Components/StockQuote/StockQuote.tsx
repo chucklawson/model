@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
-import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
+import type AnalysisKeyMetricsItem_V3 from '../../Lib/AnalysisKeyMetricsItem_V3.ts'
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 
 
 interface  StockQuoteProps{
   stockSymbol: string;
-  onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statmentAnalysisKeyMetrics:KeyMetrics_V3[] ):void;
+  onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[] ):void;
   latestStartDate: string;
   latestEndDate: string;
   adjustedStartDate: string;
@@ -54,7 +54,7 @@ const StockQuote = (props:StockQuoteProps) => {
     const [currentQuote, setcurrentQuote] = useState <Quote_V3>();
     const [timeSeriesEntries, setTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
     const [adjustedTimeSeriesEntries, setAdjustedTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
-    const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState<KeyMetrics_V3[]>([]);
+    const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState<AnalysisKeyMetricsItem_V3[]>([]);
     //const [larryWilliamsEntries,setLarryWilliamsEntries]= useState({});
 
   // This is to get rid of errors
@@ -111,8 +111,8 @@ const StockQuote = (props:StockQuoteProps) => {
           const aAdjustedTimeSeries: HistoricalPriceFull_V3[] = parsedAdjustedTimeSeries;
           console.log('aAdjustedTimeSeries adjClose: ' + aAdjustedTimeSeries[0].adjClose);
 
-          const parsedStatmentAnalysiss: KeyMetrics_V3[] = JSON.parse(JSON.stringify(data[3]));
-          const aStatementAnalysis: KeyMetrics_V3[] = parsedStatmentAnalysiss;
+          const parsedStatmentAnalysiss: AnalysisKeyMetricsItem_V3[] = JSON.parse(JSON.stringify(data[3]));
+          const aStatementAnalysis: AnalysisKeyMetricsItem_V3[] = parsedStatmentAnalysiss;
           console.log('aStatementAnalysis averageReceivables: ' + aStatementAnalysis[0].averageReceivables);
 
           setDatObjet(aQuote,aTimeSeries,aAdjustedTimeSeries,aStatementAnalysis)
@@ -144,7 +144,7 @@ const StockQuote = (props:StockQuoteProps) => {
 
 
     //const setDatObjet = (theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams)=>{
-    const setDatObjet = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:KeyMetrics_V3[])=>{
+    const setDatObjet = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:AnalysisKeyMetricsItem_V3[])=>{
 
         setTimeSeriesEntries(timeSeries);
         setAdjustedTimeSeriesEntries(adjustedTimeSeries);

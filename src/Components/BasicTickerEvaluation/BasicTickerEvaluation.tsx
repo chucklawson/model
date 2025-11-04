@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
-import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
+//import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
+import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
@@ -12,14 +13,12 @@ import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
 import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
-//import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages.jsx'
+//import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages/CalculateAverages.ts'
+import  CalculateAverages from '../../lib/CalculateAverages/CalculateAverages.ts'
 //import upGreenRight from '../../srcImages/UpGreenRight.png'
 //import downRedRight from '../../srcImages/DownRedRight.png'
 //import RelativeStrengthIndexChart from '../InvestmentCharts/RelativeStrengthIndexChart/RelativeStrengthIndexChart.jsx';
 //import StochasitcOscillatorChart from '../InvestmentCharts/StochasticOscillatorChart.jsx'
-
-
-//import { goBackSpecificNumberOfDays, findTheHighValueBasedOnDate, getAHistoricDateBySubtractingFromNow, findTheLowValueBasedOnDate, convertDateForDateInputPicker } from '../../lib/GetValuesBasedOnDate.jsx'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 //import PriceEarningsChart from '../InvestmentCharts/PriceEarningsChart.jsx';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
@@ -62,12 +61,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     //const [showChart, setShowChart] = useState(false);
 
-    //const [graphData, setGraphData] = useState({});
-    //const [rsiData, setRsiData] = useState({});
-    //const [lwData, setLwData] = useState({});
-    //const [priceEarningsData, setPriceEarningsData]= useState({});
+    const [graphData, setGraphData] = useState({});
+    const [rsiData, setRsiData] = useState({});
+    const [lwData, setLwData] = useState({});
+    const [priceEarningsData, setPriceEarningsData]= useState({});
     
-    //const [stochasticData, setStochasticData] = useState({});
+    const [stochasticData, setStochasticData] = useState({});
 
     //const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
@@ -147,53 +146,67 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       label: "",
       changeOverTime: 0}]);
 
-    const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState<KeyMetrics_V3[]>([{symbol: "",
-    date: "",
-    fiscalYear: "",
-    period: "",
-    reportedCurrency: "",
-    marketCap: 0,
-    enterpriseValue: 0,
-    evToSales: 0,
-    evToOperatingCashFlow: 0,
-    evToFreeCashFlow: 0,
-    evToEBITDA: 0,
-    netDebtToEBITDA: 0,
-    currentRatio: 0,
-    incomeQuality: 0,
-    grahamNumber: 0,
-    grahamNetNet: 0,
-    taxBurden: 0,
-    interestBurden: 0,
-    workingCapital: 0,
-    investedCapital: 0,
-    returnOnAssets: 0,
-    operatingReturnOnAssets: 0,
-    returnOnTangibleAssets: 0,
-    returnOnEquity: 0,
-    returnOnInvestedCapital: 0,
-    returnOnCapitalEmployed: 0,
-    earningsYield: 0,
-    freeCashFlowYield: 0,
-    capexToOperatingCashFlow: 0,
-    capexToDepreciation: 0,
-    capexToRevenue: 0,
-    salesGeneralAndAdministrativeToRevenue: 0,
-    researchAndDevelopementToRevenue: 0,
-    stockBasedCompensationToRevenue: 0,
-    intangiblesToTotalAssets: 0,
-    averageReceivables: 0,
-    averagePayables: 0,
-    averageInventory: 0,
-    daysOfSalesOutstanding: 0,
-    daysOfPayablesOutstanding: 0,
-    daysOfInventoryOutstanding: 0,
-    operatingCycle: 0,
-    cashConversionCycle: 0,
-    freeCashFlowToEquity: 0,
-    freeCashFlowToFirm: 0,
-    tangibleAssetValue: 0,
-    netCurrentAssetValue: 0}]);
+    const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState<AnalysisKeyMetricsItem_V3[]>([{symbol: "",
+      date:"",
+      calendarYear: "",
+      period: "",
+      revenuePerShare:0,
+      netIncomePerShare: 0,
+      operatingCashFlowPerShare: 0,
+      freeCashFlowPerShare: 0,
+      cashPerShare:0,
+      bookValuePerShare: 0,
+      tangibleBookValuePerShare: 0,
+      shareholdersEquityPerShare:0,
+      interestDebtPerShare: 0,
+      marketCap:0,
+      enterpriseValue: 0,
+      peRatio: 0,
+      priceToSalesRatio: 0,
+      pocfratio: 0,
+      pfcfRatio: 0,
+      pbRatio: 0,
+      ptbRatio:0,
+      evToSales: 0,
+      enterpriseValueOverEBITDA: 0,
+      evToOperatingCashFlow: 0,
+      evToFreeCashFlow:0,
+      earningsYield: 0,
+      freeCashFlowYield: 0,
+      debtToEquity:0,
+      debtToAssets:0,
+      netDebtToEBITDA: 0,
+      currentRatio:0,
+      interestCoverage: 0,
+      incomeQuality: 0,
+      dividendYield: 0,
+      payoutRatio: 0,
+      salesGeneralAndAdministrativeToRevenue: 0,
+      researchAndDdevelopementToRevenue: 0,
+      intangiblesToTotalAssets: 0,
+      capexToOperatingCashFlow: 0,
+      capexToRevenue: 0,
+      capexToDepreciation:0,
+      stockBasedCompensationToRevenue: 0,
+      grahamNumber: 0,
+      roic: 0,
+      returnOnTangibleAssets: 0,
+      grahamNetNet: 0,
+      workingCapital: 0,
+      tangibleAssetValue: 0,
+      netCurrentAssetValue: 0,
+      investedCapital: 0,
+      averageReceivables: 0,
+      averagePayables: 0,
+      averageInventory: 0,
+      daysSalesOutstanding: 0,
+      daysPayablesOutstanding: 0,
+      daysOfInventoryOnHand: 0,
+      receivablesTurnover: 0,
+      payablesTurnover: 0,
+      inventoryTurnover: 0,
+      roe:0,
+      capexPerShare: 0,}]);
     
     //const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
@@ -232,6 +245,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics);
     setProfitLossOneEntry(profitLossOneEntry);
     setPercentGainLoss(percentGainLoss);
+    setGraphData(graphData);
+    setRsiData(rsiData);
+    setLwData(lwData);
+    setPriceEarningsData(priceEarningsData);
+    setStochasticData(stochasticData);
+    setLwChecked(lwChecked);
+
   }, []);
 
 
@@ -386,8 +406,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPercentageChangeAcrossRange(percentageChangeFullRange);
 
         // Full year starts here
-        //let fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
-            //console.log('fullYearStartingValue: ' + fullYearStartingValue)
+        const fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
+            console.log('fullYearStartingValue: ' + fullYearStartingValue)
         
 
         const lowValueOneYear = getValuesBasedOnDate.findTheLowValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365,true),adjustedTimeSeries)
@@ -438,7 +458,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
-    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:KeyMetrics_V3[]):void=>
+    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
     {
         console.log("onSetCurrentQuote" );
         //console.log("currentQuoteIn" + currentQuoteIn);
@@ -491,7 +511,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setBollingerChecked(!bollingerChecked);
     };
 
-    //const [lwChecked, setLwChecked] = React.useState(false);
+    const [lwChecked, setLwChecked] = React.useState(false);
 
     //const lwChangeHandler = () => {
     //    setLwChecked(!lwChecked);
@@ -514,27 +534,28 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     };
 
 
-/*
+
     useEffect(() => {  
         //console.log("calling dailyValues, timeSeries[0]" + timeSeries[0])
-        if(timeSeries[0]!==undefined)
+        if((timeSeries[0]!==undefined)&&(timeSeries.length>1))
         {
+          const calculateAverages:CalculateAverages= new CalculateAverages()
             //console.log("Running if(timeSeries[0]!==undefined)")
             let newData=null
-            if(timeSeries[timeSeries.length-1].date < timeSeries[timeSeries.length-2].date)
+            if(new Date(timeSeries[timeSeries.length-1].date) < new Date(timeSeries[timeSeries.length-2].date))
             {
-                newData=dailyValues(timeSeries.reverse(),adjustedTimeSeries.reverse());
+                newData=calculateAverages.dailyValues(timeSeries.reverse(),adjustedTimeSeries.reverse());
                 //console.log("Reversed timeSeries")
             }
             else{
-                newData=dailyValues(timeSeries,adjustedTimeSeries);                
+                newData=calculateAverages.dailyValues(timeSeries,adjustedTimeSeries);
                 //console.log("Did not reverse timeSeries")
             }
             
             if(bollingerChecked)
             {
                 //console.log("Generating bollinger bands")
-                newData=bollingerBands(timeSeries,adjustedTimeSeries,newData)
+                newData=calculateAverages.bollingerBands(timeSeries,adjustedTimeSeries,newData!)
             }
 
             //newData=twoHundredDayMovingAverage(timeSeries,adjustedTimeSeries,newData)
@@ -542,31 +563,31 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             if(rsiChecked)
             {
                 //console.log("Generating RSI")
-                setRsiData(getRsiChartData(timeSeries,adjustedTimeSeries))                
+                setRsiData(calculateAverages.getRsiChartData(timeSeries,adjustedTimeSeries)!)
             }
 
             if(lwChecked)
             {
                 //console.log("Generating LW")
-                setLwData(getLwChartData(larryWilliams,startDate,endDate)) 
+                //setLwData(getLwChartData(larryWilliams,startDate,endDate))
             }
 
             if(stochasticChecked)
             {
                 //console.log("Generating Stochastic")
-                setStochasticData(getStochasticChartData(timeSeries,adjustedTimeSeries))                
+                setStochasticData(calculateAverages.getStochasticChartData(timeSeries,adjustedTimeSeries)!)
             }
 
             if(priceEquityChecked)
             {
                 //console.log("Generating Price to Equity")
-                setPriceEarningsData(getPriceToEarningsChartData(statmentAnalysisKeyMetrics))                
+                setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statmentAnalysisKeyMetrics)!)
             }
             //console.log("Calling setGraphData")
-            setGraphData( newData )  
+            setGraphData( newData! )
         }
     }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
-*/
+
 
 /*
     useEffect( ()=>{
