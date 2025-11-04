@@ -1,20 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
-import type Quote_V3 from "../../Lib/Quote_V3.ts"
+import type Quote_V3 from "../../Lib/Quote_V3"
 //import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
-import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
+import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3';
 import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
-import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate.ts'
+import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
 //import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
 import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
 //import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages/CalculateAverages.ts'
-import  CalculateAverages from '../../lib/CalculateAverages/CalculateAverages.ts'
+import  CalculateAverages from '../../lib/CalculateAverages/CalculateAverages'
 //import upGreenRight from '../../srcImages/UpGreenRight.png'
 //import downRedRight from '../../srcImages/DownRedRight.png'
 //import RelativeStrengthIndexChart from '../InvestmentCharts/RelativeStrengthIndexChart/RelativeStrengthIndexChart.jsx';
@@ -22,8 +22,8 @@ import  CalculateAverages from '../../lib/CalculateAverages/CalculateAverages.ts
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 //import PriceEarningsChart from '../InvestmentCharts/PriceEarningsChart.jsx';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
-import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints.ts'
-import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints.ts'
+import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
+import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
 
 
 /*
