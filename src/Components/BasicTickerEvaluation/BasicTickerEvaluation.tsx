@@ -14,7 +14,7 @@ import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
 import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
 //import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages/CalculateAverages.ts'
-import  CalculateAverages from '../../lib/CalculateAverages/CalculateAverages'
+import  {CalculateAverages} from '../../lib/CalculateAverages/CalculateAverages'
 //import upGreenRight from '../../srcImages/UpGreenRight.png'
 //import downRedRight from '../../srcImages/DownRedRight.png'
 //import RelativeStrengthIndexChart from '../InvestmentCharts/RelativeStrengthIndexChart/RelativeStrengthIndexChart.jsx';

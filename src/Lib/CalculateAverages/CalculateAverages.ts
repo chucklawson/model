@@ -11,7 +11,7 @@ import type HistoricalPriceFull_V3 from '../HistoricalPriceFull_V3.ts';
 import type AnalysisKeyMetricsItem_V3 from "../AnalysisKeyMetricsItem_V3.ts";
 import type LWChartData from "../ChartData/LWChartData.ts";
 
-export default class CalculateAverages {
+export class CalculateAverages {
 
   constructor() {
   }
