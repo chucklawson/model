@@ -5,11 +5,11 @@ import type HistoricalPriceFull_V3 from "../HistoricalPriceFull_V3";
 
 interface StochasticEntry {
   stochasticValue: number;
-  dateOfClose: Date;
+  dateOfClose: string;
 }
 interface DataPointToEvaluate {
   close: number;
-  dateOfClose: Date;
+  dateOfClose: string;
 }
 export default class StochasticChartEntries {
 
@@ -52,12 +52,13 @@ export default class StochasticChartEntries {
       }
         const stochasticChartData=[]
         //console.log('fastStochasticValues: ' + JSON.stringify(fastStochasticValues))
-        const startingAddressFastValues = this.findStartAddressBasedOnDate(fastStochasticValues,new Date(this.standardValues[0].date))
+        const startingAddressFastValues = this.findStartAddressBasedOnDate(fastStochasticValues,this.standardValues[0].date)
 
         //console.log('date to locate: ' + this.standardValues[0].date + ', Entries to search: ' + slowStochasticValues.length)
         //console.log('slowStochasticValues: ' + JSON.stringify(slowStochasticValues))
 
-        const startingAddressSlowValues = this.findStartAddressBasedOnDate(slowStochasticValues,new Date(this.standardValues[0].date))
+        const startingAddressSlowValues = this.findStartAddressBasedOnDate(slowStochasticValues,this.standardValues[0].date)
+
         //console.log('startingAddressFastValues: ' + startingAddressFastValues)
 
         //console.log('startingAddressSlowValues: ' + startingAddressSlowValues + ',total entries: ' + slowStochasticValues.length)
@@ -81,7 +82,7 @@ export default class StochasticChartEntries {
         {
             const aDataPointToEvaluate ={
                 close: fastStochasticValues[i].stochasticValue,
-                dateOfClose: new Date(fastStochasticValues[i].dateOfClose)
+                dateOfClose: fastStochasticValues[i].dateOfClose
             }
             dataPontsToEvaluate.push(aDataPointToEvaluate)
         }
@@ -109,7 +110,7 @@ export default class StochasticChartEntries {
 
           const slowStochasticEntry ={
             stochasticValue: tempDouble,
-            dateOfClose: new Date(dataPontsToEvaluate[i].dateOfClose)
+            dateOfClose: dataPontsToEvaluate[i].dateOfClose
         }
 
           //let aDataPoint = new StochasticChartData(dataPontsToEvaluate[i].dateOfClose, 0.0,tempDouble);
@@ -173,7 +174,7 @@ export default class StochasticChartEntries {
             
             const fastStochasticEntry ={
                 stochasticValue: stochisticValue,
-                dateOfClose: new Date (dataToEvaluate[(dataToEvaluate.length-1)].date)
+                dateOfClose: dataToEvaluate[(dataToEvaluate.length-1)].date
             }
             //console.log( 'lowTradingPrice: ' + lowTradingPrice + ', highTradingPrice: ' + highTradingPrice + ', lastClosingPrice: ' + lastClosingPrice)
             //console.log( 'stochisticValue: ' + stochisticValue)
@@ -233,7 +234,7 @@ export default class StochasticChartEntries {
         return subSetOfData;
       }
 
-      findStartAddressBasedOnDate(dataToEvaluate:StochasticEntry[],dateToFind:Date)
+      findStartAddressBasedOnDate(dataToEvaluate:StochasticEntry[],dateToFind:string)
       {
         //console.log('dataToEvaluate: ' + JSON.stringify(dataToEvaluate))
         //console.log('dateToFind: ' + JSON.stringify(dateToFind))

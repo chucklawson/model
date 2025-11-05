@@ -70,9 +70,9 @@ const StockQuote = (props:StockQuoteProps) => {
       {
         return;
       }     
-      console.log("props startDate: " + props.latestStartDate)
-      console.log("props endDate: " + props.latestEndDate)
-      console.log("props adjustedStartDate: " + props.adjustedStartDate)
+      //console.log("props startDate: " + props.latestStartDate)
+      //console.log("props endDate: " + props.latestEndDate)
+      //console.log("props adjustedStartDate: " + props.adjustedStartDate)
       if(props.latestStartDate.length > 0)
       {
       Promise.all([
@@ -99,21 +99,21 @@ const StockQuote = (props:StockQuoteProps) => {
           //console.log('The object: '+ JSON.stringify(data[0]))
           const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
           const aQuote: Quote_V3 = parsedQuoteData[0];
-          console.log('myItem ' + aQuote.symbol);
+          //console.log('myItem ' + aQuote.symbol);
 
           //sets timeSeries
           const parsedTimeSeries: HistoricalPriceFull_V3[] = JSON.parse(JSON.stringify(data[1].historical));
           const aTimeSeries: HistoricalPriceFull_V3[] = parsedTimeSeries;
-          console.log('aTimeSeries adjClose: ' + aTimeSeries[0].adjClose);
+          //console.log('aTimeSeries adjClose: ' + aTimeSeries[0].adjClose);
 
           //sets sdjusted timeSeries
           const parsedAdjustedTimeSeries: HistoricalPriceFull_V3[] = JSON.parse(JSON.stringify(data[2].historical));
           const aAdjustedTimeSeries: HistoricalPriceFull_V3[] = parsedAdjustedTimeSeries;
-          console.log('aAdjustedTimeSeries adjClose: ' + aAdjustedTimeSeries[0].adjClose);
+          //console.log('aAdjustedTimeSeries adjClose: ' + aAdjustedTimeSeries[0].adjClose);
 
           const parsedStatmentAnalysiss: AnalysisKeyMetricsItem_V3[] = JSON.parse(JSON.stringify(data[3]));
           const aStatementAnalysis: AnalysisKeyMetricsItem_V3[] = parsedStatmentAnalysiss;
-          console.log('aStatementAnalysis averageReceivables: ' + aStatementAnalysis[0].averageReceivables);
+          //console.log('aStatementAnalysis averageReceivables: ' + aStatementAnalysis[0].averageReceivables);
 
           setDatObjet(aQuote,aTimeSeries,aAdjustedTimeSeries,aStatementAnalysis)
 

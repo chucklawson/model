@@ -2,7 +2,7 @@ export default class StochasticChartData {
   dateOfClose
   fastSstochasticValue
   slowStochasticValue
-    constructor(dateOfClosein:Date,fastSstochasticValueIn:number,slowStochasticValueIn:number) {
+    constructor(dateOfClosein:string,fastSstochasticValueIn:number,slowStochasticValueIn:number) {
       this.dateOfClose = dateOfClosein;
       this.fastSstochasticValue=fastSstochasticValueIn;
       this.slowStochasticValue = slowStochasticValueIn;

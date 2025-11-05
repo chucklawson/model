@@ -93,13 +93,22 @@ export default class BollingerBands {
             //console.log('aBollingerBandDataPoint: ' + aBollingerBandDataPoint.toString() + ', at address: ' + (tempBollingerBands.length-1))
         }
 
-        const refBollingerBandAddress=this.findStartAddressBasedOnDate(tempBollingerBands,new Date(this.standardValues[0].date))
+        const refBollingerBandAddress=this.findStartAddressBasedOnDate(tempBollingerBands,this.standardValues[0].date)
+
+
         //console.log('refBollingerBandAddress: ' + refBollingerBandAddress + ' from a possible: ' + tempBollingerBands.length)
         //console.log('Number of possible this.standardValues: ' + this.standardValues.length)
+        //console.log('Date looking for: ' + this.standardValues[0].date)
+
+
+
         const bollingerBands=[]
+
         for(let i=0,j=refBollingerBandAddress;i<this.standardValues.length;++i,++j)
         {
-            const aBollingerBandDataPoint = new BollingerBandDataPoint(tempBollingerBands[j].date,
+            //console.log('Setting aBollingerBandDataPoint date for: ' + tempBollingerBands[j].date)
+
+            const aBollingerBandDataPoint = new BollingerBandDataPoint(new Date( tempBollingerBands[j].date),
                 tempBollingerBands[j].lowerBandValue,
                 tempBollingerBands[j].upperBandValue,
                 this.standardValues[i].close,
@@ -176,14 +185,18 @@ export default class BollingerBands {
         return subSetOfData;
       }
 
-      findStartAddressBasedOnDate(dataToEvaluate:BollingerBandDataPoint[],dateToFind:Date)
+      findStartAddressBasedOnDate(dataToEvaluate:BollingerBandDataPoint[],dateToFind:string)
       {
         let address=-1;
+        //console.log("findStartAddressBasedOnDate: dateToFind: " + dateToFind)
+
         for(let i=0;i<dataToEvaluate.length;++i)
         {
-            if(dataToEvaluate[i].date===dateToFind)
+          //console.log("dataToEvaluate[i].date: " +dataToEvaluate[i].date.toISOString())
+            //if(dataToEvaluate[i].date === dateToFind)
+          if ( dateToFind === this.convertDateStringToYear_Month_DayOnly(dataToEvaluate[i].date))
             {
-                //console.log('located ' + dateToFind + ' at address: ' + i + ' where the date is: ' + dataToEvaluate[i].date)
+                //console.log('located ' +dateToFind + ' at address: ' + i + ' where the date is: ' +  this.convertDateStringToYear_Month_DayOnly(dataToEvaluate[i].date))
                 address=i;
                 break;
             }
@@ -202,5 +215,11 @@ export default class BollingerBands {
         return chartData;
       }
 
+      convertDateStringToYear_Month_DayOnly(dateIn:Date):string
+      {
+        const isoDate=dateIn.toISOString()
+        return isoDate.substring(0,isoDate.indexOf('T'))
+        //return convertedDate;
+      }
 
 }

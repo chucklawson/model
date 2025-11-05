@@ -362,7 +362,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     useEffect(() => {  
             //console.log("Reset startDate to: " +startDate)
             //console.log("Reset endDate to: " + endDate)
-            console.log("From use effect, currentQuote: symbol, " +currentQuote.symbol + ", name: " + currentQuote.name);
+            //console.log("From use effect, currentQuote: symbol, " +currentQuote.symbol + ", name: " + currentQuote.name);
     }, [startDate, endDate,adjustedStartDate,currentQuote]);
 
     const setRangeValues = (theCurrentQuote:Quote_V3) => {
@@ -406,8 +406,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPercentageChangeAcrossRange(percentageChangeFullRange);
 
         // Full year starts here
-        const fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
-            console.log('fullYearStartingValue: ' + fullYearStartingValue)
+        //const fullYearStartingValue = getValuesBasedOnDate.goBackSpecificNumberOfDays(adjustedTimeSeries,365)
+            //console.log('fullYearStartingValue: ' + fullYearStartingValue)
         
 
         const lowValueOneYear = getValuesBasedOnDate.findTheLowValueBasedOnDate(getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(365,true),adjustedTimeSeries)
@@ -460,7 +460,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
     const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
     {
-        console.log("onSetCurrentQuote" );
+        //console.log("onSetCurrentQuote" );
         //console.log("currentQuoteIn" + currentQuoteIn);
         setcurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
