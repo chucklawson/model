@@ -7,7 +7,7 @@ export default class ExponentialMovingAverage {
   oneYearOfData
   numberOfDaystoLookBack
 
-  accumulatedChartData:StandardChartData[]=[new StandardChartData(new Date,0,0,0,0,0,0,0,0)];
+  accumulatedChartData:StandardChartData[]=[new StandardChartData("",0,0,0,0,0,0,0,0)];
 
     constructor(oneYearOfDataIn:HistoricalPriceFull_V3[],numberOfDaystoLookBackIn:number) {
       this.oneYearOfData = oneYearOfDataIn;
@@ -90,7 +90,7 @@ export default class ExponentialMovingAverage {
         //console.log('theFirstDate: ' + theFirstDate)
 
 
-        dataPointsForFormTwo.push(new DataPoint(new Date(theFirstDate), theFirstValue));
+        dataPointsForFormTwo.push(new DataPoint(theFirstDate, theFirstValue));
         //console.log('dataPointsForFormTwo.length: ' + dataPointsForFormTwo.length)
         // geneate the rest of them
         let previousDataPoint = dataPointsForFormTwo[0];
@@ -106,7 +106,7 @@ export default class ExponentialMovingAverage {
 
             //console.log('tempDouble: ' + tempDouble)
 
-            const aDataPoint = new DataPoint(new Date(eodResponseInfo[i].date), tempDouble);
+            const aDataPoint = new DataPoint(eodResponseInfo[i].date, tempDouble);
 
             //console.log('aDataPoint: ' + aDataPoint.toString())
 

@@ -1,7 +1,7 @@
 export default class DataPoint {
   date;
   calculatedValue;
-    constructor(dateIn: Date,calculatedValueIn:number) {
+    constructor(dateIn: string,calculatedValueIn:number) {
         this.date = dateIn;
         this.calculatedValue=calculatedValueIn;
     }
