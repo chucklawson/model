@@ -9,7 +9,7 @@ import TickerInput from '../TickerInput/TickerInput.jsx';
 import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
 import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
-//import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator.jsx';
+import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator';
 //import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
 import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
@@ -20,10 +20,11 @@ import  {CalculateAverages} from '../../Lib/CalculateAverages/CalculateAverages'
 //import RelativeStrengthIndexChart from '../InvestmentCharts/RelativeStrengthIndexChart/RelativeStrengthIndexChart.jsx';
 //import StochasitcOscillatorChart from '../InvestmentCharts/StochasticOscillatorChart.jsx'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
-//import PriceEarningsChart from '../InvestmentCharts/PriceEarningsChart.jsx';
+import PriceEarningsChart from '../../InvestmentCharts/PriceEarningsChart';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
+import StatementAnalysisKeyMetricsData from "../../Lib/ChartData/StatementAnalysisKeyMetricsData.ts";
 
 
 /*
@@ -59,16 +60,142 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [endDate, setEndDate] = useState('');
     const [adjustedStartDate,setAdjustedStartDate]= useState('');
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
-    //const [showChart, setShowChart] = useState(false);
+    const [showChart, setShowChart] = useState(false);
 
     const [graphData, setGraphData] = useState({});
     const [rsiData, setRsiData] = useState({});
     const [lwData, setLwData] = useState({});
-    const [priceEarningsData, setPriceEarningsData]= useState({});
-    
+    const anEmptyAnalysisKeyMetricsItem_V3: AnalysisKeyMetricsItem_V3 = { symbol:"",
+      date:"",
+      period: "",
+      calendarYear: "",
+      revenuePerShare: 0,
+      netIncomePerShare: 0,
+      operatingCashFlowPerShare: 0,
+      freeCashFlowPerShare: 0,
+      cashPerShare: 0,
+      bookValuePerShare: 0,
+      tangibleBookValuePerShare: 0,
+      shareholdersEquityPerShare: 0,
+      marketCap: 0,
+      enterpriseValue: 0,
+      peRatio: 0,
+      priceToSalesRatio: 0,
+      pocfratio: 0,
+      pfcfRatio: 0,
+      pbRatio: 0,
+      ptbRatio: 0,
+      evToSales: 0,
+      evToFreeCashFlow: 0,
+      enterpriseValueOverEBITDA: 0,
+      evToOperatingCashFlow: 0,
+      earningsYield: 0,
+      freeCashFlowYield: 0,
+      debtToAssets: 0,
+      netDebtToEBITDA: 0,
+      currentRatio: 0,
+      interestCoverage: 0,
+      incomeQuality: 0,
+      dividendYield: 0,
+      payoutRatio: 0,
+      salesGeneralAndAdministrativeToRevenue: 0,
+      intangiblesToTotalAssets: 0,
+      capexToOperatingCashFlow: 0,
+      capexToRevenue: 0,
+      capexToDepreciation: 0,
+      stockBasedCompensationToRevenue: 0,
+      grahamNumber: 0,
+      roic: 0,
+      returnOnTangibleAssets: 0,
+      grahamNetNet: 0,
+      workingCapital: 0,
+      tangibleAssetValue: 0,
+      netCurrentAssetValue: 0,
+      investedCapital: 0,
+      averageReceivables: 0,
+      averagePayables: 0,
+      averageInventory: 0,
+      daysSalesOutstanding: 0,
+      daysPayablesOutstanding: 0,
+      daysOfInventoryOnHand: 0,
+      receivablesTurnover: 0,
+      payablesTurnover: 0,
+      inventoryTurnover: 0,
+      capexPerShare: 0,
+      interestDebtPerShare: 0,
+      debtToEquity: 0,
+      roe: 0,
+      researchAndDdevelopementToRevenue: 0}
+
+    const aStatementAnalysisKeyMetricsDataEntry = new StatementAnalysisKeyMetricsData(anEmptyAnalysisKeyMetricsItem_V3);
+
+    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([aStatementAnalysisKeyMetricsDataEntry]);
+
+  /*
+    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData>({new StatementAnalysisKeyMetricsData(
+      symbol:"",
+      date:"",
+      period: "",
+      calendarYear: "",
+      revenuePerShare: 0,
+      netIncomePerShare: 0,
+      operatingCashFlowPerShare: 0,
+      freeCashFlowPerShare: 0,
+      cashPerShare: 0,
+      bookValuePerShare: 0,
+      tangibleBookValuePerShare: 0,
+      shareholdersEquityPerShare: 0,
+      marketCap: 0,
+      enterpriseValue: 0,
+      peRatio: 0,
+      priceToSalesRatio: 0,
+      pocfratio: 0,
+      pfcfRatio: 0,
+      pbRatio: 0,
+      ptbRatio: 0,
+      evToSales: 0,
+      evToFreeCashFlow: 0,
+      enterpriseValueOverEBITDA: 0,
+      evToOperatingCashFlow: 0,
+      earningsYield: 0,
+      freeCashFlowYield: 0,
+      debtToAssets: 0,
+      netDebtToEBITDA: 0,
+      currentRatio: 0,
+      interestCoverage: 0,
+      incomeQuality: 0,
+      dividendYield: 0,
+      payoutRatio: 0,
+      salesGeneralAndAdministrativeToRevenue: 0,
+      intangiblesToTotalAssets: 0,
+      capexToOperatingCashFlow: 0,
+      capexToRevenue: 0,
+      capexToDepreciation: 0,
+      stockBasedCompensationToRevenue: 0,
+      grahamNumber: 0,
+      roic: 0,
+      returnOnTangibleAssets: 0,
+      grahamNetNet: 0,
+      workingCapital: 0,
+      tangibleAssetValue: 0,
+      netCurrentAssetValue: 0,
+      investedCapital: 0,
+      averageReceivables: 0,
+      averagePayables: 0,
+      averageInventory: 0,
+      daysSalesOutstanding: 0,
+      daysPayablesOutstanding: 0,
+      daysOfInventoryOnHand: 0,
+      receivablesTurnover: 0,
+      payablesTurnover: 0,
+      inventoryTurnover: 0,
+      capexPerShare: 0,
+      xAxisDataKey: "",
+      priceToEarnings: "")});
+    */
     const [stochasticData, setStochasticData] = useState({});
 
-    //const widthOfStroke = 2;
+    const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
     const [lowRangeValue, setLowRangeValue] = useState("1.00");
     const [highRangeValue, setHighRangeValue] = useState("100");
@@ -284,7 +411,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             // to get rid of warning
             setTotalCost(totalCost);
             
-            //setShowChart(true);
+            setShowChart(true);
         }
         else {
             //console.log('Reset: updateTickerValue to false: ' + updateTickerValue);
@@ -835,11 +962,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             
         </div>
 */}
-      {/*
+
         <div className='col-start-10 col-span-2'>
             
             <div className='block mb-10'>
-                <TradingRangeIndicator className = 'mb-40' heading="Last 12 Months" lowRangeValue={lowRangeValueOneYear} rangeValue={rangeValueOneYear} highRangeValue={highRangeValueOneYear} currentQuote={currentQuote} currentValues={false}/>                
+                <TradingRangeIndicator heading="Last 12 Months" lowRangeValue={lowRangeValueOneYear} rangeValue={rangeValueOneYear} highRangeValue={highRangeValueOneYear} currentQuote={currentQuote} currentValues={false}/>
                 
                 <div className='p-4 mt-6 mb-10'>                    
                     <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
@@ -932,7 +1059,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             </div>
 
          </div>
-      */}
+
 
     </div>
 };

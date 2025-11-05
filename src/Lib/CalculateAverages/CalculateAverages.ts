@@ -160,7 +160,7 @@ export class CalculateAverages {
     return LWData;
   }
 
-  getPriceToEarningsChartData(statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]) {
+  getPriceToEarningsChartData(statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):StatementAnalysisKeyMetricsData[] {
     const priceToEquityData = [];
     const entriesToCollect = 8;
 
