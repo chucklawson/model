@@ -10,6 +10,7 @@ import StatementAnalysisKeyMetricsData from '../ChartData/StatementAnalysisKeyMe
 import type HistoricalPriceFull_V3 from '../HistoricalPriceFull_V3.ts';
 import type AnalysisKeyMetricsItem_V3 from "../AnalysisKeyMetricsItem_V3.ts";
 import type LWChartData from "../ChartData/LWChartData.ts";
+import RSIChartData from "../ChartData/RSIChartData.ts";
 
 export class CalculateAverages {
 
@@ -27,7 +28,7 @@ export class CalculateAverages {
     }
     let accumulatedChartData = [];
     for (let i = 0; i < standardValuesIn.length; ++i) {
-      const chartDataEntry = new StandardChartData(new Date(standardValuesIn[i].date), standardValuesIn[i].close, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+      const chartDataEntry = new StandardChartData(standardValuesIn[i].date, standardValuesIn[i].close, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
       //console.log("chartDataEntry using toString: " + chartDataEntry.toString())
       accumulatedChartData.push(chartDataEntry);
     }
@@ -115,7 +116,7 @@ export class CalculateAverages {
 
     const adjustedChartData = [];
     for (let j = 0; j < accumulatedChartDataIn.length; ++j) {
-      const adjustedChartDataEntry = new StandardChartData(accumulatedChartDataIn[j].dateOfClose,
+      const adjustedChartDataEntry = new StandardChartData( this.convertDateStringToYear_Month_DayOnly(new Date(accumulatedChartDataIn[j].dateOfClose)),
         accumulatedChartDataIn[j].dailyClosingPrice,
         accumulatedChartDataIn[j].simpleMovingAverage,
         accumulatedChartDataIn[j].expMovingAverage,
@@ -130,7 +131,7 @@ export class CalculateAverages {
     return adjustedChartData;
   }
 
-  getRsiChartData(standardValuesIn:HistoricalPriceFull_V3[], adjustedToContainFullYearOfDataValuesIn:HistoricalPriceFull_V3[]) {
+  getRsiChartData(standardValuesIn:HistoricalPriceFull_V3[], adjustedToContainFullYearOfDataValuesIn:HistoricalPriceFull_V3[]):RSIChartData[]|null {
 
     const numberOfDaysToLookBack = 14;
 
@@ -172,8 +173,17 @@ export class CalculateAverages {
       }
     }
 
+
     //console.log('priceToEquityData: ' + priceToEquityData)
 
     return priceToEquityData.reverse();
   }
+
+  convertDateStringToYear_Month_DayOnly(dateIn:Date):string
+  {
+    const isoDate=dateIn.toISOString()
+    return isoDate.substring(0,isoDate.indexOf('T'))
+    //return convertedDate;
+  }
+
 }

@@ -10,21 +10,24 @@ import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
 import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
 import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator';
-//import InvestmentComposedChar from '../InvestmentCharts/InvestmentComposedChart.jsx';
+import InvestmentComposedChar from '../../InvestmentCharts/InvestmentComposedChart';
 import StockQuote from '../StockQuote/StockQuote.tsx';
 //import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
 //import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages/CalculateAverages.ts'
 import  {CalculateAverages} from '../../Lib/CalculateAverages/CalculateAverages'
-//import upGreenRight from '../../srcImages/UpGreenRight.png'
-//import downRedRight from '../../srcImages/DownRedRight.png'
-//import RelativeStrengthIndexChart from '../InvestmentCharts/RelativeStrengthIndexChart/RelativeStrengthIndexChart.jsx';
-//import StochasitcOscillatorChart from '../InvestmentCharts/StochasticOscillatorChart.jsx'
+import upGreenRight from '../../srcImages/UpGreenRight.png'
+import downRedRight from '../../srcImages/DownRedRight.png'
+import RelativeStrengthIndexChart from '../../InvestmentCharts/RelativeStrengthIndexChart';
+import StochasitcOscillatorChart from '../../InvestmentCharts/StochasticOscillatorChart'
+import StochasticChartData from '../../Lib/ChartData/StochasticChartData.ts'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 import PriceEarningsChart from '../../InvestmentCharts/PriceEarningsChart';
 //import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
 import StatementAnalysisKeyMetricsData from "../../Lib/ChartData/StatementAnalysisKeyMetricsData.ts";
+import StandardCharData from "../../Lib/ChartData/StandardChartData.ts";
+import RSIChartData from "../../Lib/ChartData/RSIChartData.ts";
 
 
 /*
@@ -62,9 +65,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [showChart, setShowChart] = useState(false);
 
-    const [graphData, setGraphData] = useState({});
-    const [rsiData, setRsiData] = useState({});
+    const [graphData, setGraphData] = useState<StandardCharData[]>([]);
+    const [rsiData, setRsiData] = useState<RSIChartData[]>([]);
     const [lwData, setLwData] = useState({});
+    /*
     const anEmptyAnalysisKeyMetricsItem_V3: AnalysisKeyMetricsItem_V3 = { symbol:"",
       date:"",
       period: "",
@@ -129,71 +133,14 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const aStatementAnalysisKeyMetricsDataEntry = new StatementAnalysisKeyMetricsData(anEmptyAnalysisKeyMetricsItem_V3);
 
-    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([aStatementAnalysisKeyMetricsDataEntry]);
 
-  /*
-    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData>({new StatementAnalysisKeyMetricsData(
-      symbol:"",
-      date:"",
-      period: "",
-      calendarYear: "",
-      revenuePerShare: 0,
-      netIncomePerShare: 0,
-      operatingCashFlowPerShare: 0,
-      freeCashFlowPerShare: 0,
-      cashPerShare: 0,
-      bookValuePerShare: 0,
-      tangibleBookValuePerShare: 0,
-      shareholdersEquityPerShare: 0,
-      marketCap: 0,
-      enterpriseValue: 0,
-      peRatio: 0,
-      priceToSalesRatio: 0,
-      pocfratio: 0,
-      pfcfRatio: 0,
-      pbRatio: 0,
-      ptbRatio: 0,
-      evToSales: 0,
-      evToFreeCashFlow: 0,
-      enterpriseValueOverEBITDA: 0,
-      evToOperatingCashFlow: 0,
-      earningsYield: 0,
-      freeCashFlowYield: 0,
-      debtToAssets: 0,
-      netDebtToEBITDA: 0,
-      currentRatio: 0,
-      interestCoverage: 0,
-      incomeQuality: 0,
-      dividendYield: 0,
-      payoutRatio: 0,
-      salesGeneralAndAdministrativeToRevenue: 0,
-      intangiblesToTotalAssets: 0,
-      capexToOperatingCashFlow: 0,
-      capexToRevenue: 0,
-      capexToDepreciation: 0,
-      stockBasedCompensationToRevenue: 0,
-      grahamNumber: 0,
-      roic: 0,
-      returnOnTangibleAssets: 0,
-      grahamNetNet: 0,
-      workingCapital: 0,
-      tangibleAssetValue: 0,
-      netCurrentAssetValue: 0,
-      investedCapital: 0,
-      averageReceivables: 0,
-      averagePayables: 0,
-      averageInventory: 0,
-      daysSalesOutstanding: 0,
-      daysPayablesOutstanding: 0,
-      daysOfInventoryOnHand: 0,
-      receivablesTurnover: 0,
-      payablesTurnover: 0,
-      inventoryTurnover: 0,
-      capexPerShare: 0,
-      xAxisDataKey: "",
-      priceToEarnings: "")});
+
+    //const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([aStatementAnalysisKeyMetricsDataEntry]);
     */
-    const [stochasticData, setStochasticData] = useState({});
+
+    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([]);
+
+    const [stochasticData, setStochasticData] = useState<StochasticChartData[]>([]);
 
     const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
@@ -335,7 +282,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       roe:0,
       capexPerShare: 0,}]);
     
-    //const [slope,setSlope]=useState(0.0);
+    const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
     //const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
@@ -378,6 +325,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setPriceEarningsData(priceEarningsData);
     setStochasticData(stochasticData);
     setLwChecked(lwChecked);
+    setSlope(slope);
 
   }, []);
 
@@ -710,7 +658,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 //console.log("Generating Price to Equity")
                 setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statmentAnalysisKeyMetrics)!)
             }
-            //console.log("Calling setGraphData")
+            console.log("Calling setGraphData")
             setGraphData( newData! )
         }
     }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
@@ -802,15 +750,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
         </div>
-          {/*Temporary div */}
+          {/*Temporary div
         </div>
-
+          */}
         <TickerInput  onTickerValue={onTickerChangeHandler} currentTicker={tickerToGet} startDate={startDate} endDate={endDate}
             containerBackGround= {props.buttonBackgroundColor}></TickerInput>
 
         <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
 
-        {/*
+
         {(showChart === true && graphData.length!==undefined) ?
             <div className='justify-self-auto'>
                 <div className="text-1xl text-green-600 font-bold underline h-5">
@@ -835,9 +783,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                     </InvestmentComposedChar>
                 </div>
 
-                
-                
-                        
+
+
+
 
                 {(rsiChecked === true && rsiData.length !== undefined)?
                 
@@ -863,6 +811,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 </div>:
                 <React.Fragment />}
 
+              {/*
                 {(lwData)&&(lwChecked === true) ?
                 <div className='ml-20 mt-5'>
                     <LarryWilliamsChart
@@ -882,7 +831,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                     </LarryWilliamsChart>
                 </div>:
                 <React.Fragment />}
-                
+                */}
+
 
                 {(stochasticChecked === true && stochasticData.length !== undefined)?
                 
@@ -961,7 +911,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 <React.Fragment />}
             
         </div>
-*/}
+
 
         <div className='col-start-10 col-span-2'>
             
