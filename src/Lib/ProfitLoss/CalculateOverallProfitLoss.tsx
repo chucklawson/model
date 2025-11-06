@@ -58,7 +58,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
     return totalCost;
 }
 
-async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): Promise<string>
+async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): Promise<void>
 {  
     const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
     const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${uniqueValue}`;
@@ -110,7 +110,7 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
   //console.log("currentDaysProfitLoss: " + currentDaysProfitLoss)
 
     //setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
-  return ("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
+  //return ("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
 
 }
 
