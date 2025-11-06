@@ -22,7 +22,7 @@ import StochasitcOscillatorChart from '../../InvestmentCharts/StochasticOscillat
 import StochasticChartData from '../../Lib/ChartData/StochasticChartData.ts'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 import PriceEarningsChart from '../../InvestmentCharts/PriceEarningsChart';
-import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss'
+import {calculateOverallProfitAndLoss} from '../../Lib/ProfitLoss/CalculateOverallProfitLoss'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
 import StatementAnalysisKeyMetricsData from "../../Lib/ChartData/StatementAnalysisKeyMetricsData.ts";
