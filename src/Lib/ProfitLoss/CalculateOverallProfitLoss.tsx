@@ -58,7 +58,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
     return totalCost;
 }
 
-async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): void
+async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): string
 {  
     const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
     const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${uniqueValue}`;
