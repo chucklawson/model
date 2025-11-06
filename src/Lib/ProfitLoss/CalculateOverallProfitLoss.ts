@@ -9,7 +9,7 @@ interface CostEntry{ticker: string;
                     unitsPurchased: number}
 
 interface argsForsetCalculatedTotalProfitLoss{
-  setCalculatedTotalProfitLoss(string);
+  setCalculatedTotalProfitLoss(arg0: string);
 }
 
 export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:argsForsetCalculatedTotalProfitLoss):void
@@ -81,9 +81,9 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss,t
             if(data[0][0].symbol !== undefined){
               //currentQuote=data[0]
 
-              const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
-              //console.log("parsedQuoteData: " + parsedQuoteData)
-              currentQuote = parsedQuoteData;
+              //const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
+              //currentQuote = parsedQuoteData;
+              currentQuote = JSON.parse(JSON.stringify(data[0]));
             } 
           }).catch(function (error) {
             // if there's an error, log it
@@ -114,6 +114,7 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss,t
   //console.log("currentDaysProfitLoss: " + currentDaysProfitLoss)
 
     setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
+  return;
 }
 
 function calculalteCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
