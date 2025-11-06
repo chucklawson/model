@@ -629,8 +629,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('Y2forSlope: ' + Y2forSlope)
             const tempSlope=(Y1forSlope-Y2forSlope)
             console.log('tempSlope: ' + tempSlope)
-            props.onSetSlope(tempSlope.toFixed(2))
-            setSlope(tempSlope.toFixed(2))
+            props.onSetSlope(Number(tempSlope.toFixed(2)))
+            setSlope(Number(tempSlope.toFixed(2)))
         }
     },[graphData]);
 
