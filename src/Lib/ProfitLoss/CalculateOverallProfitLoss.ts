@@ -8,7 +8,7 @@ interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
 
-export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss)
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:string):void
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
@@ -58,7 +58,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
     return totalCost;
 }
 
-async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss,tickerEntriesToSum:CostEntry[]): void
+async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss:string,tickerEntriesToSum:CostEntry[]): void
 {  
     const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
     const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${uniqueValue}`;
