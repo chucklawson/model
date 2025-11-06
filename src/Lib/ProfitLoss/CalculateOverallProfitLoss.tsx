@@ -8,7 +8,7 @@ interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
 
-export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):string
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):Promise<string>
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
@@ -58,7 +58,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
     return totalCost;
 }
 
-async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): Promise<void>
+async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): Promise<string>
 {  
     const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
     const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${uniqueValue}`;
@@ -110,7 +110,7 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
   //console.log("currentDaysProfitLoss: " + currentDaysProfitLoss)
 
     //setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
-  //return ("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
+  return ("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
 
 }
 
