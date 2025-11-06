@@ -66,11 +66,11 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
     //console.log("tickersToObtain: "+ tickersToObtain)
 
     //console.log("tickersToEvaluate: " + tickersToObtain)
-        await Promise.all<string>([
+        await Promise.all([
             fetch(currentInfo)
           ]).then(function (responses) {
             // Get a JSON object from each of the responses
-            return Promise.all<string>(responses.map(function (response) {
+            return Promise.all(responses.map(function (response) {
               return response.json();
             }));
           }).then(function (data) {
