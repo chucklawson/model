@@ -25,7 +25,7 @@ export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],
                               cost: 0.0,
                               unitsPurchased: 0}
     const tickerEntriesToSum:CostEntry[]=[];
-    const tickersToEvaluate = [];
+    const tickersSymbolsToEvaluate:string[] = [];
     tickerEntries.map( (tickerEntry)=> ( 
          ticker=tickerEntry.ticker,
          costBasis=Number(tickerEntry.costBasis),
@@ -37,13 +37,13 @@ export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],
                         unitsPurchased:currentQuantityOnHand},
 
          useThisOne === true ?  tickerEntriesToSum.push(costEntry): '',             
-         useThisOne === true ?  tickersToEvaluate.push(ticker): ''
+         useThisOne === true ?  tickersSymbolsToEvaluate.push(ticker): ''
          //console.log("Entry: " + ticker +", costBasis: " + costBasis + ", currentQuantityOnHand: " + currentQuantityOnHand + ", use: " + useThisOne)
          
     ))
     //console.log("tickerEntriesToSum: " + JSON.stringify(tickerEntriesToSum))
 
-    batchQuote(tickersToEvaluate.toString(),setCalculatedTotalProfitLoss,tickerEntriesToSum)
+    batchQuote(tickersSymbolsToEvaluate.toString(),setCalculatedTotalProfitLoss,tickerEntriesToSum)
 }
 
 function calculalteCost(tickerEntriesToSum:CostEntry[])
