@@ -7,7 +7,7 @@ export default class BollingerBandDataPoint {
   starndardDeviation
   mean
 
-    constructor(dateIn:Date,lowerBandValueIn:number,upperBandValueIn:number,currentPriceIn:number, movingAverageIn:number,starndardDeviationIn:number,meanIn:number) {
+    constructor(dateIn:string,lowerBandValueIn:number,upperBandValueIn:number,currentPriceIn:number, movingAverageIn:number,starndardDeviationIn:number,meanIn:number) {
         this.date = dateIn;
         this.lowerBandValue=lowerBandValueIn;
         this.upperBandValue=upperBandValueIn;
@@ -16,7 +16,7 @@ export default class BollingerBandDataPoint {
         this.starndardDeviation=starndardDeviationIn
         this.mean=meanIn
     }
-    setDate(dateIn:Date)
+    setDate(dateIn:string)
     {
         this.date=dateIn;
     }

@@ -8,18 +8,18 @@ interface AccumulatedValues
   }
 
   export interface BuyPoints{
-    downFivePercent: string;
-    downTenPercent: string;
-    downFifteenPercent: string;
-    downTwentyPercent: string;
-    downTwentyFivePercent: string;
-    downThirtyPercent: string;
-    downThirtyFivePercent: string;
-    downFortyPercent: string;
-    downFortyFivePercent: string;
-    downFiftyPercent: string;
-    downFiftyFivePercent: string;
-    downSixtyPercent: string;
+    downFivePercent?: string;
+    downTenPercent?: string;
+    downFifteenPercent?: string;
+    downTwentyPercent?: string;
+    downTwentyFivePercent?: string;
+    downThirtyPercent?: string;
+    downThirtyFivePercent?: string;
+    downFortyPercent?: string;
+    downFortyFivePercent?: string;
+    downFiftyPercent?: string;
+    downFiftyFivePercent?: string;
+    downSixtyPercent?: string;
 }
 interface SetBuyPoints{
   (buyPointsIn:BuyPoints):void;

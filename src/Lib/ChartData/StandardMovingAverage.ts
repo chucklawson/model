@@ -6,7 +6,8 @@ export default class StandardMovingAverage {
   oneYearOfData;
   numberOfDaystoLookBack;
 
-  accumulatedChartData:StandardChartData[]=[new StandardChartData(new Date,0,0,0,0,0,0,0,0)];
+  //accumulatedChartData:StandardChartData[]=[new StandardChartData('',0,0,0,0,0,0,0,0)];
+  accumulatedChartData:StandardChartData[]=[];
 
 
 
@@ -89,7 +90,7 @@ export default class StandardMovingAverage {
         for (let i = numberOfDaystoLookBack; i < eodResponseInfo.length; ++i)
         {
           const tempDouble = this.generateOneDataPoint(i, numberOfDaystoLookBack, eodResponseInfo);
-          const aDataPoint = new DataPoint(new Date(eodResponseInfo[i].date), tempDouble);
+          const aDataPoint = new DataPoint(eodResponseInfo[i].date, tempDouble);
           dataPoints.push(aDataPoint);
           //console.log("Added aDataPoint:", aDataPoint.toString());
         }

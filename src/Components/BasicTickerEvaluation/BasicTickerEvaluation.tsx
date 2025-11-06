@@ -68,75 +68,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [graphData, setGraphData] = useState<StandardCharData[]>([]);
     const [rsiData, setRsiData] = useState<RSIChartData[]>([]);
     const [lwData, setLwData] = useState({});
-    /*
-    const anEmptyAnalysisKeyMetricsItem_V3: AnalysisKeyMetricsItem_V3 = { symbol:"",
-      date:"",
-      period: "",
-      calendarYear: "",
-      revenuePerShare: 0,
-      netIncomePerShare: 0,
-      operatingCashFlowPerShare: 0,
-      freeCashFlowPerShare: 0,
-      cashPerShare: 0,
-      bookValuePerShare: 0,
-      tangibleBookValuePerShare: 0,
-      shareholdersEquityPerShare: 0,
-      marketCap: 0,
-      enterpriseValue: 0,
-      peRatio: 0,
-      priceToSalesRatio: 0,
-      pocfratio: 0,
-      pfcfRatio: 0,
-      pbRatio: 0,
-      ptbRatio: 0,
-      evToSales: 0,
-      evToFreeCashFlow: 0,
-      enterpriseValueOverEBITDA: 0,
-      evToOperatingCashFlow: 0,
-      earningsYield: 0,
-      freeCashFlowYield: 0,
-      debtToAssets: 0,
-      netDebtToEBITDA: 0,
-      currentRatio: 0,
-      interestCoverage: 0,
-      incomeQuality: 0,
-      dividendYield: 0,
-      payoutRatio: 0,
-      salesGeneralAndAdministrativeToRevenue: 0,
-      intangiblesToTotalAssets: 0,
-      capexToOperatingCashFlow: 0,
-      capexToRevenue: 0,
-      capexToDepreciation: 0,
-      stockBasedCompensationToRevenue: 0,
-      grahamNumber: 0,
-      roic: 0,
-      returnOnTangibleAssets: 0,
-      grahamNetNet: 0,
-      workingCapital: 0,
-      tangibleAssetValue: 0,
-      netCurrentAssetValue: 0,
-      investedCapital: 0,
-      averageReceivables: 0,
-      averagePayables: 0,
-      averageInventory: 0,
-      daysSalesOutstanding: 0,
-      daysPayablesOutstanding: 0,
-      daysOfInventoryOnHand: 0,
-      receivablesTurnover: 0,
-      payablesTurnover: 0,
-      inventoryTurnover: 0,
-      capexPerShare: 0,
-      interestDebtPerShare: 0,
-      debtToEquity: 0,
-      roe: 0,
-      researchAndDdevelopementToRevenue: 0}
-
-    const aStatementAnalysisKeyMetricsDataEntry = new StatementAnalysisKeyMetricsData(anEmptyAnalysisKeyMetricsItem_V3);
-
-
-
-    //const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([aStatementAnalysisKeyMetricsDataEntry]);
-    */
 
     const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([]);
 
@@ -155,6 +86,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
     const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
     const [percentageChangeFromTwelveMonthHigh,setPercentageChangeFromTwelveMonthHigh] = useState(0.0);
+    /*
+    //By using the question mark when defining the interface for BuyPoints I am able to get away with setting this up
+    //as an empty object as shown below
     const [buyPoints, setBuyPoints] = useState<BuyPoints>({ downFivePercent:"",
       downTenPercent:"",
       downFifteenPercent:"",
@@ -167,6 +101,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       downFiftyPercent:"",
       downFiftyFivePercent:"",
       downSixtyPercent:""});
+*/
+  const [buyPoints, setBuyPoints] = useState<BuyPoints>({});
     
     const [updateRangeValues, setUpdateRangeValues] = useState(false);
     const [gainIsPositive, setGainIsPositive] = useState(false);
@@ -658,7 +594,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 //console.log("Generating Price to Equity")
                 setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statmentAnalysisKeyMetrics)!)
             }
-            console.log("Calling setGraphData")
+            //console.log("Calling setGraphData")
             setGraphData( newData! )
         }
     }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);

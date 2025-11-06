@@ -108,7 +108,7 @@ export default class BollingerBands {
         {
             //console.log('Setting aBollingerBandDataPoint date for: ' + tempBollingerBands[j].date)
 
-            const aBollingerBandDataPoint = new BollingerBandDataPoint(new Date( tempBollingerBands[j].date),
+            const aBollingerBandDataPoint = new BollingerBandDataPoint(tempBollingerBands[j].date,
                 tempBollingerBands[j].lowerBandValue,
                 tempBollingerBands[j].upperBandValue,
                 this.standardValues[i].close,
@@ -194,9 +194,9 @@ export default class BollingerBands {
         {
           //console.log("dataToEvaluate[i].date: " +dataToEvaluate[i].date.toISOString())
             //if(dataToEvaluate[i].date === dateToFind)
-          if ( dateToFind === this.convertDateStringToYear_Month_DayOnly(dataToEvaluate[i].date))
+          if ( dateToFind === dataToEvaluate[i].date)
             {
-                //console.log('located ' +dateToFind + ' at address: ' + i + ' where the date is: ' +  this.convertDateStringToYear_Month_DayOnly(dataToEvaluate[i].date))
+               //console.log('located ' +dateToFind + ' at address: ' + i + ' where the date is: ' + dataToEvaluate[i].date)
                 address=i;
                 break;
             }
@@ -209,7 +209,7 @@ export default class BollingerBands {
         const chartData=[];
         for(let i=0;i<endPointDataToConvert.length;++i)
         {
-            const aDataPoint = new DataPoint(new Date(endPointDataToConvert[i].date), endPointDataToConvert[i].close);
+            const aDataPoint = new DataPoint(endPointDataToConvert[i].date, endPointDataToConvert[i].close);
             chartData.push(aDataPoint)
         }
         return chartData;
