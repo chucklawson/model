@@ -22,7 +22,7 @@ import StochasitcOscillatorChart from '../../InvestmentCharts/StochasticOscillat
 import StochasticChartData from '../../Lib/ChartData/StochasticChartData.ts'
 //import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
 import PriceEarningsChart from '../../InvestmentCharts/PriceEarningsChart';
-//import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss.jsx'
+import {calculateOverallProfitAndLoss} from '../../lib/ProfitLoss/CalculateOverallProfitLoss'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
 import StatementAnalysisKeyMetricsData from "../../Lib/ChartData/StatementAnalysisKeyMetricsData.ts";
@@ -52,6 +52,7 @@ interface  BasicTickerEvaluationProps{
 
 
 const GRAPH_SIZE_FACTOR = .48
+
 const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [tickerToGet, setTickerToGet] = useState('');
@@ -220,7 +221,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     
     const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
-    //const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
+    const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
@@ -320,10 +321,20 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
   }, [windowWidth,graphWidth]);
 
     useEffect(()=>{
-        const todaysChange=Number(parseFloat(Number(currentQuote.change).toFixed(2)));
+        //console.log("currentQuote.change: " +currentQuote.change)
+        //const todaysChange=Number(parseFloat(Number(currentQuote.change).toFixed(2)));
+
+      const todaysChange=parseFloat(currentQuote.change).toFixed(2);
+
+      //console.log("todaysChange: " +todaysChange)
+
+      //console.log("currentQuote.changePercentage: " +currentQuote.changesPercentage)
+
+      //console.log("Setting percentage gain to): " + parseFloat(currentQuote.changesPercentage).toFixed(2))
+
         let tempGain = false;
         setTodaysGain(todaysChange);
-        setTodaysPercentageGain(Number(parseFloat(Number(currentQuote.changePercentage).toFixed(2))));
+        setTodaysPercentageGain(parseFloat(currentQuote.changesPercentage).toFixed(2));
 
         if (todaysChange >= 0.0) {
             setGainIsPositive(true);
@@ -333,7 +344,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setGainIsPositive(false);
         }
         setRangeValues(currentQuote);
-        props.onSetTodaysPercentageChange(currentQuote.changePercentage, tempGain);
+        props.onSetTodaysPercentageChange(currentQuote.changesPercentage, tempGain);
 
     },[currentQuote]);
     
@@ -463,7 +474,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const calculateProfitLossButtonHandler = () =>
     {
       // need to add this back in
-        //calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
+        calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }
 
 
@@ -600,7 +611,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
 
 
-/*
+
     useEffect( ()=>{
       if(graphData.length!==undefined)
       {
@@ -621,7 +632,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
     },[graphData]);
 
-    */
+
 
 
     return <  div className='bg-gray-100 grid grid-cols-9 gap-4'>
@@ -682,7 +693,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
 
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
-          {/*{calculatedTotalProfitLoss}*/}
+          {calculatedTotalProfitLoss}
 
 
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-//import upGreenRight from '../../srcImages/UpGreenRight.png'
-//import downRedRight from '../../srcImages/DownRedRight.png'
+import upGreenRight from '../../srcImages/UpGreenRight.png'
+import downRedRight from '../../srcImages/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
@@ -245,6 +245,7 @@ function CurrentHoldings() {
   }
 
   const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
+    //console.log("Todays percentageChange: " + percentageChange +", isChnagePositive: " +isChnagePositive)
     setTodaysPercentageChange(percentageChange);
     setIsTodaysChangePositive(isChnagePositive);
   }
@@ -271,11 +272,9 @@ function CurrentHoldings() {
   return (
     <div className="text-center">      
       
-    <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-18 justify-items-center">
+    <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-30 justify-items-center">
       <div>
         {headerValue}
-      </div>
-      <div>
                 {isTodaysChangePositive === true ?
                     <div className='text-green-600 text-3xl font-bold'>
                         Today's Change: {todaysPercentageChange} %
@@ -284,12 +283,8 @@ function CurrentHoldings() {
                         Today's Change: {todaysPercentageChange} %
                     </div>
                     }
-      </div>
-      {/*
-      <div>
         {slope >= 0.0 ?
           <div className='text-green-600 text-3xl font-bold'>
-
                 <img className="inline-block w-10 h-8 ml-7 " src={upGreenRight} alt=""></img>                           
           </div> :
           <div className='text-red-600 text-3xl font-bold'>
@@ -298,7 +293,7 @@ function CurrentHoldings() {
           </div>
           }
       </div>
-  */}
+
     </header>
 
     <BasicTickerEvaluation onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Current'

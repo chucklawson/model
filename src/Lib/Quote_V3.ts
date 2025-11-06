@@ -3,7 +3,7 @@ export default interface Quote_V3 {
   symbol: string;
   name: string;
   price: number;
-  changePercentage: number;
+  changesPercentage: number;
   change: number;
   dayLow: number;
   dayHigh: number;
