@@ -11,64 +11,49 @@ const tickersToEvaluate:TickersToEvaluate[] =
       costBasis: '0',
       unitsOnHand: 0,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "VOO",
       costBasis: '439.06',
       unitsOnHand: 46,
-
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "QQQ",
       costBasis: '596.99',
       unitsOnHand: 4,
       calculateAccumulatedProfitLoss: false,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "AAPL",
-      costBasis: '209.83',
-      unitsOnHand: 20,
+      costBasis: '235.65',
+      unitsOnHand: 35,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
-      ticker: "AEM",
-      costBasis: '162.50',
-      unitsOnHand: 9,
+      ticker: "AMD",
+      costBasis: '177.62',
+      unitsOnHand: 25,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
-    {
-    ticker: "AMD",
-    costBasis: '177.62',
-    unitsOnHand: 25,
-    calculateAccumulatedProfitLoss: true,
-      baseYield: '',
-  },
     {
       ticker: "AMZN",
       costBasis: '162.46',
       unitsOnHand: 85,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "AVGO",
-      costBasis: '269.99',
-      unitsOnHand: 54,
+      costBasis: '276.07',
+      unitsOnHand: 58,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
-    },
-    {
-      ticker: "BA",
-      costBasis: '222.20',
-      unitsOnHand: 25,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "COF",
@@ -77,149 +62,148 @@ const tickersToEvaluate:TickersToEvaluate[] =
       costBasis: '129.45',
       unitsOnHand: 541,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "COST",
       costBasis: '968.48',
       unitsOnHand: 7,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "CRWD",
       costBasis: '359.77',
       unitsOnHand: 55,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "ENB",
       costBasis: '38.86',
       unitsOnHand: 110,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "GEV",
       costBasis: '478.18',
       unitsOnHand: 16,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
-      ticker: "GLD",
-      costBasis: '389.16',
-      unitsOnHand: 4,
+      ticker: "GLW",
+      costBasis: '83.5',
+      unitsOnHand: 20,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "GOOGL",
       costBasis: '202.89',
       unitsOnHand: 25,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "GS",
       costBasis: '600.54',
       unitsOnHand: 7,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "HON",
       costBasis: '226.37',
       unitsOnHand: 20,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "META",
-      costBasis: '676.79',
-      unitsOnHand: 35,
+      costBasis: '673.05',
+      unitsOnHand: 50,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "MSFT",
-      costBasis: '411.36',
-      unitsOnHand: 39,
+      costBasis: '416.72',
+      unitsOnHand: 41,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "ORCL",
       costBasis: '303.61',
       unitsOnHand: 6,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "NEM",
       costBasis: '89.73',
       unitsOnHand: 25,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "NKE",
-      costBasis: '66.55',
-      unitsOnHand: 15,
+      costBasis: '66.27',
+      unitsOnHand: 30,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "NLY",
       costBasis: '20.20',
       unitsOnHand: 400,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "NVDA",
       costBasis: '56.62',
       unitsOnHand: 300,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "O",
       costBasis: '59.07',
       unitsOnHand: 30,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "PANW",
       costBasis: '197.35',
       unitsOnHand: 25,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
-      ticker: "SBUX",
-      costBasis: '92.14',
-      unitsOnHand: 30,
+      ticker: "PLTR",
+      costBasis: '190.90',
+      unitsOnHand: 8,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "USA",
       costBasis: '7.06',
       unitsOnHand: 355,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     },
     {
       ticker: "WFC",
       costBasis: '66.51',
       unitsOnHand: 200,
       calculateAccumulatedProfitLoss: true,
-      baseYield: '',
+      baseYield: ''
     }
-
   ];
 
 

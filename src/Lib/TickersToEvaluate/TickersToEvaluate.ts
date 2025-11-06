@@ -2,7 +2,7 @@
 export interface TickersToEvaluate {
   ticker: string;
   costBasis: string;
-  unitsOnHand:number;
+  unitsOnHand: number;
   calculateAccumulatedProfitLoss: boolean;
-  baseYield: string;
+  baseYield?: string;
 }
