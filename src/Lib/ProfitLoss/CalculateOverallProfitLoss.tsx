@@ -8,7 +8,7 @@ interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
 
-export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):Promise<string>
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):string
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
@@ -43,7 +43,8 @@ export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[])
     ))
     //console.log("tickerEntriesToSum: " + JSON.stringify(tickerEntriesToSum))
 
-    return batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum)
+    const valueToReturn:string = batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum);
+    return valueToReturn;
 }
 
 function calculalteCost(tickerEntriesToSum:CostEntry[])
