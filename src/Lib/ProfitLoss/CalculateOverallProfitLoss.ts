@@ -118,7 +118,6 @@ function calculalteCurrentValue(currentQuote:Quote_v3[],tickersToEvaluate:CostEn
     for(let i=0;i<currentQuote.length;++i)
     {
         const unitsPurchased=getQuantityOwnForOneTicker(currentQuote[i].symbol,tickersToEvaluate)
-        //console.log("symbol: " + currentQuote[i].symbol + ", unitsPurchased: " + unitsPurchased + ", value: " + currentQuote[i].price)
         totalValue+=Number(unitsPurchased)*Number(currentQuote[i].price);
     }
   //console.log("calculalteCurrentValue totalValue: " + totalValue)
