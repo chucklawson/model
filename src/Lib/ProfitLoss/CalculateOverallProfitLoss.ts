@@ -112,7 +112,7 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss,t
     setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
 }
 
-function calculalteCurrentValue(currentQuote:Quote_v3[],tickersToEvaluate:CostEntry[])
+function calculalteCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
 {
     let totalValue=0.0;
     for(let i=0;i<currentQuote.length;++i)
@@ -124,7 +124,7 @@ function calculalteCurrentValue(currentQuote:Quote_v3[],tickersToEvaluate:CostEn
     return totalValue;
 }
 
-function calculaltePreviosValue(currentQuote:Quote_v3[],tickersToEvaluate:CostEntry[])
+function calculaltePreviosValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
 {
   let totalValue=0.0;
   //console.log("currentQuote.length: " + currentQuote.length)
