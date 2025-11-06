@@ -324,7 +324,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         //console.log("currentQuote.change: " +currentQuote.change)
         //const todaysChange=Number(parseFloat(Number(currentQuote.change).toFixed(2)));
 
-      const todaysChange=parseFloat(currentQuote.change).toFixed(2);
+      const todaysChange=currentQuote.change;
+      //const todaysChange=0;
 
       //console.log("todaysChange: " +todaysChange)
 
@@ -333,10 +334,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       //console.log("Setting percentage gain to): " + parseFloat(currentQuote.changesPercentage).toFixed(2))
 
         let tempGain = false;
-        setTodaysGain(todaysChange);
-        setTodaysPercentageGain(parseFloat(currentQuote.changesPercentage).toFixed(2));
+        //setTodaysGain(parseFloat(todaysChange).toFixed(2));
+        setTodaysGain(0.0);
+        setTodaysPercentageGain(currentQuote.changesPercentage);
 
-        if (todaysChange >= 0.0) {
+        if ( Number(todaysChange) >= 0.0) {
             setGainIsPositive(true);
             tempGain = true;
         }
@@ -621,12 +623,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       }
 
         if((graphData.length!==undefined) && (graphData.length>1)){
-            const Y1forSlope=graphData[graphData.length-1].expMovingAverage;
+            const Y1forSlope:number=graphData[graphData.length-1].expMovingAverage;
             //console.log('Y1forSlope: ' + Y1forSlope)
-            const Y2forSlope=graphData[graphData.length-2].expMovingAverage;
+            const Y2forSlope:number=graphData[graphData.length-2].expMovingAverage;
             //console.log('Y2forSlope: ' + Y2forSlope)
-            const tempSlope=(parseFloat(Y1forSlope)-parseFloat(Y2forSlope))
-            //console.log('tempSlope: ' + tempSlope)
+            const tempSlope=(Y1forSlope-Y2forSlope)
+            console.log('tempSlope: ' + tempSlope)
             props.onSetSlope(tempSlope.toFixed(2))
             setSlope(tempSlope.toFixed(2))
         }
