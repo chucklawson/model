@@ -8,11 +8,7 @@ interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
 
-interface argsForsetCalculatedTotalProfitLoss{
-  setCalculatedTotalProfitLoss(arg0: string):void;
-}
-
-export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:argsForsetCalculatedTotalProfitLoss):void
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):string
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
@@ -47,7 +43,7 @@ export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],
     ))
     //console.log("tickerEntriesToSum: " + JSON.stringify(tickerEntriesToSum))
 
-    batchQuote(tickersSymbolsToEvaluate.toString(),setCalculatedTotalProfitLoss,tickerEntriesToSum)
+    return batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum)
 }
 
 function calculalteCost(tickerEntriesToSum:CostEntry[])
@@ -62,7 +58,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
     return totalCost;
 }
 
-async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss:argsForsetCalculatedTotalProfitLoss,tickerEntriesToSum:CostEntry[]): void
+async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): void
 {  
     const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
     const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${uniqueValue}`;
@@ -70,11 +66,11 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss:a
     //console.log("tickersToObtain: "+ tickersToObtain)
 
     //console.log("tickersToEvaluate: " + tickersToObtain)
-        await Promise.all<void>([
+        await Promise.all<string>([
             fetch(currentInfo)
           ]).then(function (responses) {
             // Get a JSON object from each of the responses
-            return Promise.all(responses.map(function (response) {
+            return Promise.all<string>(responses.map(function (response) {
               return response.json();
             }));
           }).then(function (data) {
@@ -113,8 +109,9 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss:a
 
   //console.log("currentDaysProfitLoss: " + currentDaysProfitLoss)
 
-    setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
-  return;
+    //setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
+  return ("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
+
 }
 
 function calculalteCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])

@@ -221,7 +221,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     
     const [slope,setSlope]=useState(0.0);
     const [classValuesLeft,setClassValuesLeft]=useState('');
-    const [calculatedTotalProfitLoss,setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
+    const [calculatedTotalProfitLoss, setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
@@ -476,7 +476,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const calculateProfitLossButtonHandler = () =>
     {
       // need to add this back in
-        calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
+      // return a string and be done with it
+
+      setCalculatedTotalProfitLoss(calculateOverallProfitAndLoss(props.tickerEntries));
     }
 
 
