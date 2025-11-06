@@ -8,7 +8,11 @@ interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
 
-export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:string):void
+interface argsForsetCalculatedTotalProfitLoss{
+  setCalculatedTotalProfitLoss(string);
+}
+
+export function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:argsForsetCalculatedTotalProfitLoss):void
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
