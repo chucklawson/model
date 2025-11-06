@@ -70,7 +70,7 @@ async function batchQuote (tickersToObtain:string,setCalculatedTotalProfitLoss:a
     //console.log("tickersToObtain: "+ tickersToObtain)
 
     //console.log("tickersToEvaluate: " + tickersToObtain)
-        await Promise.all([
+        await Promise.all<void>([
             fetch(currentInfo)
           ]).then(function (responses) {
             // Get a JSON object from each of the responses
