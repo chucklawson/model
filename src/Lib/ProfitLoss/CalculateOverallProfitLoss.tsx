@@ -10,7 +10,7 @@ interface CostEntry{ticker: string;
 
 type SetCalculatedTotalProfitLossArg=(message: string)=> void;
 
-export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:SetCalculatedTotalProfitLossArg):void
+export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:SetCalculatedTotalProfitLossArg):Promise<void>
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
