@@ -42,23 +42,23 @@ const DividendEntries=()=> {
   const [currentHoldings,setCurrentHoldings]=useState(tickersToEvaluate);
   const [accumulatedValues,setAccumulatedValues]=useState(calculateProjectedYield(tickersToEvaluate))
 
-  const onSelectTickerButtonHandler=(tickerToEvaluate)=>
+  const onSelectTickerButtonHandler=(tickerToEvaluate:TickersToEvaluate[])=>
   {
     setStockSymbolToFetch(tickerToEvaluate)
     //console.log("Setting stockSymbolToFetch: " +stockSymbolToFetch)
   }
 
-  const onSetHeader=(headerValueIn)=>
+  const onSetHeader=(headerValueIn:string)=>
   {
     setHeaderValue(headerValueIn)
   }
 
-  const onSetTodaysPercentageChange = (percentageChange, isChnagePositive) => {
+  const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
     setTodaysPercentageChange(percentageChange);
     setIsTodaysChangePositive(isChnagePositive);
   }
 
-  const onSetSlope = (slopeIn) => {
+  const onSetSlope = (slopeIn:number) => {
     setSlope(slopeIn)
   }
 
