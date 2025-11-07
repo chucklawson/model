@@ -6,7 +6,7 @@ import HomePage from './Pages/HomePage/HomePage';
 import CurrentHoldings from './Pages/CurrentHoldings/CurrentHoldings';
 import DividendEntries from "./Pages/DividendEntries/DividendEntries";
 import Banks from "./Pages/Banks/Banks";
-import WatchList from "./Pages/Watchlist/WatchList";
+import WatchList from "./Pages/WatchList/WatchList.tsx";
 
 
 const router = createBrowserRouter([
