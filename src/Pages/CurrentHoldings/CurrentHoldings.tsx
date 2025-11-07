@@ -230,7 +230,7 @@ function CurrentHoldings() {
 
   const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
     //console.log("Todays percentageChange: " + percentageChange +", isChnagePositive: " +isChnagePositive)
-    setTodaysPercentageChange(percentageChange);
+    setTodaysPercentageChange(Number(percentageChange.toFixed(2)));
     setIsTodaysChangePositive(isChnagePositive);
   }
 

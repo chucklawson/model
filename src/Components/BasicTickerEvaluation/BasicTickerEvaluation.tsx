@@ -332,8 +332,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       //console.log("Setting percentage gain to): " + parseFloat(currentQuote.changesPercentage).toFixed(2))
 
         let tempGain = false;
-        setTodaysGain(todaysChange);
-        setTodaysPercentageGain(currentQuote.changesPercentage);
+        setTodaysGain(Number(todaysChange.toFixed(2)));
+        setTodaysPercentageGain(Number(currentQuote.changesPercentage.toFixed(2)));
 
         if ( Number(todaysChange) >= 0.0) {
             setGainIsPositive(true);

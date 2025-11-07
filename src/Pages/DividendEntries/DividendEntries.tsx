@@ -54,7 +54,7 @@ const DividendEntries=()=> {
   }
 
   const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
-    setTodaysPercentageChange(percentageChange);
+    setTodaysPercentageChange(Number(percentageChange.toFixed(2)));
     setIsTodaysChangePositive(isChnagePositive);
   }
 
