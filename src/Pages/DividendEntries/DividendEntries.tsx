@@ -42,7 +42,7 @@ const DividendEntries=()=> {
   const [currentHoldings,setCurrentHoldings]=useState(tickersToEvaluate);
   const [accumulatedValues,setAccumulatedValues]=useState(calculateProjectedYield(tickersToEvaluate))
 
-  const onSelectTickerButtonHandler=(tickerToEvaluate:TickersToEvaluate[])=>
+  const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
   {
     setStockSymbolToFetch(tickerToEvaluate)
     //console.log("Setting stockSymbolToFetch: " +stockSymbolToFetch)
