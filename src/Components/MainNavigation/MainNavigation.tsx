@@ -1,6 +1,11 @@
 import Tab from '../Tab/Tab'
 import home from '../../srcImages/home.png'
 import statistics from '../../srcImages/statistics.png'
+//import clipboard from '../../srcImages/clipboard.png'
+//import math from '../../srcImages/math.ico'
+//import banks from '../../srcImages/bank.png'
+//import robot from '../../srcImages/robot.png'
+//import budget from '../../srcImages/budget.png'
 
 function MainNavigation(){
 
@@ -13,6 +18,7 @@ function MainNavigation(){
             <div className="left md:w-3/4 sm:w-1/3 flex">
               <Tab pagePath='/' tabImage = {home} tabText='Home' tabWidth='125px'/>
               <Tab pagePath='/current' tabImage = {statistics} tabText='Current' tabWidth='135px'/>
+              <Tab pagePath='/dividendentries' tabImage = {statistics} tabText='Div Entries' tabWidth='190px'/>
             </div>
 
 
