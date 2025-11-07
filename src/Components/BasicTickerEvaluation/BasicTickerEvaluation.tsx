@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3"
-//import type KeyMetrics_V3 from '../../Lib/KeyMetrics_V3.ts';
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3';
 import TickerInput from '../TickerInput/TickerInput.jsx';
@@ -325,7 +324,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         //const todaysChange=Number(parseFloat(Number(currentQuote.change).toFixed(2)));
 
       const todaysChange=currentQuote.change;
-      //const todaysChange=0;
 
       //console.log("todaysChange: " +todaysChange)
 
@@ -334,8 +332,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       //console.log("Setting percentage gain to): " + parseFloat(currentQuote.changesPercentage).toFixed(2))
 
         let tempGain = false;
-        //setTodaysGain(parseFloat(todaysChange).toFixed(2));
-        setTodaysGain(0.0);
+        setTodaysGain(todaysChange);
         setTodaysPercentageGain(currentQuote.changesPercentage);
 
         if ( Number(todaysChange) >= 0.0) {
