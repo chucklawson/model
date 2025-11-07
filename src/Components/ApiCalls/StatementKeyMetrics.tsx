@@ -9,7 +9,7 @@ import StatementAnalysisKeyMetricsData from '../../Lib/StatementsData/StatementA
 interface  StatementKeyMetricsProps{
   stockSymbol: string;
   period: string;
-  onSetCurrentQuote(currentQuoteIn:Quote_V3, statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData):void;
+  onSetCurrentQuote(currentQuoteIn:Quote_V3,statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):void;
 }
 
 const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
@@ -87,7 +87,7 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
     },[currentInfo,statementAnalysisKeyMetrics])
 
 
-    const setDatObjet = (theQuote:Quote_V3,statmentAnalysis:StatementAnalysisKeyMetricsData)=>{
+    const setDatObjet = (theQuote:Quote_V3,statmentAnalysis:StatementAnalysisKeyMetricsData[])=>{
        // console.log("setting data symbol as: " + data.symbol)
         setcurrentQuote(theQuote)        
         

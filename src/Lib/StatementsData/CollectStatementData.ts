@@ -6,9 +6,9 @@ interface rowValues{
 }
 
 
-export function loadStatmentMetricsData(statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[])
+export function loadStatmentMetricsData(statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):StatementAnalysisKeyMetricsData[]
 {
-    const statementData = [];
+    const statementData:StatementAnalysisKeyMetricsData[] = [];
 
     if((statmentAnalysisKeyMetrics!=null) && (statmentAnalysisKeyMetrics.length !== undefined))
     {
@@ -21,7 +21,7 @@ export function loadStatmentMetricsData(statmentAnalysisKeyMetrics:StatementAnal
     return statementData;
 }
 
-export function buildRowTitles()
+export function buildRowTitles():string[]
 {
     let rows:string[]= [];
     //const statementAnalysisKeyMetricsData=statementData[0];
@@ -124,7 +124,7 @@ export function buildColumnTitlesByPeriod(statementData:StatementAnalysisKeyMetr
 }
 
 
-export function buildDataToShow(statementData:StatementAnalysisKeyMetricsData[],periodsToUseIn:number)
+export function buildDataToShow(statementData:StatementAnalysisKeyMetricsData[],periodsToUseIn:number):rowValues[][]
 {
     let periodsToUse:number=periodsToUseIn;
     if(statementData.length<periodsToUse)

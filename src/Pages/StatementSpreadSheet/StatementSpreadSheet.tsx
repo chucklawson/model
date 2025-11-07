@@ -7,6 +7,11 @@ import {loadStatmentMetricsData,buildColumnTitlesByPeriod,buildRowTitles,buildDa
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
 import StatementAnalysisKeyMetricsData from '../../Lib/StatementsData/StatementAnalysisKeyMetricsData'
 
+
+interface rowValues{
+  value: string|number;
+}
+
 const StatementSpreadSheet = () =>{
 
   
@@ -20,10 +25,10 @@ const StatementSpreadSheet = () =>{
     const [period,setPeriod] = useState('quarter')
 
 
-    const [data, setData] = useState([])
+    const [data, setData] = useState<rowValues[][]>([])
   
-    const [col,setCol]=useState([])
-    const [row,setRow]=useState([])
+    const [col,setCol]=useState<string[]>([])
+    const [row,setRow]=useState<string[]>([])
 
 
     const [headerValue,setHeaderValue] = useState("Key Metrics - Financial Statements")
@@ -72,7 +77,7 @@ const StatementSpreadSheet = () =>{
     }
    }
 
-   const onSetCurrentQuote=(currentQuoteIn:Quote_V3,statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData)=>
+   const onSetCurrentQuote=(currentQuoteIn:Quote_V3,statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[])=>
     {
         //console.log("larryWilliams: " + JSON.stringify(larryWilliams));
         setcurrentQuote(currentQuoteIn);       
@@ -99,7 +104,7 @@ const StatementSpreadSheet = () =>{
       //console.log("calling dailyValues")
       if(statmentAnalysisKeyMetrics[0]!==undefined)
       {
-        const statementData = loadStatmentMetricsData(statmentAnalysisKeyMetrics);
+        const statementData:StatementAnalysisKeyMetricsData[] = loadStatmentMetricsData(statmentAnalysisKeyMetrics);
         //console.log("statmentData length: " + statementData.length);
         //   console.log("statmentData: " + statementData);
               //console.log("Generating Price to Equity")
@@ -109,7 +114,7 @@ const StatementSpreadSheet = () =>{
 
               setCol(buildColumnTitlesByPeriod(statementData,periodsToShow))
               
-              setRow(buildRowTitles(statementData))
+              setRow(buildRowTitles())
 
               setData(buildDataToShow(statementData,periodsToShow))
           
@@ -151,8 +156,9 @@ return (
 
       <div className='col-start-1 col-span-12 justify-items-center p-1'>
 
-          <SpreadSheet data={data} columnLabels={col} rowLabels={row} onChange={setData} /> 
-        
+        {/*} <SpreadSheet data={data} columnLabels={col} rowLabels={row} onChange={setData} />*/}
+        <SpreadSheet data={data} columnLabels={col} rowLabels={row}/>
+
       </div>    
 
     </div>
