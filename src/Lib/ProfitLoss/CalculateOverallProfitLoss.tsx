@@ -7,9 +7,9 @@ import type Quote_V3 from "../Quote_V3.ts";
 interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
-interface SetCalculatedTotalProfitLossArg{
-  setCalculatedTotalProfitLoss(string):void;
-}
+
+type SetCalculatedTotalProfitLossArg=(message: string)=> void;
+
 export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:SetCalculatedTotalProfitLossArg):void
 {
 /*
