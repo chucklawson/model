@@ -6,6 +6,7 @@ import HomePage from './Pages/HomePage/HomePage';
 import CurrentHoldings from './Pages/CurrentHoldings/CurrentHoldings';
 import DividendEntries from "./Pages/DividendEntries/DividendEntries";
 import Banks from "./Pages/Banks/Banks";
+import WatchList from "./Pages/Watchlist/Watchlist";
 
 
 const router = createBrowserRouter([
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       {path: '/current', element: <CurrentHoldings/>},
       {path: '/dividendentries', element: <DividendEntries/>},
       {path: '/banks', element: <Banks/>},
+      {path: '/watchlist', element: <WatchList/>},
     ]
   },
 

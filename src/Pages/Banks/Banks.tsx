@@ -12,18 +12,21 @@ const tickersToEvaluate:TickersToEvaluate[] =
       costBasis: '129.45',
       unitsOnHand: 541,
       calculateAccumulatedProfitLoss: true,
+      baseYield: '',
     },
     {
       ticker: "GS",
       costBasis: '600.54',
       unitsOnHand: 7,
       calculateAccumulatedProfitLoss: true,
+      baseYield: '',
     },
     {
       ticker: "WFC",
       costBasis: '65.47',
       unitsOnHand: 185,
       calculateAccumulatedProfitLoss: true,
+      baseYield: '',
     }
 
   ];
