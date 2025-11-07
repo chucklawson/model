@@ -7,8 +7,10 @@ import type Quote_V3 from "../Quote_V3.ts";
 interface CostEntry{ticker: string;
                     cost: number;
                     unitsPurchased: number}
-
-export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[]):string
+interface SetCalculatedTotalProfitLossArg{
+  setCalculatedTotalProfitLoss(string):void;
+}
+export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvaluate[],setCalculatedTotalProfitLoss:SetCalculatedTotalProfitLossArg):void
 {
 /*
   for(let i=0;i<tickerEntries.length;++i)
@@ -43,17 +45,18 @@ export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvalu
     ))
     //console.log("tickerEntriesToSum: " + JSON.stringify(tickerEntriesToSum))
 
-    const valueToReturn:string = await batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum);
+    //const valueToReturn:string = await batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum);
 
-    /*
+
       let valueBack: string;
 
       await batchQuote(tickersSymbolsToEvaluate.toString(),tickerEntriesToSum).then((result: string) =>{
       valueBack=result;
+        setCalculatedTotalProfitLoss(valueBack);
       //console.log("valueBack: " +valueBack);
    })
-   */
-  return valueToReturn;
+
+  return;
 }
 
 function calculalteCost(tickerEntriesToSum:CostEntry[])

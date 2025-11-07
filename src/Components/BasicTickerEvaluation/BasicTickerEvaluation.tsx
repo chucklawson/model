@@ -478,7 +478,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       // need to add this back in
       // return a string and be done with it
 
-      setCalculatedTotalProfitLoss(calculateOverallProfitAndLoss(props.tickerEntries));
+      //setCalculatedTotalProfitLoss(calculateOverallProfitAndLoss(props.tickerEntries));
+      calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }
 
 
