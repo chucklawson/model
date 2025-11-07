@@ -22,6 +22,7 @@ function MainNavigation(){
               <Tab pagePath='/dividendentries' tabImage = {statistics} tabText='Div Entries' tabWidth='190px'/>
               <Tab pagePath='/banks' tabImage = {banks} tabText='Financial' tabWidth='150px'/>
               <Tab pagePath='/watchlist' tabImage = {budget} tabText='Watchlist' tabWidth='185px'/>
+              <Tab pagePath='/statmententries' tabImage = {budget} tabText='Statements' tabWidth='185px'/>
             </div>
 
 
