@@ -110,7 +110,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [currentQuote, setcurrentQuote] = useState <Quote_V3>({           symbol: "",
                                                                             name: "",
                                                                             price: 0,
-                                                                            changePercentage: 0,
+                                                                            changesPercentage: 0,
                                                                             change: 0,
                                                                             dayLow: 0,
                                                                             dayHigh: 0,
