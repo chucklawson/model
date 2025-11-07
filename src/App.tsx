@@ -5,6 +5,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import HomePage from './Pages/HomePage/HomePage';
 import CurrentHoldings from './Pages/CurrentHoldings/CurrentHoldings';
 import DividendEntries from "./Pages/DividendEntries/DividendEntries";
+import Banks from "./Pages/Banks/Banks";
 
 
 const router = createBrowserRouter([
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
       {path: '/', element: <HomePage/>},
       {path: '/current', element: <CurrentHoldings/>},
       {path: '/dividendentries', element: <DividendEntries/>},
+      {path: '/banks', element: <Banks/>},
     ]
   },
 
