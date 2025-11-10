@@ -131,21 +131,17 @@ const HistoricalDividends = () =>{
       if((dividendData!==undefined)&&(dividendData.length>0))
       {        
         const historicalDividendData  = loadHistoricalMetricsData(dividendData);
-        //console.log("statmentData length: " + statementData.length);
-        //   console.log("statmentData: " + statementData);
-              //console.log("Generating Price to Equity")
-              //setPriceEarningsData(getPriceToEarningsChartData(statmentAnalysisKeyMetrics))
-              //console.log("currentQuote: " + JSON.stringify(currentQuote));
-              //console.log("statmentAnalysisKeyMetrics: " + JSON.stringify(statmentAnalysisKeyMetrics));
 
               //console.log("calling setCol")
-
               setCol(buildColumnTitles())
-              
+
+              //console.log("calling buildRowTitles")
               setRow(buildRowTitles(historicalDividendData,periodsToShow))
 
+              //console.log("calling buildHstoricalDataToShow")
               setData(buildHstoricalDataToShow(historicalDividendData,periodsToShow))
 
+              //console.log("calling calculateYield")
               setCurrentYield(calculateYield(historicalDividendData,currentQuote))
           
       }

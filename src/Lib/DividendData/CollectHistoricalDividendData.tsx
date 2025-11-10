@@ -25,8 +25,8 @@ export function buildRowTitles(historicalData:HistoricalDividendData[],periodsTo
 {
     let rows:string[] = [];
     //let statementAnalysisKeyMetricsData=statementData[0];
-
-    for(let i=0;i<periodsToShow;++i)
+    const periodsToUse=(periodsToShow<=historicalData.length)? periodsToShow:historicalData.length;
+    for(let i=0;i<periodsToUse;++i)
     {
         rows = setRowTitle(rows,historicalData[i].label)
     }   
@@ -51,10 +51,11 @@ export function buildColumnTitles()
     return colTitles;
 }
 
-export function buildHstoricalDataToShow(historicalData:HistoricalDividendData[],periodsToUse:number):rowValues[][]
+export function buildHstoricalDataToShow(historicalData:HistoricalDividendData[],periodsToShow:number):rowValues[][]
 {
   const rows:rowValues[][] = [];
   let row:rowValues[];
+  const periodsToUse=(periodsToShow<=historicalData.length)? periodsToShow:historicalData.length;
     for(let i=0;i<periodsToUse;++i)
     {    
         row = []; 
