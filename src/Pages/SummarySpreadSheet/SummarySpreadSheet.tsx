@@ -4,7 +4,7 @@ import {useEffect, useState } from "react";
 import SpreadSheet from 'react-spreadsheet'
 import StatementInput from '../../Components/SatementInput/StatementInput.jsx';
 import StatementKeyMetrics from '../../Components/ApiCalls/StatementKeyMetrics';
-import {loadStatmentMetricsData,buildColumnTitlesByPeriod,buildRowTitles,buildDataToShow} from '../../lib/StatementsData/CollectStatementData'
+import {loadStatmentMetricsData,buildColumnTitlesByPeriod,buildRowTitles,buildDataToShow} from '../../Lib/StatementsData/CollectStatementData'
 import type Quote_V3 from "../../Lib/Quote_V3.ts";
 import type StatementAnalysisKeyMetricsData from "../../Lib/StatementsData/StatementAnalysisKeyMetricsData.ts";
 
