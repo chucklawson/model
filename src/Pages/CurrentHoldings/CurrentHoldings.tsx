@@ -115,8 +115,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "HON",
-      costBasis: '226.37',
-      unitsOnHand: 20,
+      costBasis: '227.74',
+      unitsOnHand: 10,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
@@ -180,13 +180,6 @@ const tickersToEvaluate:TickersToEvaluate[] =
       ticker: "PANW",
       costBasis: '197.35',
       unitsOnHand: 25,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "PLTR",
-      costBasis: '190.90',
-      unitsOnHand: 8,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },

@@ -22,6 +22,13 @@ const tickersToEvaluate:TickersToEvaluate[] =
       baseYield: '13.86',
     },
     {
+      ticker: "O",
+      costBasis: '59.07',
+      unitsOnHand: 30,
+      calculateAccumulatedProfitLoss: true,
+      baseYield: '5.46',
+    },
+    {
       ticker: "USA",
       costBasis: '7.06',
       unitsOnHand: 355,
