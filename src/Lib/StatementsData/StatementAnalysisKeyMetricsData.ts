@@ -62,9 +62,6 @@
           inventoryTurnover: number;
           roe: number;
           capexPerShare: number;
-
-          updatedAt: string;
-          createdAt: string;
           xAxisDataKey: string;
           priceToEarnings: string;
 
@@ -138,8 +135,6 @@
                    this.inventoryTurnover=dataObjectIn.inventoryTurnover;
                    this.roe=dataObjectIn.roe;
                    this.capexPerShare=dataObjectIn.capexPerShare;
-                   this.updatedAt=dataObjectIn.updatedAt;
-                   this.createdAt=dataObjectIn.createdAt;
                    this.xAxisDataKey=this.period + " " + this.calendarYear;
                    this.priceToEarnings = this.peRatio.toFixed(2);                  
             }
@@ -206,8 +201,6 @@
                    + ', payablesTurnover: ' + this.payablesTurnover
                    + ', inventoryTurnover: ' + this.inventoryTurnover
                    + ', capexPerShare: ' + this.capexPerShare
-                   + ', updatedAt: ' + this.updatedAt
-                   + ', createdAt: ' + this.createdAt
                    + ', xAxisDataKey: ' + this.xAxisDataKey
                    + ', priceToEarnings: ' + this.priceToEarnings
               }

@@ -56,17 +56,17 @@ export function buildRowTitles():string[]
     rows = setRowTitle(rows,"freeCashFlowYield")
     rows = setRowTitle(rows,"debtToEquity")
     rows = setRowTitle(rows,"debtToAssets")
-    rows = setRowTitle(rows,"debtToMarketCap")
+    //rows = setRowTitle(rows,"debtToMarketCap")
     rows = setRowTitle(rows,"netDebtToEBITDA")
     rows = setRowTitle(rows,"currentRatio")
     rows = setRowTitle(rows,"interestCoverage")
     rows = setRowTitle(rows,"incomeQuality")
-    rows = setRowTitle(rows,"dividendPerShare")
+    //rows = setRowTitle(rows,"dividendPerShare")
     rows = setRowTitle(rows,"dividendYield")
-    rows = setRowTitle(rows,"dividendYieldPercentage")
+    //rows = setRowTitle(rows,"dividendYieldPercentage")
     rows = setRowTitle(rows,"payoutRatio")
     rows = setRowTitle(rows,"salesGeneralAndAdministrativeToRevenue")
-    rows = setRowTitle(rows,"researchAndDevelopementToRevenue")
+    rows = setRowTitle(rows,"researchAndDdevelopementToRevenue")
     rows = setRowTitle(rows,"intangiblesToTotalAssets")
     rows = setRowTitle(rows,"capexToOperatingCashFlow")
     rows = setRowTitle(rows,"capexToRevenue")
@@ -80,7 +80,6 @@ export function buildRowTitles():string[]
     rows = setRowTitle(rows,"tangibleAssetValue")
     rows = setRowTitle(rows,"netCurrentAssetValue")
     rows = setRowTitle(rows,"investedCapital")
-
     rows = setRowTitle(rows,"averageReceivables")
     rows = setRowTitle(rows,"averagePayables")
     rows = setRowTitle(rows,"averageInventory")
@@ -90,9 +89,10 @@ export function buildRowTitles():string[]
     rows = setRowTitle(rows,"receivablesTurnover")
     rows = setRowTitle(rows,"payablesTurnover")
     rows = setRowTitle(rows,"inventoryTurnover")
+    rows = setRowTitle(rows,"roe")
     rows = setRowTitle(rows,"capexPerShare")
-    rows = setRowTitle(rows,"updatedAt")
-    rows = setRowTitle(rows,"createdAt")
+    //rows = setRowTitle(rows,"updatedAt")
+   // rows = setRowTitle(rows,"createdAt")
     rows = setRowTitle(rows,"xAxisDataKey")
     rows = setRowTitle(rows,"priceToEarnings")
 
@@ -866,6 +866,18 @@ export function buildDataToShow(statementData:StatementAnalysisKeyMetricsData[],
     row=addOneRowElement(row,averageValue);
     rows.push(row)
 
+  row = [];
+  accumulatedValue=0.0;
+  for(let i=0;i<periodsToUse;++i)
+  {
+    row = addOneRowElement(row,statementData[i].roe)
+    const tempValue=Number(statementData[i].roe);
+    accumulatedValue+=tempValue;
+  }
+  averageValue=(accumulatedValue/periodsToUse);
+  row=addOneRowElement(row,averageValue);
+  rows.push(row)
+
     row = [];
     accumulatedValue=0.0;
     for(let i=0;i<periodsToUse;++i)
@@ -882,22 +894,6 @@ export function buildDataToShow(statementData:StatementAnalysisKeyMetricsData[],
     accumulatedValue=0.0;
     for(let i=0;i<periodsToUse;++i)
     {        
-        row = addOneRowElement(row,statementData[i].updatedAt)
-    }
-    rows.push(row)
-
-    row = [];
-    accumulatedValue=0.0;
-    for(let i=0;i<periodsToUse;++i)
-    {        
-        row = addOneRowElement(row,statementData[i].createdAt)
-    }
-    rows.push(row)
-
-    row = [];
-    accumulatedValue=0.0;
-    for(let i=0;i<periodsToUse;++i)
-    {        
         row = addOneRowElement(row,statementData[i].xAxisDataKey)
     }
     rows.push(row)
@@ -905,7 +901,7 @@ export function buildDataToShow(statementData:StatementAnalysisKeyMetricsData[],
     row = [];
     accumulatedValue=0.0;
     for(let i=0;i<periodsToUse;++i)
-    {        
+    {
         row = addOneRowElement(row,statementData[i].priceToEarnings)
     }
     rows.push(row)

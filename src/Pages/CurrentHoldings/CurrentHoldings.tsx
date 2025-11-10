@@ -171,8 +171,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "O",
-      costBasis: '59.07',
-      unitsOnHand: 30,
+      costBasis: '58.34',
+      unitsOnHand: 40,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
