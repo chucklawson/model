@@ -4,7 +4,7 @@ import statistics from '../../srcImages/statistics.png'
 //import clipboard from '../../srcImages/clipboard.png'
 //import math from '../../srcImages/math.ico'
 import banks from '../../srcImages/bank.png'
-import robot from '../../srcImages/robot.png'
+//import robot from '../../srcImages/robot.png'
 import budget from '../../srcImages/budget.png'
 
 
@@ -24,7 +24,9 @@ function MainNavigation(){
               <Tab pagePath='/watchlist' tabImage = {budget} tabText='Watchlist' tabWidth='185px'/>
               <Tab pagePath='/statmententries' tabImage = {budget} tabText='Statements' tabWidth='185px'/>
               <Tab pagePath='/historicaldividendentries' tabImage = {budget} tabText='Dividends' tabWidth='185px'/>
+              {/*
               <Tab pagePath='/summaryentries' tabImage = {robot} tabText='Summary' tabWidth='185px'/>
+              */}
 
             </div>
 

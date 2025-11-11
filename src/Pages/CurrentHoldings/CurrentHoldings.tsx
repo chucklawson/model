@@ -36,8 +36,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "AMD",
-      costBasis: '177.62',
-      unitsOnHand: 25,
+      costBasis: '187.33',
+      unitsOnHand: 30,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
