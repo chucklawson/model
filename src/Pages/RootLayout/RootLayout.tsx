@@ -5,7 +5,9 @@ function RootLayout(){
 
     return(
         <>
+          <div className="bg-gray-100 h-18">
             <MainNavigation/>
+          </div>
             <Outlet />
         </>
     );
