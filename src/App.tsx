@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RootLayout from './Pages/RootLayout/RootLayout'
 
 import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import HomePage from './Pages/HomePage/HomePage';
 import CurrentHoldings from './Pages/CurrentHoldings/CurrentHoldings';
 import DividendEntries from "./Pages/DividendEntries/DividendEntries";
