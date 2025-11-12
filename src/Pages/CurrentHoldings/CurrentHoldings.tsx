@@ -115,7 +115,7 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "HON",
-      costBasis: '227.74',
+      costBasis: '211.74',
       unitsOnHand: 10,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
@@ -130,7 +130,7 @@ const tickersToEvaluate:TickersToEvaluate[] =
     {
       ticker: "MSFT",
       costBasis: '416.72',
-      unitsOnHand: 41,
+      unitsOnHand: 39,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
@@ -150,7 +150,7 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "NKE",
-      costBasis: '66.27',
+      costBasis: '66.07',
       unitsOnHand: 30,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
@@ -178,7 +178,7 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "PANW",
-      costBasis: '197.35',
+      costBasis: '181.29',
       unitsOnHand: 25,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
