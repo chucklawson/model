@@ -86,6 +86,13 @@ const tickersToEvaluate:TickersToEvaluate[] =
       baseYield: ''
     },
     {
+      ticker: "ETN",
+      costBasis: '364.4',
+      unitsOnHand: 4,
+      calculateAccumulatedProfitLoss: true,
+      baseYield: ''
+    },
+    {
       ticker: "GEV",
       costBasis: '478.18',
       unitsOnHand: 16,
