@@ -87,8 +87,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "ETN",
-      costBasis: '364.4',
-      unitsOnHand: 4,
+      costBasis: '358.37',
+      unitsOnHand: 7,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
@@ -136,8 +136,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "MSFT",
-      costBasis: '416.72',
-      unitsOnHand: 39,
+      costBasis: '417.55',
+      unitsOnHand: 42,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
