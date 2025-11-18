@@ -136,8 +136,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "MSFT",
-      costBasis: '417.55',
-      unitsOnHand: 42,
+      costBasis: '422.24',
+      unitsOnHand: 45,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
