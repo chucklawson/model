@@ -56,6 +56,13 @@ const tickersToEvaluate:TickersToEvaluate[] =
       baseYield: ''
     },
     {
+      ticker: "BA",
+      costBasis: '185.60',
+      unitsOnHand: 7,
+      calculateAccumulatedProfitLoss: true,
+      baseYield: ''
+    },
+    {
       ticker: "COF",
       //costBasis: '167.90',
       //unitsOnHand: 217,
