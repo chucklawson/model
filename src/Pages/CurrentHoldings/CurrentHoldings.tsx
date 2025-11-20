@@ -206,8 +206,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "WFC",
-      costBasis: '66.51',
-      unitsOnHand: 200,
+      costBasis: '67.27',
+      unitsOnHand: 210,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     }
