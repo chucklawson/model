@@ -108,8 +108,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "GLW",
-      costBasis: '83.5',
-      unitsOnHand: 20,
+      costBasis: '81.78',
+      unitsOnHand: 30,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
