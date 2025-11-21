@@ -143,15 +143,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "MSFT",
-      costBasis: '422.24',
-      unitsOnHand: 45,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "ORCL",
-      costBasis: '303.61',
-      unitsOnHand: 6,
+      costBasis: '425.26',
+      unitsOnHand: 48,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
