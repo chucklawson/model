@@ -5,7 +5,7 @@ This repository is a React + TypeScript app built with Vite and integrated with 
 Key facts
 - Entry point: `src/main.tsx` (calls `Amplify.configure(outputs)` using `amplify_outputs.json`).
 - App wiring & routes: `src/App.tsx` — uses `react-router` with a `RootLayout` under `src/Pages/RootLayout/RootLayout.tsx` and pages under `src/Pages/*`.
-- UI: Tailwind CSS classes are used extensively; components live in `src/Components/*` and images in `src/srcImages`.
+- UI: Tailwind CSS classes are used extensively; components live in `src/Components/*` and images in `src/Images`.
 - Domain libs: `src/Lib/*` contains finance-related types and helpers (e.g. `Quote_V3.ts`, `HistoricalPriceFull_V3.ts`, `TickersToEvaluate/*`).
 - AWS backend: `amplify/backend.ts` and `amplify/` package.json show Amplify backend definitions — frontend expects `amplify_outputs.json` present at repo root.
 

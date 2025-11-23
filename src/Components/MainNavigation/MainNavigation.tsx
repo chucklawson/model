@@ -1,11 +1,11 @@
 import Tab from '../Tab/Tab'
-import home from '../../srcImages/home.png'
-import statistics from '../../srcImages/statistics.png'
-//import clipboard from '../../srcImages/clipboard.png'
-//import math from '../../srcImages/math.ico'
-import banks from '../../srcImages/bank.png'
-//import robot from '../../srcImages/robot.png'
-import budget from '../../srcImages/budget.png'
+import home from '../../Images/home.png'
+import statistics from '../../Images/statistics.png'
+//import clipboard from '../../Images/clipboard.png'
+//import math from '../../Images/math.ico'
+import banks from '../../Images/bank.png'
+//import robot from '../../Images/robot.png'
+import budget from '../../Images/budget.png'
 
 
 function MainNavigation(){

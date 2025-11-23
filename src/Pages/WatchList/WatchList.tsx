@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import upGreenRight from '../../srcImages/UpGreenRight.png'
-import downRedRight from '../../srcImages/DownRedRight.png'
+import upGreenRight from '../../Images/UpGreenRight.png'
+import downRedRight from '../../Images/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
