@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3"
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
@@ -348,6 +348,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     },[currentQuote]);
     
 
+    // Memoize margin object to prevent unnecessary chart re-renders
+    const chartMargin = useMemo(() => ({
+        top: 5,
+        right: 5,
+        left: 5,
+        bottom: 5
+    }), []);
 
     const setUpdateTickerValueToFalse = () => {
         setUpdateTickerValue(false);
@@ -357,28 +364,28 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setUpdateRangeValues(false);
     }
 */
-    const onTickerChangeHandler = (tickerValue:string,startDate:string,endDate:string,adjustedStartDate:string) => {
+    const onTickerChangeHandler = useCallback((tickerValue:string,startDate:string,endDate:string,adjustedStartDate:string) => {
         if ((tickerValue.trim().length > 0)&&
             (startDate.trim().length > 0) &&
             (endDate.trim().length > 0))        {
             // looks like a couple of guys that need a reducer
-            
+
             setTickerToGet(tickerValue.trim());
             setStartDate(startDate.trim());
             setEndDate(endDate.trim());
             setAdjustedStartDate(adjustedStartDate.trim());
 
-            
+
 
             setUpdateTickerValue(true);
 
-            
+
             props.onSetHeader( props.baseHeader + " - " + tickerValue.trim());
-            //console.log("tickerValue: " + tickerValue + ", startDate: " + startDate + ", endDate: " + endDate); 
-            
-            
+            //console.log("tickerValue: " + tickerValue + ", startDate: " + startDate + ", endDate: " + endDate);
+
+
         }
-    }
+    }, [props.onSetHeader, props.baseHeader])
 
     useEffect(() => {  
             //console.log("Reset startDate to: " +startDate)
@@ -470,24 +477,24 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
     }, [props.onSetHeader, props.baseHeader, props.onSelectTickerButtonHandler])
 
-    const calculateProfitLossButtonHandler = () =>
+    const calculateProfitLossButtonHandler = useCallback(() =>
     {
       // need to add this back in
       // return a string and be done with it
 
       //setCalculatedTotalProfitLoss(calculateOverallProfitAndLoss(props.tickerEntries));
       calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
-    }
+    }, [props.tickerEntries])
 
 
 
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
-    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
+    const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
     {
         //console.log("onSetCurrentQuote" );
         //console.log("currentQuoteIn" + currentQuoteIn);
         setCurrentQuote(currentQuoteIn);
-        setTimeSeries(timeSeriesIn); 
+        setTimeSeries(timeSeriesIn);
         setAdjustedTimeSeries(adjustedTimeSeriesIn);
         setProfitLoss(currentQuoteIn)
         //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
@@ -499,7 +506,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
 
-        
+
         if(timeSeriesIn.length>0)
         {
             setLastReferenceClosingPrice(timeSeriesIn[0].close.toFixed(2))
@@ -509,7 +516,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('timeSeriesIn[0].close: ' + timeSeriesIn[0].close + ', timeSeriesIn[timeSeriesIn.length-1].close: '+timeSeriesIn[timeSeriesIn.length-1].close)
         }
 
-    }
+    }, [])
 
     const setProfitLoss = (currentQuoteIn:Quote_V3)=> {
       //console.log("setProfitLoss" );
@@ -531,9 +538,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
-    const bollingerChangeHandler = () => {
+    const bollingerChangeHandler = useCallback(() => {
         setBollingerChecked(!bollingerChecked);
-    };
+    }, [bollingerChecked]);
 
     const [larryWilliamsChecked, setLarryWilliamsChecked] = React.useState(false);
 
@@ -543,19 +550,19 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [rsiChecked, setRsiChecked] = React.useState(false);
 
-    const rsiChangeHandler = () => {
+    const rsiChangeHandler = useCallback(() => {
         setRsiChecked(!rsiChecked);
-    };
+    }, [rsiChecked]);
 
     const [stochasticChecked, setStochasticChecked] = React.useState(false);
-    const stochasticChangeHandler = () => {
+    const stochasticChangeHandler = useCallback(() => {
         setStochasticChecked(!stochasticChecked);
-    };
+    }, [stochasticChecked]);
 
     const [priceEquityChecked, setPriceEquityChecked] = React.useState(false);
-    const priceEquityChangeHandler = () => {
+    const priceEquityChangeHandler = useCallback(() => {
         setPriceEquityChecked(!priceEquityChecked);
-    };
+    }, [priceEquityChecked]);
 
 
 
@@ -719,12 +726,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                             width={graphWidth}
                             height={275}
                             data={graphData}
-                            margin={{
-                                top: 5,
-                                right: 5,
-                                left: 5,
-                                bottom: 5
-                            }}
+                            margin={chartMargin}
                             lineWidth={widthOfStroke}
                             showBollingerbands={bollingerChecked}
                             showMean={bollingerChecked}>
@@ -746,12 +748,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                             width={graphWidth}
                             height={175}
                             data={rsiData}
-                            margin={{
-                                top: 5,
-                                right: 5,
-                                left: 5,
-                                bottom: 5
-                            }}
+                            margin={chartMargin}
                             lineWidth={widthOfStroke}
                             overBought={70}
                             overSold={30}>
@@ -767,12 +764,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                             width={graphWidth}
                             height={175}
                             data={larryWilliamsData}
-                            margin={{
-                                top: 5,
-                                right: 5,
-                                left: 5,
-                                bottom: 5
-                            }}
+                            margin={chartMargin}
                             lineWidth={widthOfStroke}
                             overBought={-20}
                             overSold={-80}>
@@ -793,12 +785,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                             width={graphWidth}
                             height={175}
                             data={stochasticData}
-                            margin={{
-                                top: 5,
-                                right: 5,
-                                left: 5,
-                                bottom: 5
-                            }}
+                            margin={chartMargin}
                             lineWidth={widthOfStroke}
                             overBought={80}
                             overSold={20}>
