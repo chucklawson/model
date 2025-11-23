@@ -13,11 +13,11 @@ interface  StatementKeyMetricsProps{
 }
 
 const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
-  
-    const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
-    const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${props.stockSymbol}?apikey=${uniqueValue}`;
-    const statementAnalysisKeyMetrics = `https://financialmodelingprep.com/api/v3/key-metrics/${props.stockSymbol}?period=${props.period}&apikey=${uniqueValue}`
-    
+
+    const apiKey = import.meta.env.VITE_FMP_API_KEY;
+    const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${props.stockSymbol}?apikey=${apiKey}`;
+    const statementAnalysisKeyMetrics = `https://financialmodelingprep.com/api/v3/key-metrics/${props.stockSymbol}?period=${props.period}&apikey=${apiKey}`
+
     //console.log('currentInfo:  ' + currentInfo)
     //console.log('thetimeSeriesQuote:  ' + timeSeries)
     //console.log('props.stockSymbol: ' + props.stockSymbol)

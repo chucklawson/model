@@ -13,11 +13,11 @@ import type HistoricalDividendData from "../../Lib/DividendData/HistoricalDivide
    onSetCurrentQuote(currentQuoteIn:Quote_V3,dividendDataIn:HistoricalDividendData[]):void;
  }
 const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
-  
-    const uniqueValue = '25a5fa6deb331d46e42609787aa281fe';    
-    const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${props.stockSymbol}?apikey=${uniqueValue}`;
-    const dividendInfo = `https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/${props.stockSymbol}?apikey=${uniqueValue}`;
-    
+
+    const apiKey = import.meta.env.VITE_FMP_API_KEY;
+    const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${props.stockSymbol}?apikey=${apiKey}`;
+    const dividendInfo = `https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/${props.stockSymbol}?apikey=${apiKey}`;
+
     //console.log('currentInfo:  ' + currentInfo)
     //console.log('dividendInfo:  ' + dividendInfo)
 
