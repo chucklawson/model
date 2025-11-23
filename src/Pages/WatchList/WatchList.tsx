@@ -276,9 +276,9 @@ function WatchList() {
     setHeaderValue(headerValueIn)
   }
 
-  const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
+  const onSetTodaysPercentageChange = (percentageChange:number, isChangePositive:boolean) => {
     setTodaysPercentageChange(Number(percentageChange.toFixed(2)));
-    setIsTodaysChangePositive(isChnagePositive);
+    setIsTodaysChangePositive(isChangePositive);
   }
 
   const onSetSlope = (slopeIn:number) => {

@@ -36,7 +36,7 @@ export default interface AnalysisKeyMetricsItem_V3 {
   dividendYield:  number,
   payoutRatio:  number,
   salesGeneralAndAdministrativeToRevenue:  number,
-  researchAndDdevelopementToRevenue:  number,
+  researchAndDevelopmentToRevenue:  number,
   intangiblesToTotalAssets:  number,
   capexToOperatingCashFlow:  number,
   capexToRevenue:  number,

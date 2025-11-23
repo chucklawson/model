@@ -37,7 +37,7 @@
           dividendYield: number;
           payoutRatio:  number;
           salesGeneralAndAdministrativeToRevenue:  number;
-          researchAndDdevelopementToRevenue:  number;
+          researchAndDevelopmentToRevenue:  number;
           intangiblesToTotalAssets:  number;
           capexToOperatingCashFlow:  number;
           capexToRevenue:  number;
@@ -109,7 +109,7 @@
                    //this.dividendYieldPercentage=dataObjectIn.dividendYieldPercentage;
                    this.payoutRatio=dataObjectIn.payoutRatio;
                    this.salesGeneralAndAdministrativeToRevenue=dataObjectIn.salesGeneralAndAdministrativeToRevenue;
-                   this.researchAndDdevelopementToRevenue=dataObjectIn.researchAndDdevelopementToRevenue;
+                   this.researchAndDevelopmentToRevenue=dataObjectIn.researchAndDevelopmentToRevenue;
                    //this.researchAndDevelopementToRevenue=dataObjectIn.researchAndDevelopementToRevenue;
                    this.intangiblesToTotalAssets=dataObjectIn.intangiblesToTotalAssets;
                    this.capexToOperatingCashFlow=dataObjectIn.capexToOperatingCashFlow;

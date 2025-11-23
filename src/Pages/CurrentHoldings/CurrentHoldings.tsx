@@ -228,10 +228,10 @@ function CurrentHoldings() {
     setHeaderValue(headerValueIn)
   }
 
-  const onSetTodaysPercentageChange = (percentageChange:number, isChnagePositive:boolean) => {
-    //console.log("Todays percentageChange: " + percentageChange +", isChnagePositive: " +isChnagePositive)
+  const onSetTodaysPercentageChange = (percentageChange:number, isChangePositive:boolean) => {
+    //console.log("Todays percentageChange: " + percentageChange +", isChangePositive: " +isChangePositive)
     setTodaysPercentageChange(Number(percentageChange.toFixed(2)));
-    setIsTodaysChangePositive(isChnagePositive);
+    setIsTodaysChangePositive(isChangePositive);
   }
 
   const onSetSlope = (slopeIn:number) => {

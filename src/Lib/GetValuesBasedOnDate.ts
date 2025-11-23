@@ -92,22 +92,22 @@ export class GetValuesBasedOnDate {
 
     findTheHighValueBasedOnDate(dateToLocate:Date,timeSeries:HistoricalPriceFull_V3[])
     {
-        let hightValue=0.0;
+        let highValue=0.0;
         //console.log('findTheHighValueBasedOnDate, dateToLocate: ' + dateToLocate.toLocaleDateString());
         for(let i=0;i<timeSeries.length;++i)
         {
             const tempDate=new Date(timeSeries[i].date)
             if(tempDate>dateToLocate)
             {
-                //if( parseFloat(timeSeries[i].adjClose) > hightValue)
-                if(timeSeries[i].adjClose > hightValue)
+                //if( parseFloat(timeSeries[i].adjClose) > highValue)
+                if(timeSeries[i].adjClose > highValue)
                 {
-                    hightValue = timeSeries[i].adjClose;
-                    //console.log('Set high value: ' + hightValue);
+                    highValue = timeSeries[i].adjClose;
+                    //console.log('Set high value: ' + highValue);
                 }
             }
         }
-        return hightValue;
+        return highValue;
     }
 
     convertDateForDateInputPicker(dateIn:Date):string

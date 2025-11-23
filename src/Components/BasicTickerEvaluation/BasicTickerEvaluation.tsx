@@ -42,7 +42,7 @@ interface  BasicTickerEvaluationProps{
   onSelectTickerButtonHandler(tickerToEvaluate:string):void;
   onSetHeader(headerValueIn:string):void;
   baseHeader:string;
-  onSetTodaysPercentageChange(percentageChange:number, isChnagePositive:boolean):void
+  onSetTodaysPercentageChange(percentageChange:number, isChangePositive:boolean):void
   onSetSlope(slopeIn:number):void
   tickerEntries:TickersToEvaluate[];
   backgroundLeft:string;
@@ -56,7 +56,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [tickerToGet, setTickerToGet] = useState('');
     const [totalCost, setTotalCost]=useState(0.0);
-    const [currentQuantityOnHand,setCurrentQuantitOnHand]=useState(0.0);
+    const [currentQuantityOnHand,setCurrentQuantityOnHand]=useState(0.0);
     const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
     const [percentGainLoss,setPercentGainLoss]=useState(0.0);
     const [startDate, setStartDate] = useState('');
@@ -67,7 +67,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [graphData, setGraphData] = useState<StandardCharData[]>([]);
     const [rsiData, setRsiData] = useState<RSIChartData[]>([]);
-    const [lwData, setLwData] = useState({});
+    const [larryWilliamsData, setLarryWilliamsData] = useState({});
 
     const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([]);
 
@@ -106,7 +106,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     
     const [updateRangeValues, setUpdateRangeValues] = useState(false);
     const [gainIsPositive, setGainIsPositive] = useState(false);
-    const [currentQuote, setcurrentQuote] = useState <Quote_V3>({           symbol: "",
+    const [currentQuote, setCurrentQuote] = useState <Quote_V3>({           symbol: "",
                                                                             name: "",
                                                                             price: 0,
                                                                             changesPercentage: 0,
@@ -192,7 +192,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       dividendYield: 0,
       payoutRatio: 0,
       salesGeneralAndAdministrativeToRevenue: 0,
-      researchAndDdevelopementToRevenue: 0,
+      researchAndDevelopmentToRevenue: 0,
       intangiblesToTotalAssets: 0,
       capexToOperatingCashFlow: 0,
       capexToRevenue: 0,
@@ -228,7 +228,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     // To reduce warnings/errors
   useEffect(() => {
-    setCurrentQuantitOnHand(currentQuantityOnHand);
+    setCurrentQuantityOnHand(currentQuantityOnHand);
     setClassValuesLeft('');
     let tempString:string = startDate;
     tempString = endDate;
@@ -248,7 +248,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setBuyPoints(buyPoints);
     setAdjustedTimeSeries(adjustedTimeSeries);
     setGainIsPositive(gainIsPositive);
-    setcurrentQuote(currentQuote);
+    setCurrentQuote(currentQuote);
     setUpdateRangeValues(updateRangeValues);
     setTimeSeries(timeSeries);
     setLastReferenceClosingPrice(lastReferenceClosingPrice);
@@ -257,10 +257,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setPercentGainLoss(percentGainLoss);
     setGraphData(graphData);
     setRsiData(rsiData);
-    setLwData(lwData);
+    setLarryWilliamsData(larryWilliamsData);
     setPriceEarningsData(priceEarningsData);
     setStochasticData(stochasticData);
-    setLwChecked(lwChecked);
+    setLarryWilliamsChecked(larryWilliamsChecked);
     setSlope(slope);
 
   }, []);
@@ -463,7 +463,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const selectTickerButtonHandler = (tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
         setTickerToGet(tickerIn);
         setUpdateTickerValue(true);
-        setCurrentQuantitOnHand(currentQuantityOnHandIn)
+        setCurrentQuantityOnHand(currentQuantityOnHandIn)
         setTotalCost(totalCostIn)
         props.onSetHeader(props.baseHeader + " - " + tickerIn);
         props.onSelectTickerButtonHandler(tickerIn)
@@ -486,7 +486,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     {
         //console.log("onSetCurrentQuote" );
         //console.log("currentQuoteIn" + currentQuoteIn);
-        setcurrentQuote(currentQuoteIn);
+        setCurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn); 
         setAdjustedTimeSeries(adjustedTimeSeriesIn);
         setProfitLoss(currentQuoteIn)
@@ -535,10 +535,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setBollingerChecked(!bollingerChecked);
     };
 
-    const [lwChecked, setLwChecked] = React.useState(false);
+    const [larryWilliamsChecked, setLarryWilliamsChecked] = React.useState(false);
 
     //const lwChangeHandler = () => {
-    //    setLwChecked(!lwChecked);
+    //    setLarryWilliamsChecked(!larryWilliamsChecked);
     //};
 
     const [rsiChecked, setRsiChecked] = React.useState(false);
@@ -590,10 +590,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 setRsiData(calculateAverages.getRsiChartData(timeSeries,adjustedTimeSeries)!)
             }
 
-            if(lwChecked)
+            if(larryWilliamsChecked)
             {
                 //console.log("Generating LW")
-                //setLwData(getLwChartData(larryWilliams,startDate,endDate))
+                //setLarryWilliamsData(getLwChartData(larryWilliams,startDate,endDate))
             }
 
             if(stochasticChecked)
@@ -610,7 +610,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log("Calling setGraphData")
             setGraphData( newData! )
         }
-    }, [currentQuote, timeSeries, bollingerChecked,lwChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
+    }, [currentQuote, timeSeries, bollingerChecked,larryWilliamsChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
 
 
 
@@ -761,12 +761,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 <React.Fragment />}
 
               {/*
-                {(lwData)&&(lwChecked === true) ?
+                {(larryWilliamsData)&&(larryWilliamsChecked === true) ?
                 <div className='ml-20 mt-5'>
                     <LarryWilliamsChart
                             width={graphWidth}
                             height={175}
-                            data={lwData}
+                            data={larryWilliamsData}
                             margin={{
                                 top: 5,
                                 right: 5,

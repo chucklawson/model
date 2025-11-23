@@ -66,7 +66,7 @@ export function buildRowTitles():string[]
     //rows = setRowTitle(rows,"dividendYieldPercentage")
     rows = setRowTitle(rows,"payoutRatio")
     rows = setRowTitle(rows,"salesGeneralAndAdministrativeToRevenue")
-    rows = setRowTitle(rows,"researchAndDdevelopementToRevenue")
+    rows = setRowTitle(rows,"researchAndDevelopmentToRevenue")
     rows = setRowTitle(rows,"intangiblesToTotalAssets")
     rows = setRowTitle(rows,"capexToOperatingCashFlow")
     rows = setRowTitle(rows,"capexToRevenue")

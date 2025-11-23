@@ -33,23 +33,23 @@ import StandardChartData from "../Lib/ChartData/StandardChartData.ts";
                     </InvestmentComposedChar>
 
 */}
-interface margin{
+interface Margin{
   top: number;
   right: number;
   left: number;
   bottom: number;
 }
-interface InvestmentComposedCharProps{
+interface InvestmentComposedChartProps{
 
   width:number,
   height:number,
   data: StandardChartData[],
-  margin: margin,
+  margin: Margin,
   lineWidth: number,
   showBollingerbands: boolean,
   showMean: boolean,
 }
-const InvestmentComposedChar = (props:InvestmentComposedCharProps) => {
+const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
 
     return (
         <div>

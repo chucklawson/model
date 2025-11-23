@@ -24,7 +24,7 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
     //console.log('props.period: ' + props.period)
 
 
-    const [currentQuote, setcurrentQuote] = useState({});
+    const [currentQuote, setCurrentQuote] = useState({});
     //const [timeSeriesEntries, setTimeSeriesEntries] = useState({});
     //const [adjustedTimeSeriesEntries, setAdjustedTimeSeriesEntries] = useState({});
     //const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState({});
@@ -55,7 +55,7 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
         //console.log("The data: " + data);
         if(data[0][0].symbol !== undefined){
           // currently sets the quote data
-          setDatObjet(data[0][0],data[1])
+          setDataObject(data[0][0],data[1])
 
           //console.log('The object being set at data[0][0]: '+ JSON.stringify(data[0][0]))
           //console.log('The object being set at data[1]: '+ JSON.stringify(data[1]))
@@ -87,9 +87,9 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
     },[currentInfo,statementAnalysisKeyMetrics])
 
 
-    const setDatObjet = (theQuote:Quote_V3,statmentAnalysis:StatementAnalysisKeyMetricsData[])=>{
+    const setDataObject = (theQuote:Quote_V3,statmentAnalysis:StatementAnalysisKeyMetricsData[])=>{
        // console.log("setting data symbol as: " + data.symbol)
-        setcurrentQuote(theQuote)        
+        setCurrentQuote(theQuote)        
         
         //setStatementAnalysisKeyMetricsEntries(statementAnalysisKeyMetrics);
         props.onSetCurrentQuote(theQuote,statmentAnalysis);

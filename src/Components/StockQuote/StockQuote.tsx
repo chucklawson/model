@@ -26,7 +26,7 @@ const StockQuote = (props:StockQuoteProps) => {
     //console.log('props.stockSymbol: ' + props.stockSymbol)
 
 /*
-    const [currentQuote, setcurrentQuote] = useState <Quote_V3>(
+    const [currentQuote, setCurrentQuote] = useState <Quote_V3>(
       {
         symbol: "",
       name: "",
@@ -51,7 +51,7 @@ const StockQuote = (props:StockQuoteProps) => {
       sharesOutstanding: 0,
       timestamp: 0});
 */
-    const [currentQuote, setcurrentQuote] = useState <Quote_V3>();
+    const [currentQuote, setCurrentQuote] = useState <Quote_V3>();
     const [timeSeriesEntries, setTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
     const [adjustedTimeSeriesEntries, setAdjustedTimeSeriesEntries] = useState<HistoricalPriceFull_V3[]>([]);
     const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState<AnalysisKeyMetricsItem_V3[]>([]);
@@ -93,8 +93,8 @@ const StockQuote = (props:StockQuoteProps) => {
         if(data[0][0].symbol !== undefined){
 
           // currently sets the quote data
-          //setDatObjet(data[0][0],data[1].historical,data[2].historical,data[3],data[4])
-          //setDatObjet(data[0][0],data[1].historical,data[2].historical,data[3])
+          //setDataObject(data[0][0],data[1].historical,data[2].historical,data[3],data[4])
+          //setDataObject(data[0][0],data[1].historical,data[2].historical,data[3])
           //sets Quote_V3
           //console.log('The object: '+ JSON.stringify(data[0]))
           const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
@@ -115,7 +115,7 @@ const StockQuote = (props:StockQuoteProps) => {
           const aStatementAnalysis: AnalysisKeyMetricsItem_V3[] = parsedStatmentAnalysiss;
           //console.log('aStatementAnalysis averageReceivables: ' + aStatementAnalysis[0].averageReceivables);
 
-          setDatObjet(aQuote,aTimeSeries,aAdjustedTimeSeries,aStatementAnalysis)
+          setDataObject(aQuote,aTimeSeries,aAdjustedTimeSeries,aStatementAnalysis)
 
 
           //console.log('The Second object: '+ JSON.stringify(data[1]))
@@ -143,20 +143,20 @@ const StockQuote = (props:StockQuoteProps) => {
       },[currentInfo,timeSeries,adjustedTimeSeries,statementAnalysisKeyMetrics])
 
 
-    //const setDatObjet = (theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams)=>{
-    const setDatObjet = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:AnalysisKeyMetricsItem_V3[])=>{
+    //const setDataObject = (theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams)=>{
+    const setDataObject = (theQuote:Quote_V3,timeSeries:HistoricalPriceFull_V3[],adjustedTimeSeries:HistoricalPriceFull_V3[],statmentAnalysis:AnalysisKeyMetricsItem_V3[])=>{
 
         setTimeSeriesEntries(timeSeries);
         setAdjustedTimeSeriesEntries(adjustedTimeSeries);
         setStatementAnalysisKeyMetricsEntries(statmentAnalysis);
         //console.log("theQuote: " + theQuote.open)
-        setcurrentQuote(theQuote)
+        setCurrentQuote(theQuote)
         //setLarryWilliamsEntries(larryWilliams);
         //props.onSetCurrentQuote(theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis,larryWilliams);
         props.onSetCurrentQuote(theQuote,timeSeries,adjustedTimeSeries,statmentAnalysis);
     }
     /*
-  const [currentQuote, setcurrentQuote] = useState({});
+  const [currentQuote, setCurrentQuote] = useState({});
   const [timeSeriesEntries, setTimeSeriesEntries] = useState({});
   const [adjustedTimeSeriesEntries, setAdjustedTimeSeriesEntries] = useState({});
   const [statementAnalysisKeyMetricsEntries,setStatementAnalysisKeyMetricsEntries]= useState({});

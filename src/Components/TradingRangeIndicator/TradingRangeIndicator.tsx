@@ -6,7 +6,7 @@
   <TradingRangeIndicator heading="Today's Range" lowRangeValue={lowRangeValue} rangeValue={rangeValue} highRangeValue={highRangeValue} currentQuote={currentQuote} currentValues={true} />
 </div>
 */}
-interface propsForTradingRangeIndicator{
+interface TradingRangeIndicatorProps{
   heading:string;
   lowRangeValue:string;
   rangeValue:string;
@@ -14,7 +14,7 @@ interface propsForTradingRangeIndicator{
   currentQuote:Quote_V3;
   currentValues:boolean;
 }
-const TradingRangeIndicator = (props:propsForTradingRangeIndicator)=> {
+const TradingRangeIndicator = (props:TradingRangeIndicatorProps)=> {
   
     return (
         <div className="h-1 mt-5 mb-30">       

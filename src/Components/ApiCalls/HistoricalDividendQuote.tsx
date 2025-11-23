@@ -22,11 +22,11 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
     //console.log('dividendInfo:  ' + dividendInfo)
 
 
-    const [currentQuote, setcurrentQuote] = useState({});
-    const [dividentEntries,setDividentEntries]= useState({});
+    const [currentQuote, setCurrentQuote] = useState({});
+    const [dividentEntries,setDividendEntries]= useState({});
 
   useEffect(() => {
-    setDividentEntries(dividentEntries);
+    setDividendEntries(dividentEntries);
     }, []);
 
     useEffect(() => { 
@@ -51,8 +51,8 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
         if(data[0][0].symbol !== undefined) {
 
           // currently sets the quote data
-          //setDatObjet(data[0][0],data[1].historical,data[2].historical,data[3],data[4])
-          //setDatObjet(data[0][0],data[1].historical,data[2].historical,data[3])
+          //setDataObject(data[0][0],data[1].historical,data[2].historical,data[3],data[4])
+          //setDataObject(data[0][0],data[1].historical,data[2].historical,data[3])
           //sets Quote_V3
           //console.log('The object: '+ JSON.stringify(data[0]))
           const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
@@ -64,13 +64,13 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
 
           //console.log('aSetOfHistoricalDividendData.length: ' + aSetOfHistoricalDividendData.length);
 
-          setDatObjet(aQuote, aSetOfHistoricalDividendData)
-          //setDatObjet(aQuote,data[1])
+          setDataObject(aQuote, aSetOfHistoricalDividendData)
+          //setDataObject(aQuote,data[1])
 
           /*
           if(data[0][0].symbol !== undefined){
             // currently sets the quote data
-            setDatObjet(data[0][0],data[1])
+            setDataObject(data[0][0],data[1])
             //console.log('The object: '+ JSON.stringify(data[0]))
             //console.log('The Second object length: '+ data[1].length)
             //console.log('The Second object: '+ JSON.stringify(data[1]))
@@ -86,11 +86,11 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
     },[currentInfo,dividendInfo])
 
 
-    const setDatObjet = (theQuote:Quote_V3,dividendData:HistoricalDividendData[])=>{
+    const setDataObject = (theQuote:Quote_V3,dividendData:HistoricalDividendData[])=>{
        // console.log("setting data symbol as: " + data.symbol)
-        setcurrentQuote(theQuote)        
-        setDividentEntries(dividendData);
-        //console.log('setDatObjet dividendData[0].dividend: ' + dividendData[0].dividend)
+        setCurrentQuote(theQuote)        
+        setDividendEntries(dividendData);
+        //console.log('setDataObject dividendData[0].dividend: ' + dividendData[0].dividend)
         //console.log('dividendData: ' + JSON.stringify(dividendData))
 
         props.onSetCurrentQuote(theQuote,dividendData);
