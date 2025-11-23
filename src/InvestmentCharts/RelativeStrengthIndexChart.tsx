@@ -1,5 +1,4 @@
-
-
+import { memo } from 'react';
 import {
     LineChart,
     Line,
@@ -78,5 +77,5 @@ interface RelativeStrengthIndexChartProps{
     );
 
   };
-  
-  export default RelativeStrengthIndexChart; 
+
+  export default memo(RelativeStrengthIndexChart); 

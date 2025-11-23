@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3"
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
@@ -460,7 +460,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
     };
 
-    const selectTickerButtonHandler = (tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
+    const selectTickerButtonHandler = useCallback((tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
         setTickerToGet(tickerIn);
         setUpdateTickerValue(true);
         setCurrentQuantityOnHand(currentQuantityOnHandIn)
@@ -468,7 +468,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         props.onSetHeader(props.baseHeader + " - " + tickerIn);
         props.onSelectTickerButtonHandler(tickerIn)
         //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
-    }
+    }, [props.onSetHeader, props.baseHeader, props.onSelectTickerButtonHandler])
 
     const calculateProfitLossButtonHandler = () =>
     {

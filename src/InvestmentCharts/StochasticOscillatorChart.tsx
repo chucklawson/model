@@ -1,5 +1,4 @@
-
-
+import { memo } from 'react';
 import {
     LineChart,
     Line,
@@ -81,5 +80,5 @@ overSold: number;
     );
 
   };
-  
-  export default StochasitcOscillatorChart; 
+
+  export default memo(StochasitcOscillatorChart); 

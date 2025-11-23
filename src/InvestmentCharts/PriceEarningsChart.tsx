@@ -1,5 +1,4 @@
-
-
+import { memo } from 'react';
   import { BarChart,
       Bar,
       XAxis,
@@ -67,5 +66,5 @@ interface PriceEarningsChartProps {
     );
 
   };
-  
-  export default PriceEarningsChart; 
+
+  export default memo(PriceEarningsChart); 

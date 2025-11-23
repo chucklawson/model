@@ -1,4 +1,4 @@
-﻿import  { useState, useEffect } from 'react';
+﻿import  { useState, useEffect, useCallback, memo } from 'react';
 //import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
 
@@ -22,16 +22,16 @@ const TickerButton = (props:TickerButtonProps) => {
 
 
  const [buttonClassValues,setButtonClassValues] = useState('')
-  
- const onSelectHandler = ()=> {
+
+ const onSelectHandler = useCallback(()=> {
      {/*props.selectTickerButtonHandler(event.target.innerText);*/}
      const totalCost=props.currentQuantityOnHand*Number(props.costBasis)
-     
-     props.selectTickerButtonHandler(props.ticker,      
+
+     props.selectTickerButtonHandler(props.ticker,
       Number(props.currentQuantityOnHand.toFixed(3)),
       Number(totalCost.toFixed(2))
       )
-  };
+  }, [props.selectTickerButtonHandler, props.ticker, props.currentQuantityOnHand, props.costBasis]);
 
   useEffect(() => {  
     setButtonClassValues(props.backgroundColor+' p-1 rounded-md ml-2 mr-2 mt-1 text-white hover:text-black transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-stone-200 duration-300')
@@ -59,4 +59,4 @@ const TickerButton = (props:TickerButtonProps) => {
   );
 };
 
-export default TickerButton;
+export default memo(TickerButton);

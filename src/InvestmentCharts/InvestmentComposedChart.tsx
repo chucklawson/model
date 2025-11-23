@@ -1,6 +1,5 @@
 
-
-
+import { memo } from 'react';
 import {
     ComposedChart,
     Line,
@@ -93,4 +92,4 @@ const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
       );
 };
 
-export default InvestmentComposedChar;
+export default memo(InvestmentComposedChar);
