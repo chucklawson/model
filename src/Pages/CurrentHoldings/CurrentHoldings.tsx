@@ -22,8 +22,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "QQQ",
-      costBasis: '596.99',
-      unitsOnHand: 4,
+      costBasis: '596.27',
+      unitsOnHand: 7,
       calculateAccumulatedProfitLoss: false,
       baseYield: ''
     },
