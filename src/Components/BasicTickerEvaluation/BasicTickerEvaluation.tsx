@@ -486,7 +486,23 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       calculateOverallProfitAndLoss(props.tickerEntries,setCalculatedTotalProfitLoss);
     }, [props.tickerEntries])
 
-
+    const setProfitLoss = useCallback((currentQuoteIn:Quote_V3)=> {
+      //console.log("setProfitLoss" );
+      let profitLoss = 0.0;
+      if (currentQuantityOnHand !== 0) {
+        profitLoss = ((currentQuoteIn.price * currentQuantityOnHand) - totalCost)
+      }
+      setProfitLossOneEntry(Number(profitLoss.toFixed(2)))
+      let percentGainLoss = 0.0;
+      if (totalCost !== 0.0) {
+        percentGainLoss = (profitLoss / totalCost) * 100.0;
+      }
+      if ((!isNaN(percentGainLoss)) && (percentGainLoss !== 0.0)) {
+        setPercentGainLoss(Number(percentGainLoss.toFixed(2)))
+      } else {
+        setPercentGainLoss(0)
+      }
+    }, [currentQuantityOnHand, totalCost])
 
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
     const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
@@ -517,24 +533,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
 
     }, [setProfitLoss])
-
-    const setProfitLoss = useCallback((currentQuoteIn:Quote_V3)=> {
-      //console.log("setProfitLoss" );
-      let profitLoss = 0.0;
-      if (currentQuantityOnHand !== 0) {
-        profitLoss = ((currentQuoteIn.price * currentQuantityOnHand) - totalCost)
-      }
-      setProfitLossOneEntry(Number(profitLoss.toFixed(2)))
-      let percentGainLoss = 0.0;
-      if (totalCost !== 0.0) {
-        percentGainLoss = (profitLoss / totalCost) * 100.0;
-      }
-      if ((!isNaN(percentGainLoss)) && (percentGainLoss !== 0.0)) {
-        setPercentGainLoss(Number(percentGainLoss.toFixed(2)))
-      } else {
-        setPercentGainLoss(0)
-      }
-    }, [currentQuantityOnHand, totalCost])
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
