@@ -516,9 +516,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('timeSeriesIn[0].close: ' + timeSeriesIn[0].close + ', timeSeriesIn[timeSeriesIn.length-1].close: '+timeSeriesIn[timeSeriesIn.length-1].close)
         }
 
-    }, [])
+    }, [setProfitLoss])
 
-    const setProfitLoss = (currentQuoteIn:Quote_V3)=> {
+    const setProfitLoss = useCallback((currentQuoteIn:Quote_V3)=> {
       //console.log("setProfitLoss" );
       let profitLoss = 0.0;
       if (currentQuantityOnHand !== 0) {
@@ -534,7 +534,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       } else {
         setPercentGainLoss(0)
       }
-    }
+    }, [currentQuantityOnHand, totalCost])
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
@@ -635,7 +635,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             const Y2forSlope:number=graphData[graphData.length-2].expMovingAverage;
             //console.log('Y2forSlope: ' + Y2forSlope)
             const tempSlope=(Y1forSlope-Y2forSlope)
-            console.log('tempSlope: ' + tempSlope)
+            //console.log('tempSlope: ' + tempSlope)
             props.onSetSlope(Number(tempSlope.toFixed(2)))
             setSlope(Number(tempSlope.toFixed(2)))
         }
@@ -949,9 +949,5 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     </div>
 };
-
-
-
-
 
 export default BasicTickerEvaluaton;
