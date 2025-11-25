@@ -10,7 +10,7 @@ import { CalculateAverages } from '../Lib/CalculateAverages/CalculateAverages';
 interface UseTechnicalIndicatorsParams {
   timeSeries: HistoricalPriceFull_V3[];
   adjustedTimeSeries: HistoricalPriceFull_V3[];
-  statmentAnalysisKeyMetrics: AnalysisKeyMetricsItem_V3[];
+  statementAnalysisKeyMetrics: AnalysisKeyMetricsItem_V3[];
   bollingerChecked: boolean;
   rsiChecked: boolean;
   stochasticChecked: boolean;
@@ -28,7 +28,7 @@ interface UseTechnicalIndicatorsResult {
 export function useTechnicalIndicators({
   timeSeries,
   adjustedTimeSeries,
-  statmentAnalysisKeyMetrics,
+  statementAnalysisKeyMetrics,
   bollingerChecked,
   rsiChecked,
   stochasticChecked,
@@ -69,12 +69,12 @@ export function useTechnicalIndicators({
 
       // Calculate Price to Earnings if checked
       if (priceEquityChecked) {
-        setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statmentAnalysisKeyMetrics)!);
+        setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statementAnalysisKeyMetrics)!);
       }
 
       setGraphData(newData!);
     }
-  }, [timeSeries, adjustedTimeSeries, statmentAnalysisKeyMetrics, bollingerChecked, rsiChecked, stochasticChecked, priceEquityChecked]);
+  }, [timeSeries, adjustedTimeSeries, statementAnalysisKeyMetrics, bollingerChecked, rsiChecked, stochasticChecked, priceEquityChecked]);
 
   // Calculate slope from graph data
   useEffect(() => {

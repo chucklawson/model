@@ -10,7 +10,7 @@ import { useKeyMetrics } from '../../hooks/useKeyMetrics';
 interface  StatementKeyMetricsProps{
   stockSymbol: string;
   period: string;
-  onSetCurrentQuote(currentQuoteIn:Quote_V3,statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):void;
+  onSetCurrentQuote(currentQuoteIn:Quote_V3,statementAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):void;
 }
 
 const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {

@@ -6,15 +6,15 @@ interface rowValues{
 }
 
 
-export function loadStatmentMetricsData(statmentAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):StatementAnalysisKeyMetricsData[]
+export function loadStatmentMetricsData(statementAnalysisKeyMetrics:StatementAnalysisKeyMetricsData[]):StatementAnalysisKeyMetricsData[]
 {
     const statementData:StatementAnalysisKeyMetricsData[] = [];
 
-    if((statmentAnalysisKeyMetrics!=null) && (statmentAnalysisKeyMetrics.length !== undefined))
+    if((statementAnalysisKeyMetrics!=null) && (statementAnalysisKeyMetrics.length !== undefined))
     {
-        for(let i=0;i<statmentAnalysisKeyMetrics.length;++i)
+        for(let i=0;i<statementAnalysisKeyMetrics.length;++i)
         {
-            const statementAnalysisKeyMetricsData = new StatementAnalysisKeyMetricsData(statmentAnalysisKeyMetrics[i])
+            const statementAnalysisKeyMetricsData = new StatementAnalysisKeyMetricsData(statementAnalysisKeyMetrics[i])
             statementData.push(statementAnalysisKeyMetricsData);            
         }
     }

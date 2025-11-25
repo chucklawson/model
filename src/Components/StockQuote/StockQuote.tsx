@@ -7,7 +7,7 @@ import { useStockQuote } from '../../hooks/useStockQuote';
 
 interface  StockQuoteProps{
   stockSymbol: string;
-  onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[] ):void;
+  onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statementAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[] ):void;
   latestStartDate: string;
   latestEndDate: string;
   adjustedStartDate: string;

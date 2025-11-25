@@ -59,7 +59,7 @@ export async function calculateOverallProfitAndLoss(tickerEntries:TickersToEvalu
   return;
 }
 
-function calculalteCost(tickerEntriesToSum:CostEntry[])
+function calculateCost(tickerEntriesToSum:CostEntry[])
 {
     let totalCost=0.0;
     for(let i=0;i<tickerEntriesToSum.length;++i)
@@ -67,7 +67,7 @@ function calculalteCost(tickerEntriesToSum:CostEntry[])
         totalCost+=Number(tickerEntriesToSum[i].unitsPurchased)*Number(tickerEntriesToSum[i].cost);
         //console.log("ticker: " + tickerEntriesToSum[i].ticker + ", unitsPurchased: " + tickerEntriesToSum[i].unitsPurchased + ", cost: "+ tickerEntriesToSum[i].cost)
     }
-    //console.log("calculalteCost totalCost: " + totalCost);
+    //console.log("calculateCost totalCost: " + totalCost);
     return totalCost;
 }
 
@@ -106,11 +106,11 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
   }
 */
 
-    const totalCost=calculalteCost(tickerEntriesToSum)
+    const totalCost=calculateCost(tickerEntriesToSum)
 
-    const totalValue=calculalteCurrentValue(currentQuote,tickerEntriesToSum)
+    const totalValue=calculateCurrentValue(currentQuote,tickerEntriesToSum)
 
-    const totalPreviousValue=calculaltePreviosValue(currentQuote,tickerEntriesToSum)
+    const totalPreviousValue=calculatePreviousValue(currentQuote,tickerEntriesToSum)
 
     let gainLossPercentage= 0.0;
     if(totalCost!==0.0)
@@ -127,7 +127,7 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
 
 }
 
-function calculalteCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
+function calculateCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
 {
     let totalValue=0.0;
     for(let i=0;i<currentQuote.length;++i)
@@ -135,11 +135,11 @@ function calculalteCurrentValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEn
         const unitsPurchased=getQuantityOwnForOneTicker(currentQuote[i].symbol,tickersToEvaluate)
         totalValue+=Number(unitsPurchased)*Number(currentQuote[i].price);
     }
-  //console.log("calculalteCurrentValue totalValue: " + totalValue)
+  //console.log("calculateCurrentValue totalValue: " + totalValue)
     return totalValue;
 }
 
-function calculaltePreviosValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
+function calculatePreviousValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEntry[])
 {
   let totalValue=0.0;
   //console.log("currentQuote.length: " + currentQuote.length)
@@ -151,7 +151,7 @@ function calculaltePreviosValue(currentQuote:Quote_V3[],tickersToEvaluate:CostEn
     //console.log("symbol: " + currentQuote[i].symbol + ", unitsPurchased: " + unitsPurchased + ", current price: " + currentQuote[i].price + ", previousDay: " + currentQuote[i].previousClose)
     //console.log("Previous days value: " + ( unitsPurchased * currentQuote[i].previousClose))
   }
-  //console.log("calculaltePreviosValue totalValue: " + totalValue)
+  //console.log("calculatePreviousValue totalValue: " + totalValue)
   return totalValue;
 }
 

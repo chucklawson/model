@@ -2,14 +2,14 @@ import React, {useState, useEffect, type ChangeEvent} from 'react';
 
 /*
 <StatementInput onTickerValue={onTickerChangeHandler} onPeriodsValue={onPeriodsChangeHandler} currentTicker={tickerToGet}
-                 containerBackGround= {buttonBackgroundColor} runningStatment={true}></StatementInput>
+                 containerBackGround= {buttonBackgroundColor} runningStatement={true}></StatementInput>
 */
 interface StatementInputProps{
   onTickerValue(tickerValue:string):void;
   onPeriodsValue(periodsToUse:string):void;
   currentTicker:string;
   containerBackGround:string;
-  runningStatment:boolean;
+  runningStatement:boolean;
 }
 const StatementInput = (props:StatementInputProps) => {
     const [enteredValue, setEnteredValue] = useState('');
@@ -19,7 +19,7 @@ const StatementInput = (props:StatementInputProps) => {
     const [containerClassValues,setContainerClassValues] = useState('');
 
     useEffect (() => {
-      if(props.runningStatment===false)
+      if(props.runningStatement===false)
       {
         setEnteredValue('O');
       }

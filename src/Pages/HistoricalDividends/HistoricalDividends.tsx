@@ -44,7 +44,7 @@ const HistoricalDividends = () =>{
     const [dividendData,setDividendData] = useState<HistoricalDividendData[]>([]);
     const [periodsToShow, setPeriodsToShow] = useState(8);
     const [period,setPeriod] = useState('quarter')
-    const [curnetYield,setCurrentYield] = useState(0)
+    const [currentYield,setCurrentYield] = useState(0)
 
 
     const [data, setData]=useState<rowValues[][]>([])
@@ -167,7 +167,7 @@ return (
                     {headerValue}
                 </div>
                 <div className='text-green-600 text-3xl font-bold'>
-                    Yield: {curnetYield} %
+                    Yield: {currentYield} %
                 </div>
             </header>        
     </div>
@@ -175,7 +175,7 @@ return (
       <div className='col-start-5 col-span-4'>
 
           <StatementInput  onTickerValue={onTickerChangeHandler} onPeriodsValue={onPeriodsChangeHandler} currentTicker={tickerToGet}
-              containerBackGround= {buttonBackgroundColor} runningStatment={false}></StatementInput> 
+              containerBackGround= {buttonBackgroundColor} runningStatement={false}></StatementInput> 
           <HistoricalDividendQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote}/>
                
       </div>

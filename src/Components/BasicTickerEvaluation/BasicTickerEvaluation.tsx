@@ -139,7 +139,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       label: "",
       changeOverTime: 0}]);
 
-    const [statmentAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState<AnalysisKeyMetricsItem_V3[]>([{symbol: "",
+    const [statementAnalysisKeyMetrics,setStatmentAnalysisKeyMetrics] = useState<AnalysisKeyMetricsItem_V3[]>([{symbol: "",
       date:"",
       calendarYear: "",
       period: "",
@@ -231,7 +231,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setUpdateRangeValues(updateRangeValues);
     setTimeSeries(timeSeries);
     setLastReferenceClosingPrice(lastReferenceClosingPrice);
-    setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics);
+    setStatmentAnalysisKeyMetrics(statementAnalysisKeyMetrics);
     setProfitLossOneEntry(profitLossOneEntry);
     setPercentGainLoss(percentGainLoss);
     setLarryWilliamsData(larryWilliamsData);
@@ -476,8 +476,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       }
     }, [currentQuantityOnHand, totalCost])
 
-    //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statmentAnalysisKeyMetrics,larryWilliams)=>
-    const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statmentAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
+    //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statementAnalysisKeyMetrics,larryWilliams)=>
+    const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statementAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
     {
         //console.log("onSetCurrentQuote" );
         //console.log("currentQuoteIn" + currentQuoteIn);
@@ -485,8 +485,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setTimeSeries(timeSeriesIn);
         setAdjustedTimeSeries(adjustedTimeSeriesIn);
         setProfitLoss(currentQuoteIn)
-        //console.log("statmentAnalysisKeyMetrics" + statmentAnalysisKeyMetrics);
-        setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics)
+        //console.log("statementAnalysisKeyMetrics" + statementAnalysisKeyMetrics);
+        setStatmentAnalysisKeyMetrics(statementAnalysisKeyMetrics)
         //setLarryWilliams(larryWilliams)
 
         //console.log("currentQuote symbol: " + currentQuote.symbol + ", name: " + currentQuote.name);
@@ -538,7 +538,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const { graphData, rsiData, stochasticData, priceEarningsData, slope } = useTechnicalIndicators({
         timeSeries,
         adjustedTimeSeries,
-        statmentAnalysisKeyMetrics,
+        statementAnalysisKeyMetrics,
         bollingerChecked,
         rsiChecked,
         stochasticChecked,

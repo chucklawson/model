@@ -149,7 +149,7 @@ return (
             </label>
           </div>
           <StatementInput  onTickerValue={onTickerChangeHandler} onPeriodsValue={onPeriodsChangeHandler} currentTicker={tickerToGet}
-              containerBackGround= {buttonBackgroundColor} runningStatment={true}></StatementInput> 
+              containerBackGround= {buttonBackgroundColor} runningStatement={true}></StatementInput> 
           <StatementKeyMetrics stockSymbol={tickerToGet} period={period} onSetCurrentQuote={onSetCurrentQuote}/>
                
       </div>
