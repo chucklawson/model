@@ -54,8 +54,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [showChart, setShowChart] = useState(false);
 
-    const [larryWilliamsData, setLarryWilliamsData] = useState({});
-
     const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
     const [lowRangeValue, setLowRangeValue] = useState("1.00");
@@ -64,7 +62,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [lowRangeValueOneYear, setLowRangeValueOneYear] = useState("1.00");
     const [highRangeValueOneYear, setHighRangeValueOneYear] = useState("100");
     const [firstReferenceClosingPrice, setFirstReferenceClosingPrice] = useState("");
-    const [lastReferenceClosingPrice, setLastReferenceClosingPrice] = useState("");
     const [todaysGain, setTodaysGain] = useState(0.0);
     const [todaysPercentageGain, setTodaysPercentageGain] = useState(0.0);
     const [percentageChangeAcrossRange, setPercentageChangeAcrossRange] = useState(0.0);
@@ -86,8 +83,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       downSixtyPercent:""});
 */
   const [buyPoints, setBuyPoints] = useState<BuyPoints>({});
-    
-    const [updateRangeValues, setUpdateRangeValues] = useState(false);
+
     const [gainIsPositive, setGainIsPositive] = useState(false);
     const [currentQuote, setCurrentQuote] = useState <Quote_V3>({           symbol: "",
                                                                             name: "",
@@ -205,39 +201,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
     const getValuesBasedOnDate=new GetValuesBasedOnDate();
-
-    // To reduce warnings/errors
-  useEffect(() => {
-    setCurrentQuantityOnHand(currentQuantityOnHand);
-    let tempString:string = startDate;
-    tempString = endDate;
-    tempString = adjustedStartDate;
-    setStartDate(tempString);
-    setRangeValue(rangeValue);
-    setLowRangeValue(lowRangeValue);
-    setHighRangeValue(highRangeValue);
-    setRangeValueOneYear(rangeValueOneYear);
-    setLowRangeValueOneYear(lowRangeValueOneYear);
-    setHighRangeValueOneYear(highRangeValueOneYear);
-    setFirstReferenceClosingPrice("");
-    setTodaysGain(todaysGain);
-    setTodaysPercentageGain(todaysPercentageGain);
-    setPercentageChangeAcrossRange(percentageChangeAcrossRange);
-    setPercentageChangeFromTwelveMonthHigh(percentageChangeFromTwelveMonthHigh);
-    setBuyPoints(buyPoints);
-    setAdjustedTimeSeries(adjustedTimeSeries);
-    setGainIsPositive(gainIsPositive);
-    setCurrentQuote(currentQuote);
-    setUpdateRangeValues(updateRangeValues);
-    setTimeSeries(timeSeries);
-    setLastReferenceClosingPrice(lastReferenceClosingPrice);
-    setStatmentAnalysisKeyMetrics(statementAnalysisKeyMetrics);
-    setProfitLossOneEntry(profitLossOneEntry);
-    setPercentGainLoss(percentGainLoss);
-    setLarryWilliamsData(larryWilliamsData);
-    setLarryWilliamsChecked(larryWilliamsChecked);
-
-  }, []);
 
 
 
@@ -497,9 +460,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         if(timeSeriesIn.length>0)
         {
-            setLastReferenceClosingPrice(timeSeriesIn[0].close.toFixed(2))
             setFirstReferenceClosingPrice(timeSeriesIn[timeSeriesIn.length-1].close.toFixed(2))
-            setUpdateRangeValues(true);
 
             //console.log('timeSeriesIn[0].close: ' + timeSeriesIn[0].close + ', timeSeriesIn[timeSeriesIn.length-1].close: '+timeSeriesIn[timeSeriesIn.length-1].close)
         }
@@ -511,8 +472,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const bollingerChangeHandler = useCallback(() => {
         setBollingerChecked(!bollingerChecked);
     }, [bollingerChecked]);
-
-    const [larryWilliamsChecked, setLarryWilliamsChecked] = React.useState(false);
 
     //const lwChangeHandler = () => {
     //    setLarryWilliamsChecked(!larryWilliamsChecked);
