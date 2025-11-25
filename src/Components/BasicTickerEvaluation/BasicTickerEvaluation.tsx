@@ -202,7 +202,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       capexPerShare: 0,}]);
 
     const [calculatedTotalProfitLoss, setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
-    const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
 
     const getValuesBasedOnDate=new GetValuesBasedOnDate();
@@ -284,14 +283,13 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }, [updateRangeValues]);
 */
   useEffect(() => {
-    const handleResize=() =>
-      setWindowWidth(window.innerWidth);
+    const handleResize = () => {
       setGraphWidth(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
-      //console.log("windowWidth = " + windowWidth)
-      //console.log("graphWidth = " + graphWidth)
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-  }, [windowWidth,graphWidth]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
     useEffect(()=>{
         //console.log("currentQuote.change: " +currentQuote.change)
