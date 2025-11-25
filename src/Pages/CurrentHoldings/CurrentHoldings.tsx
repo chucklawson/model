@@ -171,8 +171,8 @@ const tickersToEvaluate:TickersToEvaluate[] =
     },
     {
       ticker: "NVDA",
-      costBasis: '56.62',
-      unitsOnHand: 300,
+      costBasis: '58.52',
+      unitsOnHand: 305,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
@@ -180,6 +180,13 @@ const tickersToEvaluate:TickersToEvaluate[] =
       ticker: "O",
       costBasis: '58.34',
       unitsOnHand: 40,
+      calculateAccumulatedProfitLoss: true,
+      baseYield: ''
+    },
+    {
+      ticker: "PG",
+      costBasis: '148.15',
+      unitsOnHand: 10,
       calculateAccumulatedProfitLoss: true,
       baseYield: ''
     },
