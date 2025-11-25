@@ -5,28 +5,17 @@ import type Quote_V3 from "../../Lib/Quote_V3"
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3';
 import TickerInput from '../TickerInput/TickerInput.jsx';
-import TickerButton from '../TickerButton/TickerButton';
 import SimpleButton from '../SimpleButton/SimpleButton'
 import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
-import TradingRangeIndicator from '../TradingRangeIndicator/TradingRangeIndicator';
-import InvestmentComposedChar from '../../InvestmentCharts/InvestmentComposedChart';
 import StockQuote from '../StockQuote/StockQuote.tsx';
-//import BatchQuote from '../ApiCalls/BatchQutoe.jsx'
-//import {dailyValues, bollingerBands,getRsiChartData,getStochasticChartData,getLwChartData,getPriceToEarningsChartData} from '../../lib/CalculateAverages/CalculateAverages.ts'
-import  {CalculateAverages} from '../../Lib/CalculateAverages/CalculateAverages'
-import upGreenRight from '../../Images/UpGreenRight.png'
-import downRedRight from '../../Images/DownRedRight.png'
-import RelativeStrengthIndexChart from '../../InvestmentCharts/RelativeStrengthIndexChart';
-import StochasitcOscillatorChart from '../../InvestmentCharts/StochasticOscillatorChart'
-import StochasticChartData from '../../Lib/ChartData/StochasticChartData.ts'
-//import LarryWilliamsChart from '../InvestmentCharts/LarryWilliamsChart.jsx';
-import PriceEarningsChart from '../../InvestmentCharts/PriceEarningsChart';
 import {calculateOverallProfitAndLoss} from '../../Lib/ProfitLoss/CalculateOverallProfitLoss'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
-import StatementAnalysisKeyMetricsData from "../../Lib/ChartData/StatementAnalysisKeyMetricsData.ts";
-import StandardCharData from "../../Lib/ChartData/StandardChartData.ts";
-import RSIChartData from "../../Lib/ChartData/RSIChartData.ts";
+import TickerSidebar from '../TickerSidebar/TickerSidebar';
+import ChartControls from '../ChartControls/ChartControls';
+import StockChartDisplay from '../StockChartDisplay/StockChartDisplay';
+import TradingRangeSidebar from '../TradingRangeSidebar/TradingRangeSidebar';
+import { useTechnicalIndicators } from '../../hooks/useTechnicalIndicators';
 
 
 /*
@@ -65,13 +54,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [showChart, setShowChart] = useState(false);
 
-    const [graphData, setGraphData] = useState<StandardCharData[]>([]);
-    const [rsiData, setRsiData] = useState<RSIChartData[]>([]);
     const [larryWilliamsData, setLarryWilliamsData] = useState({});
-
-    const [priceEarningsData, setPriceEarningsData]= useState<StatementAnalysisKeyMetricsData[]>([]);
-
-    const [stochasticData, setStochasticData] = useState<StochasticChartData[]>([]);
 
     const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
@@ -217,9 +200,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       inventoryTurnover: 0,
       roe:0,
       capexPerShare: 0,}]);
-    
-    const [slope,setSlope]=useState(0.0);
-    const [classValuesLeft,setClassValuesLeft]=useState('');
+
     const [calculatedTotalProfitLoss, setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
     const [windowWidth, setWindowWidth]=useState(window.innerWidth);
     const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
@@ -229,7 +210,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     // To reduce warnings/errors
   useEffect(() => {
     setCurrentQuantityOnHand(currentQuantityOnHand);
-    setClassValuesLeft('');
     let tempString:string = startDate;
     tempString = endDate;
     tempString = adjustedStartDate;
@@ -255,13 +235,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setStatmentAnalysisKeyMetrics(statmentAnalysisKeyMetrics);
     setProfitLossOneEntry(profitLossOneEntry);
     setPercentGainLoss(percentGainLoss);
-    setGraphData(graphData);
-    setRsiData(rsiData);
     setLarryWilliamsData(larryWilliamsData);
-    setPriceEarningsData(priceEarningsData);
-    setStochasticData(stochasticData);
     setLarryWilliamsChecked(larryWilliamsChecked);
-    setSlope(slope);
 
   }, []);
 
@@ -282,7 +257,6 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
         //setStartDate('2023-02-03');
         //setEndDate('2023-03-09');
-        setClassValuesLeft('col-start-1 col-span-2 m-5 rounded-md' + props.backgroundLeft)
     },[])
 
     // request ticker data
@@ -562,140 +536,45 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPriceEquityChecked(!priceEquityChecked);
     }, [priceEquityChecked]);
 
+    // Use technical indicators hook
+    const { graphData, rsiData, stochasticData, priceEarningsData, slope } = useTechnicalIndicators({
+        timeSeries,
+        adjustedTimeSeries,
+        statmentAnalysisKeyMetrics,
+        bollingerChecked,
+        rsiChecked,
+        stochasticChecked,
+        priceEquityChecked
+    });
 
-
-    useEffect(() => {  
-        //console.log("calling dailyValues, timeSeries[0]" + timeSeries[0])
-        if((timeSeries[0]!==undefined)&&(timeSeries.length>1))
-        {
-          const calculateAverages:CalculateAverages= new CalculateAverages()
-            //console.log("Running if(timeSeries[0]!==undefined)")
-            let newData=null
-            if(new Date(timeSeries[timeSeries.length-1].date) < new Date(timeSeries[timeSeries.length-2].date))
-            {
-                newData=calculateAverages.dailyValues(timeSeries.reverse(),adjustedTimeSeries.reverse());
-                //console.log("Reversed timeSeries")
-            }
-            else{
-                newData=calculateAverages.dailyValues(timeSeries,adjustedTimeSeries);
-                //console.log("Did not reverse timeSeries")
-            }
-            
-            if(bollingerChecked)
-            {
-                //console.log("Generating bollinger bands")
-                newData=calculateAverages.bollingerBands(timeSeries,adjustedTimeSeries,newData!)
-            }
-
-            //newData=twoHundredDayMovingAverage(timeSeries,adjustedTimeSeries,newData)
-
-            if(rsiChecked)
-            {
-                //console.log("Generating RSI")
-                setRsiData(calculateAverages.getRsiChartData(timeSeries,adjustedTimeSeries)!)
-            }
-
-            if(larryWilliamsChecked)
-            {
-                //console.log("Generating LW")
-                //setLarryWilliamsData(getLwChartData(larryWilliams,startDate,endDate))
-            }
-
-            if(stochasticChecked)
-            {
-                //console.log("Generating Stochastic")
-                setStochasticData(calculateAverages.getStochasticChartData(timeSeries,adjustedTimeSeries)!)
-            }
-
-            if(priceEquityChecked)
-            {
-                //console.log("Generating Price to Equity")
-                setPriceEarningsData(calculateAverages.getPriceToEarningsChartData(statmentAnalysisKeyMetrics)!)
-            }
-            //console.log("Calling setGraphData")
-            setGraphData( newData! )
-        }
-    }, [currentQuote, timeSeries, bollingerChecked,larryWilliamsChecked,rsiChecked,stochasticChecked,priceEquityChecked]);
-
-
-
-    useEffect( ()=>{
-      if(graphData.length!==undefined)
-      {
-        //console.log("trying to stringify graphData")
-        //console.log(JSON.stringify(graphData))
-        //console.log('graphData.length: ' + graphData.length)
-      }
-
-        if((graphData.length!==undefined) && (graphData.length>1)){
-            const Y1forSlope:number=graphData[graphData.length-1].expMovingAverage;
-            //console.log('Y1forSlope: ' + Y1forSlope)
-            const Y2forSlope:number=graphData[graphData.length-2].expMovingAverage;
-            //console.log('Y2forSlope: ' + Y2forSlope)
-            const tempSlope=(Y1forSlope-Y2forSlope)
-            //console.log('tempSlope: ' + tempSlope)
-            props.onSetSlope(Number(tempSlope.toFixed(2)))
-            setSlope(Number(tempSlope.toFixed(2)))
-        }
-    },[graphData]);
+    // Update parent with slope when it changes
+    useEffect(() => {
+        props.onSetSlope(slope);
+    }, [slope, props.onSetSlope]);
 
 
 
 
     return <  div className='bg-gray-100 grid grid-cols-9 gap-4'>
 
-        <div className={classValuesLeft}>
-
-        {/* not really using key but defining it anyway */}
-        {props.tickerEntries.map( (tickerEntry)=> (
-            <TickerButton key={tickerEntry.ticker} ticker={tickerEntry.ticker}
-            costBasis={tickerEntry.costBasis} currentQuantityOnHand={tickerEntry.unitsOnHand}
-             selectTickerButtonHandler={selectTickerButtonHandler} backgroundColor={props.buttonBackgroundColor}/>
-        ))}
-
-        </div>
-
+        <TickerSidebar
+            tickerEntries={props.tickerEntries}
+            selectTickerButtonHandler={selectTickerButtonHandler}
+            buttonBackgroundColor={props.buttonBackgroundColor}
+            backgroundLeft={props.backgroundLeft}
+        />
 
         <div className='col-start-3 col-span-7'>
-        <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
-            <label className='pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={bollingerChecked}
-                onChange={bollingerChangeHandler}
-                />
-                Bollinger Bands
-            </label>
-
-            <label className='pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={rsiChecked}
-                onChange={rsiChangeHandler}
-                />
-                RSI Oscillator
-            </label>
-
-
-            <label className='pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={stochasticChecked}
-                onChange={stochasticChangeHandler}
-                />
-                Stochastic Oscillator
-            </label>
-
-            <label className='pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={priceEquityChecked}
-                onChange={priceEquityChangeHandler}
-                />
-                Price to Earnings
-            </label>
-
-        </div>
+        <ChartControls
+            bollingerChecked={bollingerChecked}
+            rsiChecked={rsiChecked}
+            stochasticChecked={stochasticChecked}
+            priceEquityChecked={priceEquityChecked}
+            onBollingerChange={bollingerChangeHandler}
+            onRsiChange={rsiChangeHandler}
+            onStochasticChange={stochasticChangeHandler}
+            onPriceEquityChange={priceEquityChangeHandler}
+        />
 
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
 
@@ -714,235 +593,50 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
         {(showChart === true && graphData.length!==undefined) ?
-            <div className='justify-self-auto'>
-                <div className="text-1xl text-green-600 font-bold underline h-5">
-                    OPEN ${currentQuote.open},   HIGH ${currentQuote.dayHigh},   LOW ${currentQuote.dayLow},   LAST ${currentQuote.price}
-                </div>
-
-                <div className='ml-20 mt-5'>
-                    <InvestmentComposedChar
-                            width={graphWidth}
-                            height={275}
-                            data={graphData}
-                            margin={chartMargin}
-                            lineWidth={widthOfStroke}
-                            showBollingerbands={bollingerChecked}
-                            showMean={bollingerChecked}>
-
-                    </InvestmentComposedChar>
-                </div>
-
-
-
-
-
-                {(rsiChecked === true && rsiData.length !== undefined)?
-                
-                <div className='ml-20 mt-5'>
-                    <div className="text-1xl text-green-600 font-bold underline h-5">
-                        RSI Measures - Speed and Magnitude of Price Change Momentum
-                    </div>
-                    <RelativeStrengthIndexChart
-                            width={graphWidth}
-                            height={175}
-                            data={rsiData}
-                            margin={chartMargin}
-                            lineWidth={widthOfStroke}
-                            overBought={70}
-                            overSold={30}>
-
-                    </RelativeStrengthIndexChart>
-                </div>:
-                <React.Fragment />}
-
-              {/*
-                {(larryWilliamsData)&&(larryWilliamsChecked === true) ?
-                <div className='ml-20 mt-5'>
-                    <LarryWilliamsChart
-                            width={graphWidth}
-                            height={175}
-                            data={larryWilliamsData}
-                            margin={chartMargin}
-                            lineWidth={widthOfStroke}
-                            overBought={-20}
-                            overSold={-80}>
-
-                    </LarryWilliamsChart>
-                </div>:
-                <React.Fragment />}
-                */}
-
-
-                {(stochasticChecked === true && stochasticData.length !== undefined)?
-                
-                <div className='ml-20 mt-5'>
-                    <div className="text-1xl text-green-600 font-bold underline h-5">
-                        Stochastic Measures  - Closing Price Momentum
-                    </div>
-                    <StochasitcOscillatorChart
-                            width={graphWidth}
-                            height={175}
-                            data={stochasticData}
-                            margin={chartMargin}
-                            lineWidth={widthOfStroke}
-                            overBought={80}
-                            overSold={20}>
-
-                    </StochasitcOscillatorChart>
-                </div>:
-                <React.Fragment />}
-
-                <div className="text-1xl text-green-600 font-bold underline h-5">
-                    Selected account: {tickerToGet}                      
-                </div>
-                <div className="text-1xl text-green-600 font-bold underline h-5">
-                    Closed at: ${currentQuote.price}
-                </div>
-                <div className="text-1xl text-green-600 font-bold underline h-5">
-                    Total cost: ${totalCost}
-                </div>
-                {profitLossOneEntry>=0.0 ?
-                    <div className="text-1xl text-green-600 font-bold underline h-5 mt-2 my-3">
-                        Profit/Loss: ${profitLossOneEntry}  ..   or  ..  {percentGainLoss} %
-                    </div>:
-                    <div className="text-1xl text-red-600 font-bold underline h-5 mt-2 my-3">
-                        Profit/Loss: ${profitLossOneEntry}  ..   or  ..  {percentGainLoss} %
-                    </div>
-                }
-                
-
-                { gainIsPositive === true ?
-                    <div>
-                        <div className="text-1xl text-green-600 font-bold underline h-5 justify-items-start">
-                            Today's Gain: ${todaysGain}
-                        </div>                        
-                            <div className="text-1xl text-green-600 font-bold underline h-5">
-                                Today's % Gain: {todaysPercentageGain} %
-                            </div>
-                        </div> :
-                        <div>
-                            <div className="text-1xl text-red-600 font-bold underline h-5 justify-items-start">
-                                Today's Gain: ${todaysGain}
-                            </div>  
-                            <div className="text-1xl text-red-600 font-bold underline h-5">
-                                Today's % Gain: {todaysPercentageGain} %
-                            </div>                            
-                    </div>
-                }
-
-                
-                {slope >= 0.0 ?
-                    <div className='text-green-600 text-3xl font-bold'> 
-                            <img className="inline-block w-10 h-8 ml-7 " src={upGreenRight} alt=""></img>                           
-                    </div> :
-                    <div className='text-red-600 text-3xl font-bold'>
-                            <img className="inline-block w-12 h-10 ml-7" src={downRedRight} alt=""></img> 
-                    </div>
-                }
-                
-
-            </div> :
+            <StockChartDisplay
+                currentQuote={currentQuote}
+                graphWidth={graphWidth}
+                graphData={graphData}
+                rsiData={rsiData}
+                stochasticData={stochasticData}
+                bollingerChecked={bollingerChecked}
+                rsiChecked={rsiChecked}
+                stochasticChecked={stochasticChecked}
+                widthOfStroke={widthOfStroke}
+                chartMargin={chartMargin}
+                tickerToGet={tickerToGet}
+                totalCost={totalCost}
+                profitLossOneEntry={profitLossOneEntry}
+                percentGainLoss={percentGainLoss}
+                todaysGain={todaysGain}
+                todaysPercentageGain={todaysPercentageGain}
+                gainIsPositive={gainIsPositive}
+                slope={slope}
+            /> :
                 <React.Fragment />}
             
         </div>
 
 
-        <div className='col-start-10 col-span-2'>
-            
-            <div className='block mb-10'>
-                <TradingRangeIndicator heading="Last 12 Months" lowRangeValue={lowRangeValueOneYear} rangeValue={rangeValueOneYear} highRangeValue={highRangeValueOneYear} currentQuote={currentQuote} currentValues={false}/>
-                
-                <div className='p-4 mt-6 mb-10'>                    
-                    <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                    Current Price vs. 12 Month High: {percentageChangeFromTwelveMonthHigh} %
-                    </div>
-
-                    
-                    
-                    {(Object.keys(buyPoints).length > 0) ?
-                    <div>
-                        <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                        Down 5%: {buyPoints.downFivePercent}, 10%: {buyPoints.downTenPercent}                                  
-                        </div>
-                        <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                        Down 15%: {buyPoints.downFifteenPercent}, 20%: {buyPoints.downTwentyPercent}                                      
-                        </div>
-                        <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                        Down 25%: {buyPoints.downTwentyFivePercent}, 30%: {buyPoints.downThirtyPercent}                                      
-                        </div>
-                        <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                        Down 35%: {buyPoints.downThirtyFivePercent}, 40%: {buyPoints.downFortyPercent}                                    
-                        </div>
-                        <div className="text-gray-600 font-normal text-xs mt-3 mb-5">
-                                        Down 50%: {buyPoints.downFiftyPercent}, 60%: {buyPoints.downSixtyPercent}                                    
-                        </div>
-                    </div>
-                    :''}
-            </div >
-            </div >
-            
-
-            <div className='block mb-40'>
-                <TradingRangeIndicator heading="Today's Range" lowRangeValue={lowRangeValue} rangeValue={rangeValue} highRangeValue={highRangeValue} currentQuote={currentQuote} currentValues={true} />
-            </div>
-            <div className='p-4 mt-6 mb-10'>
-
-
-            {showChart === true ?
-                    <div className='justify-items-start'> 
-
-                        { (priceEarningsData.length>0) && (priceEquityChecked === true) ?
-                            <div className='ml-1 mt-1'>
-                                <PriceEarningsChart
-                                        width={250}
-                                        height={125}
-                                        data={priceEarningsData}
-                                        margin={{
-                                            top: 5,
-                                            right: 5,
-                                            left: 5,
-                                            bottom: 5
-                                        }}
-                                        lineWidth={widthOfStroke}
-                                        >
-
-                                </PriceEarningsChart>
-                            </div>:
-                        <React.Fragment />}    
-
-                        { gainIsPositive === true ?
-                            <div>
-                                <div className="text-1xl text-green-600 font-bold underline h-5 justify-items-start">
-                                    Today's Gain: ${todaysGain}
-                                </div>                        
-                                <div className="text-1xl text-green-600 font-bold underline h-5">
-                                    Today's % Gain: {todaysPercentageGain} %
-                                </div>
-                            </div> :
-                            <div>
-                                <div className="text-1xl text-red-600 font-bold underline h-5 justify-items-start">
-                                Today's Gain: ${todaysGain}
-                                </div>  
-                                <div className="text-1xl text-red-600 font-bold underline h-5">
-                                    Today's % Gain: {todaysPercentageGain} %
-                                </div>
-                           </div>}
-                        {percentageChangeAcrossRange >= 0.0 ?
-                            <div className="text-1xl text-green-600 font-bold underline h-1">
-                                Rng chg % Gain: {percentageChangeAcrossRange} %
-                            </div> :
-                            <div className="text-1xl text-red-600 font-bold underline h-1">
-                                Rng chg % Gain: {percentageChangeAcrossRange} %
-                            </div>
-                        }
-                </div> :
-                    <React.Fragment />}
-
-                
-                    
-            </div>
-
-         </div>
+        <TradingRangeSidebar
+            lowRangeValueOneYear={lowRangeValueOneYear}
+            rangeValueOneYear={rangeValueOneYear}
+            highRangeValueOneYear={highRangeValueOneYear}
+            percentageChangeFromTwelveMonthHigh={percentageChangeFromTwelveMonthHigh}
+            buyPoints={buyPoints}
+            lowRangeValue={lowRangeValue}
+            rangeValue={rangeValue}
+            highRangeValue={highRangeValue}
+            currentQuote={currentQuote}
+            showChart={showChart}
+            priceEarningsData={priceEarningsData}
+            priceEquityChecked={priceEquityChecked}
+            widthOfStroke={widthOfStroke}
+            todaysGain={todaysGain}
+            todaysPercentageGain={todaysPercentageGain}
+            gainIsPositive={gainIsPositive}
+            percentageChangeAcrossRange={percentageChangeAcrossRange}
+        />
 
 
     </div>
