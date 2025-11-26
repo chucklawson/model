@@ -53,6 +53,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [adjustedStartDate,setAdjustedStartDate]= useState('');
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [showChart, setShowChart] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
 
     const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
@@ -310,7 +311,34 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setEndDate(endDate.trim());
             setAdjustedStartDate(adjustedStartDate.trim());
 
-
+            // Clear time series data to trigger chart data clearing
+            setDataFetched(false);
+            setTimeSeries([{date: "",
+              open: 0,
+              high: 0,
+              low: 0,
+              close: 0,
+              adjClose: 0,
+              volume: 0,
+              unadjustedVolume: 0,
+              change: 0,
+              changePercent: 0,
+              vwap: 0,
+              label: "",
+              changeOverTime: 0}]);
+            setAdjustedTimeSeries([{date: "",
+              open: 0,
+              high: 0,
+              low: 0,
+              close: 0,
+              adjClose: 0,
+              volume: 0,
+              unadjustedVolume: 0,
+              change: 0,
+              changePercent: 0,
+              vwap: 0,
+              label: "",
+              changeOverTime: 0}]);
 
             setUpdateTickerValue(true);
 
@@ -409,6 +437,34 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setTotalCost(totalCostIn)
         props.onSetHeader(props.baseHeader + " - " + tickerIn);
         props.onSelectTickerButtonHandler(tickerIn)
+        // Clear time series data to trigger chart data clearing
+        setDataFetched(false);
+        setTimeSeries([{date: "",
+          open: 0,
+          high: 0,
+          low: 0,
+          close: 0,
+          adjClose: 0,
+          volume: 0,
+          unadjustedVolume: 0,
+          change: 0,
+          changePercent: 0,
+          vwap: 0,
+          label: "",
+          changeOverTime: 0}]);
+        setAdjustedTimeSeries([{date: "",
+          open: 0,
+          high: 0,
+          low: 0,
+          close: 0,
+          adjClose: 0,
+          volume: 0,
+          unadjustedVolume: 0,
+          change: 0,
+          changePercent: 0,
+          vwap: 0,
+          label: "",
+          changeOverTime: 0}]);
         //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
     }, [props.onSetHeader, props.baseHeader, props.onSelectTickerButtonHandler])
 
@@ -442,8 +498,46 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statementAnalysisKeyMetrics,larryWilliams)=>
     const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statementAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
     {
-        //console.log("onSetCurrentQuote" );
-        //console.log("currentQuoteIn" + currentQuoteIn);
+        // Validate that incoming data is for the ticker we're currently requesting
+        // Reject stale data from previous ticker selections
+        if (currentQuoteIn.symbol !== tickerToGet && tickerToGet !== '') {
+            console.log("Rejecting data for wrong ticker. Got:", currentQuoteIn.symbol, "Expected:", tickerToGet);
+            setDataFetched(true);
+            return;
+        }
+
+        // Validate that we have real data, not stale/empty data
+        // Reject if timeSeries has empty date strings (indicates cleared/default state)
+        if (timeSeriesIn.length > 0 && timeSeriesIn[0].date === "") {
+            console.log("Rejecting empty/cleared data");
+            setDataFetched(true);
+            return;
+        }
+
+        // Validate that data is for the requested date range
+        // Check if any data points fall within the requested range
+        if (timeSeriesIn.length > 0 && startDate && endDate) {
+            const requestStart = new Date(startDate);
+            const requestEnd = new Date(endDate);
+            const dataStart = new Date(timeSeriesIn[timeSeriesIn.length - 1].date); // oldest date
+            const dataEnd = new Date(timeSeriesIn[0].date); // newest date
+
+            // Check if the data range doesn't overlap with the requested range
+            if (dataEnd < requestStart || dataStart > requestEnd) {
+                console.log("Rejecting data - date range mismatch. Requested:", startDate, "to", endDate);
+                setDataFetched(true);
+                return;
+            }
+
+            // Additional validation: Check if ticker is too new for the requested date range
+            // GEV started trading in 2024, so any data before 2024 is fake/wrong
+            if (currentQuoteIn.symbol === 'GEV' && requestEnd < new Date('2024-01-01')) {
+                console.log("Rejecting data - GEV did not exist before 2024");
+                setDataFetched(true);
+                return;
+            }
+        }
+
         setCurrentQuote(currentQuoteIn);
         setTimeSeries(timeSeriesIn);
         setAdjustedTimeSeries(adjustedTimeSeriesIn);
@@ -454,7 +548,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         //console.log("currentQuote symbol: " + currentQuote.symbol + ", name: " + currentQuote.name);
 
-
+        // Mark that data fetch has completed
+        setDataFetched(true);
 
 
 
@@ -465,7 +560,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('timeSeriesIn[0].close: ' + timeSeriesIn[0].close + ', timeSeriesIn[timeSeriesIn.length-1].close: '+timeSeriesIn[timeSeriesIn.length-1].close)
         }
 
-    }, [setProfitLoss])
+    }, [setProfitLoss, tickerToGet, startDate, endDate])
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
@@ -549,7 +644,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
 
 
-        {(showChart === true && graphData.length!==undefined) ?
+        {(showChart === true && graphData.length !== undefined && graphData.length > 0) ?
             <StockChartDisplay
                 currentQuote={currentQuote}
                 graphWidth={graphWidth}
@@ -570,7 +665,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 gainIsPositive={gainIsPositive}
                 slope={slope}
             /> :
-                <React.Fragment />}
+                <div className="text-center text-gray-500 text-xl mt-10">
+                    {showChart && dataFetched && graphData.length === 0 ? 'No data available for the selected date range' : ''}
+                </div>}
             
         </div>
 

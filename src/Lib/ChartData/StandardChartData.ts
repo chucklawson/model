@@ -10,17 +10,17 @@ export default class StandardCharData {
   lowerBollingerValue;
   upperBollingerValue;
   mean;
-  constructor(dateOfClosein:string,dailyClosingPriceIn:number,simpleMovingAverageIn:number,expMovingAverageIn:number,twoHundredDayMovingAverageIn:number,fiftyDayMovingAverageIn:number,
-              lowerBollingerValueIn:number,upperBollingerValueIn:number,meanIn:number) {
+  constructor(dateOfClosein:string,dailyClosingPriceIn:number,simpleMovingAverageIn:number|null,expMovingAverageIn:number|null,twoHundredDayMovingAverageIn:number|null,fiftyDayMovingAverageIn:number|null,
+              lowerBollingerValueIn:number|null,upperBollingerValueIn:number|null,meanIn:number|null) {
     this.dateOfClose = dateOfClosein;
     this.dailyClosingPrice = dailyClosingPriceIn;
-    this.simpleMovingAverage =simpleMovingAverageIn;    
+    this.simpleMovingAverage =simpleMovingAverageIn;
     this.expMovingAverage=expMovingAverageIn;
     this.twoHundredDayMovingAverage = twoHundredDayMovingAverageIn;
     this.fiftyDayMovingAverage = fiftyDayMovingAverageIn;
     this.lowerBollingerValue=lowerBollingerValueIn;
-    this.upperBollingerValue=upperBollingerValueIn; 
-    this.mean=meanIn;            
+    this.upperBollingerValue=upperBollingerValueIn;
+    this.mean=meanIn;
   }
   
   /*

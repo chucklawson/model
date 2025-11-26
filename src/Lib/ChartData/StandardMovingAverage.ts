@@ -20,7 +20,16 @@ export default class StandardMovingAverage {
     {
       this.accumulatedChartData=accumulatedChartDataIn;
       //console.log("calling this.generateTheDataPointsSimpleMovingAverage, this.numberOfDaystoLookBack: " + this.numberOfDaystoLookBack + ', this.oneYearOfData.length: ' + this.oneYearOfData.length)
-      const datapoints=this.generateTheDataPointsSimpleMovingAverage( this.numberOfDaystoLookBack,this.oneYearOfData)!
+      const datapoints=this.generateTheDataPointsSimpleMovingAverage( this.numberOfDaystoLookBack,this.oneYearOfData)
+
+      // Handle insufficient historical data
+      if (datapoints === null || datapoints.length === 0) {
+        console.log('Insufficient historical data for moving average calculation')
+        // Return chart data with null values for moving averages (won't render on chart)
+        return this.accumulatedChartData.map(entry =>
+          new StandardChartData(entry.dateOfClose, entry.dailyClosingPrice, null, null, null, null, null, null, null)
+        );
+      }
 
       //console.log('datapoints returned: ' + datapoints.length)
       //console.log('this.numberOfDaystoLookBack = ' +this.numberOfDaystoLookBack)
@@ -29,7 +38,7 @@ export default class StandardMovingAverage {
       //console.log('accumulatedChartData to match up against: ' + this.accumulatedChartData.length)
       //console.log('starting date = ' +this.accumulatedChartData[0].dateOfClose)
 
-      
+
       let commonStartAddress=0;
       for(let i=0;i<datapoints.length;++i)
       {
@@ -65,7 +74,9 @@ export default class StandardMovingAverage {
         //console.log('this.accumulatedChartData[j].dateOfClose: ' + this.accumulatedChartData[j].dateOfClose)
         //console.log('this.accumulatedChartData[j].dailyClosingPrice: ' + this.accumulatedChartData[j].dailyClosingPrice)
 
-        const adjustedChartDataEntry = new StandardChartData(this.accumulatedChartData[j].dateOfClose,this.accumulatedChartData[j].dailyClosingPrice,datapoints[k].calculatedValue,0.0,0.0,0.0,0.0,0.0,0.0)
+        // Check if we have a valid datapoint before accessing it
+        const calculatedValue = (k < datapoints.length && datapoints[k]) ? datapoints[k].calculatedValue : null;
+        const adjustedChartDataEntry = new StandardChartData(this.accumulatedChartData[j].dateOfClose,this.accumulatedChartData[j].dailyClosingPrice,calculatedValue,null,null,null,null,null,null)
         //console.log('adjustedChartDataEntry: ' + adjustedChartDataEntry.toString())
         adjustedChartData.push(adjustedChartDataEntry)
         ++j; ++k;

@@ -41,7 +41,10 @@ export function useTechnicalIndicators({
   const [slope, setSlope] = useState(0.0);
 
   useEffect(() => {
-    if (timeSeries[0] !== undefined && timeSeries.length > 1) {
+    // Check if timeSeries is in the default/cleared state (empty date string)
+    const isEmptyOrCleared = timeSeries[0]?.date === "" || timeSeries.length === 0;
+
+    if (!isEmptyOrCleared && timeSeries[0] !== undefined && timeSeries.length > 1) {
       const calculateAverages: CalculateAverages = new CalculateAverages();
       let newData = null;
 
@@ -73,16 +76,28 @@ export function useTechnicalIndicators({
       }
 
       setGraphData(newData!);
+    } else {
+      // Clear all chart data when there's no valid time series data or when explicitly cleared
+      setGraphData([]);
+      setRsiData([]);
+      setStochasticData([]);
+      setPriceEarningsData([]);
+      setSlope(0.0);
     }
   }, [timeSeries, adjustedTimeSeries, statementAnalysisKeyMetrics, bollingerChecked, rsiChecked, stochasticChecked, priceEquityChecked]);
 
   // Calculate slope from graph data
   useEffect(() => {
     if (graphData.length !== undefined && graphData.length > 1) {
-      const Y1forSlope: number = graphData[graphData.length - 1].expMovingAverage;
-      const Y2forSlope: number = graphData[graphData.length - 2].expMovingAverage;
-      const tempSlope = Y1forSlope - Y2forSlope;
-      setSlope(Number(tempSlope.toFixed(2)));
+      const Y1forSlope: number | null = graphData[graphData.length - 1].expMovingAverage;
+      const Y2forSlope: number | null = graphData[graphData.length - 2].expMovingAverage;
+      // Only calculate slope if we have valid exponential moving average data
+      if (Y1forSlope !== null && Y2forSlope !== null) {
+        const tempSlope = Y1forSlope - Y2forSlope;
+        setSlope(Number(tempSlope.toFixed(2)));
+      } else {
+        setSlope(0.0);
+      }
     }
   }, [graphData]);
 

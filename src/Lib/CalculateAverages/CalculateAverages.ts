@@ -28,7 +28,7 @@ export class CalculateAverages {
     }
     let accumulatedChartData = [];
     for (let i = 0; i < standardValuesIn.length; ++i) {
-      const chartDataEntry = new StandardChartData(standardValuesIn[i].date, standardValuesIn[i].close, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+      const chartDataEntry = new StandardChartData(standardValuesIn[i].date, standardValuesIn[i].close, null, null, null, null, null, null, null)
       //console.log("chartDataEntry using toString: " + chartDataEntry.toString())
       accumulatedChartData.push(chartDataEntry);
     }
@@ -52,31 +52,39 @@ export class CalculateAverages {
     accumulatedChartData = exponentialMovingAverages.generateTheAverages(accumulatedChartData)
 
 
+    // Only calculate 200-day moving average if we have enough data for the entire period
     numberOfDaysToLookBack = 200;
-    if (numberOfDaysToLookBack >= standardValuesIn.length) {
-      numberOfDaysToLookBack = standardValuesIn.length - 1;
-    }
-    //console.log('numberOfDaysToLookBack: '+ numberOfDaysToLookBack)
-    let twoHundredDayChartData = [];
-    const twoHundredDayMoveingAverage = new StandardMovingAverage(adjustedToContainFullYearOfDataValuesIn, numberOfDaysToLookBack);
-    twoHundredDayChartData = twoHundredDayMoveingAverage.generateTheAverages(accumulatedChartData)
-    //console.log('twoHundredDayChartData: '+ twoHundredDayChartData)
-    for (let j = 0; j < accumulatedChartData.length; ++j) {
-      accumulatedChartData[j].twoHundredDayMovingAverage = twoHundredDayChartData[j].simpleMovingAverage
-      //console.log('twoHundredDayMovingAverage Entry: ' + accumulatedChartData[j].twoHundredDayMovingAverage)
+    // We need enough data to calculate the average for ALL dates in the selected period
+    // That means: adjustedData >= selectedPeriod + lookbackPeriod
+    if (adjustedToContainFullYearOfDataValuesIn.length >= (standardValuesIn.length + numberOfDaysToLookBack)) {
+      //console.log('numberOfDaysToLookBack: '+ numberOfDaysToLookBack)
+      let twoHundredDayChartData = [];
+      const twoHundredDayMoveingAverage = new StandardMovingAverage(adjustedToContainFullYearOfDataValuesIn, numberOfDaysToLookBack);
+      twoHundredDayChartData = twoHundredDayMoveingAverage.generateTheAverages(accumulatedChartData)
+      //console.log('twoHundredDayChartData: '+ twoHundredDayChartData)
+      for (let j = 0; j < accumulatedChartData.length; ++j) {
+        accumulatedChartData[j].twoHundredDayMovingAverage = twoHundredDayChartData[j].simpleMovingAverage
+        //console.log('twoHundredDayMovingAverage Entry: ' + accumulatedChartData[j].twoHundredDayMovingAverage)
+      }
+    } else {
+      console.log('Insufficient data for 200-day moving average. Need at least ' + (standardValuesIn.length + numberOfDaysToLookBack) + ' days, have: ' + adjustedToContainFullYearOfDataValuesIn.length)
     }
 
+    // Only calculate 50-day moving average if we have enough data for the entire period
     numberOfDaysToLookBack = 50;
-    if (numberOfDaysToLookBack >= adjustedToContainFullYearOfDataValuesIn.length) {
-      numberOfDaysToLookBack = standardValuesIn.length - 1;
-    }
-    let fiftyDayChartData = [];
-    const fiftyDayMoveingAverage = new StandardMovingAverage(adjustedToContainFullYearOfDataValuesIn, numberOfDaysToLookBack);
-    fiftyDayChartData = fiftyDayMoveingAverage.generateTheAverages(accumulatedChartData)
-    //console.log('twoHundredDayChartData: '+ twoHundredDayChartData)
-    for (let j = 0; j < accumulatedChartData.length; ++j) {
-      accumulatedChartData[j].fiftyDayMovingAverage = fiftyDayChartData[j].simpleMovingAverage
-      //console.log('twoHundredDayMovingAverage Entry: ' + accumulatedChartData[j].twoHundredDayMovingAverage)
+    // We need enough data to calculate the average for ALL dates in the selected period
+    // That means: adjustedData >= selectedPeriod + lookbackPeriod
+    if (adjustedToContainFullYearOfDataValuesIn.length >= (standardValuesIn.length + numberOfDaysToLookBack)) {
+      let fiftyDayChartData = [];
+      const fiftyDayMoveingAverage = new StandardMovingAverage(adjustedToContainFullYearOfDataValuesIn, numberOfDaysToLookBack);
+      fiftyDayChartData = fiftyDayMoveingAverage.generateTheAverages(accumulatedChartData)
+      //console.log('fiftyDayChartData: '+ fiftyDayChartData)
+      for (let j = 0; j < accumulatedChartData.length; ++j) {
+        accumulatedChartData[j].fiftyDayMovingAverage = fiftyDayChartData[j].simpleMovingAverage
+        //console.log('fiftyDayMovingAverage Entry: ' + accumulatedChartData[j].fiftyDayMovingAverage)
+      }
+    } else {
+      console.log('Insufficient data for 50-day moving average. Need at least ' + (standardValuesIn.length + numberOfDaysToLookBack) + ' days, have: ' + adjustedToContainFullYearOfDataValuesIn.length)
     }
 
 

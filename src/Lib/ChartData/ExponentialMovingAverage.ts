@@ -7,7 +7,7 @@ export default class ExponentialMovingAverage {
   oneYearOfData
   numberOfDaystoLookBack
 
-  accumulatedChartData:StandardChartData[]=[new StandardChartData("",0,0,0,0,0,0,0,0)];
+  accumulatedChartData:StandardChartData[]=[new StandardChartData("",0,null,null,null,null,null,null,null)];
 
     constructor(oneYearOfDataIn:HistoricalPriceFull_V3[],numberOfDaystoLookBackIn:number) {
       this.oneYearOfData = oneYearOfDataIn;
@@ -21,13 +21,22 @@ export default class ExponentialMovingAverage {
       this.accumulatedChartData=accumulatedChartDataIn;
       //console.log("calling this.generateTheDataPointsFormTwo_UpToDate, this.numberOfDaystoLookBack: " + this.numberOfDaystoLookBack + ', this.oneYearOfData.length: ' + this.oneYearOfData.length)
 
-      const datapoints=this.generateTheDataPointsFormTwo_UpToDate( this.numberOfDaystoLookBack,this.oneYearOfData)!
+      const datapoints=this.generateTheDataPointsFormTwo_UpToDate( this.numberOfDaystoLookBack,this.oneYearOfData)
+
+      // Handle insufficient historical data
+      if (datapoints === null || datapoints.length === 0) {
+        console.log('Insufficient historical data for exponential moving average calculation')
+        // Return chart data with null values for exponential moving averages (won't render on chart)
+        return this.accumulatedChartData.map(entry =>
+          new StandardChartData(entry.dateOfClose, entry.dailyClosingPrice, entry.simpleMovingAverage, null, entry.twoHundredDayMovingAverage, entry.fiftyDayMovingAverage, entry.lowerBollingerValue, entry.upperBollingerValue, entry.mean)
+        );
+      }
 
       //console.log('datapoints returned: ' + datapoints.length)
       //console.log('accumulatedChartData: ' + JSON.stringify(this.accumulatedChartData))
       //console.log('accumulatedChartData to match up against: ' + this.accumulatedChartData.length)
       //console.log('starting date = ' +this.accumulatedChartData[0].dateOfClose)
-      
+
       let commonStartAddress=0;
       for(let i=0;i<datapoints.length;++i)
       {
@@ -42,7 +51,7 @@ export default class ExponentialMovingAverage {
       const adjustedChartData = [];
       let k=commonStartAddress;
 
-      
+
       for(let j=0; j < this.accumulatedChartData.length;)
       {
         //console.log('j: ' + j + ', k: ' +k)
@@ -52,20 +61,22 @@ export default class ExponentialMovingAverage {
         //console.log('this.accumulatedChartData[j].dateOfClose: ' + this.accumulatedChartData[j].dateOfClose)
         //console.log('this.accumulatedChartData[j].dailyClosingPrice: ' + this.accumulatedChartData[j].dailyClosingPrice)
 
+        // Check if we have a valid datapoint before accessing it
+        const calculatedValue = (k < datapoints.length && datapoints[k]) ? datapoints[k].calculatedValue : null;
         const adjustedChartDataEntry = new StandardChartData(this.accumulatedChartData[j].dateOfClose,
             this.accumulatedChartData[j].dailyClosingPrice,
             this.accumulatedChartData[j].simpleMovingAverage,
-            datapoints[k].calculatedValue,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0)
+            calculatedValue,
+            this.accumulatedChartData[j].twoHundredDayMovingAverage,
+            this.accumulatedChartData[j].fiftyDayMovingAverage,
+            this.accumulatedChartData[j].lowerBollingerValue,
+            this.accumulatedChartData[j].upperBollingerValue,
+            this.accumulatedChartData[j].mean)
         //console.log('adjustedChartDataEntry: ' + adjustedChartDataEntry.toString())
         adjustedChartData.push(adjustedChartDataEntry)
         ++j; ++k;
       }
-      
+
       return adjustedChartData;
     }   
 

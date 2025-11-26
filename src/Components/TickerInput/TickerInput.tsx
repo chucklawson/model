@@ -37,10 +37,25 @@ const TickerInput =( props:TickerInputProps )=> {
   [oneYearHistoryChecked,tFirstTermChecked,bidenTermChecked])
 
     useEffect (() => {
-      
+
       //console.log('useEffect on TickerInput: ' + isValid)
   },
   [isValid,startDateIsValid,endDateIsValid])
+
+    // Auto-submit when checkbox changes dates
+    useEffect(() => {
+      // Wait for dates to be updated after checkbox change
+      const timer = setTimeout(() => {
+        if (startDate && endDate && enteredValue && (tFirstTermChecked || oneYearHistoryChecked || bidenTermChecked)) {
+          const year = parseInt(startDate.substring(0, startDate.indexOf('-')));
+          const adjustedYear = year - 1;
+          const adjustedStartDate = adjustedYear + startDate.substring(startDate.indexOf('-'));
+          props.onTickerValue(enteredValue, startDate, endDate, adjustedStartDate);
+        }
+      }, 100); // Small delay to let dates update first
+
+      return () => clearTimeout(timer);
+    }, [tFirstTermChecked, oneYearHistoryChecked, bidenTermChecked])
 
     const tickerInputChangeHandler = (event:ChangeEvent<HTMLInputElement> )=> {
        // event.preventDefault();
