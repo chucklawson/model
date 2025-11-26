@@ -117,8 +117,8 @@ const SummarySpreadSheet = () =>{
 
   return (
 
-
-    <div className='bg-gray-100 grid grid-cols-12 gap-4'>
+    <div className='bg-gray-100 min-w-[1200px]'>
+    <div className='grid grid-cols-12 gap-4 w-[1200px] min-w-[1200px]'>
       <div className={classValuesLeft}>
       </div>
 
@@ -153,6 +153,7 @@ const SummarySpreadSheet = () =>{
 
       </div>
 
+    </div>
     </div>
 
   )

@@ -82,8 +82,8 @@ const DividendEntries=()=> {
 }, [stockSymbolToFetch,headerValue,slope]);
 
   return (
-    <div className="text-center">
-    <header className="bg-teal-100 text-teal-600 text-3xl font-bold h-30 justify-items-center">
+    <div className="text-center overflow-x-visible min-w-[1400px]">
+    <header className="bg-teal-100 text-teal-600 text-3xl font-bold h-30 justify-items-center min-w-[1400px]">
       <div>
         {headerValue}
       </div>

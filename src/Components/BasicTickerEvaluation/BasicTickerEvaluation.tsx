@@ -39,8 +39,6 @@ interface  BasicTickerEvaluationProps{
 }
 
 
-const GRAPH_SIZE_FACTOR = .48
-
 const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
     const [tickerToGet, setTickerToGet] = useState('');
@@ -199,7 +197,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       capexPerShare: 0,}]);
 
     const [calculatedTotalProfitLoss, setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
-    const [graphWidth, setGraphWidth]=useState(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
+    const graphWidth = 850;
 
     const getValuesBasedOnDate=new GetValuesBasedOnDate();
 
@@ -246,14 +244,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
     }, [updateRangeValues]);
 */
-  useEffect(() => {
-    const handleResize = () => {
-      setGraphWidth(Math.round(window.innerWidth * GRAPH_SIZE_FACTOR));
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Graph width is now fixed at 850px for consistent display
+  // No need to resize based on viewport since we use horizontal scrolling
 
     useEffect(()=>{
         //console.log("currentQuote.change: " +currentQuote.change)
@@ -607,7 +599,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
 
-    return <  div className='bg-gray-100 grid grid-cols-9 gap-4'>
+    return <div className='bg-gray-100 min-w-[1400px]'>
+      <div className='grid grid-cols-11 gap-4 w-[1400px] min-w-[1400px]'>
 
         <TickerSidebar
             tickerEntries={props.tickerEntries}
@@ -693,6 +686,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         />
 
 
+    </div>
     </div>
 };
 

@@ -123,9 +123,9 @@ const StatementSpreadSheet = () =>{
 
 
 return (
-    
 
-    <div className='bg-gray-100 grid grid-cols-12 gap-4'>
+    <div className='bg-gray-100 min-w-[1200px]'>
+    <div className='grid grid-cols-12 gap-4 w-[1200px] min-w-[1200px]'>
       <div className={classValuesLeft}>
     </div>
 
@@ -159,8 +159,9 @@ return (
         {/*} <SpreadSheet data={data} columnLabels={col} rowLabels={row} onChange={setData} />*/}
         <SpreadSheet data={data} columnLabels={col} rowLabels={row}/>
 
-      </div>    
+      </div>
 
+    </div>
     </div>
 
     )

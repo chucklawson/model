@@ -155,9 +155,9 @@ const HistoricalDividends = () =>{
 
 
 return (
-    
 
-    <div className='bg-gray-100 grid grid-cols-12 gap-4'>
+    <div className='bg-gray-100 min-w-[1200px]'>
+    <div className='grid grid-cols-12 gap-4 w-[1200px] min-w-[1200px]'>
       <div className={classValuesLeft}>
     </div>
 
@@ -183,9 +183,10 @@ return (
       <div className='col-start-1 col-span-12 justify-items-center p-1'>
 
           <SpreadSheet data={data} columnLabels={col} rowLabels={row} />
-        
-      </div>    
 
+      </div>
+
+    </div>
     </div>
 
     )

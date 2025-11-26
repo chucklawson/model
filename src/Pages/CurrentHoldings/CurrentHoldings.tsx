@@ -261,9 +261,9 @@ function CurrentHoldings() {
 }, [stockSymbolToFetch,headerValue,slope]);
 
   return (
-    <div className="text-center">      
-      
-    <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-30 justify-items-center">
+    <div className="text-center overflow-x-visible min-w-[1400px]">
+
+    <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-30 justify-items-center min-w-[1400px]">
       <div>
         {headerValue}
                 {isTodaysChangePositive === true ?

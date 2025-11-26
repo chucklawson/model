@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+html, body, #root {
+  overflow-x: visible;
+  min-width: 100%;
+}

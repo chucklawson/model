@@ -72,8 +72,8 @@ const Banks=()=> {
 }, [stockSymbolToFetch,headerValue,slope]);
 
   return (
-    <div className="text-center">
-    <header className="bg-gray-200 text-gray-600 text-3xl font-bold h-30 justify-items-center">
+    <div className="text-center overflow-x-visible min-w-[1400px]">
+    <header className="bg-gray-200 text-gray-600 text-3xl font-bold h-30 justify-items-center min-w-[1400px]">
       <div>
         {headerValue}
       </div>   
