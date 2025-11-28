@@ -149,20 +149,6 @@ const tickersToEvaluate:TickersToEvaluate[] =
       baseYield: ''
     },
     {
-      ticker: "NEM",
-      costBasis: '89.73',
-      unitsOnHand: 25,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "NKE",
-      costBasis: '66.07',
-      unitsOnHand: 30,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
       ticker: "NLY",
       costBasis: '20.20',
       unitsOnHand: 400,
