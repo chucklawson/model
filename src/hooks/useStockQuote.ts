@@ -8,6 +8,7 @@ interface UseStockQuoteParams {
   latestStartDate: string;
   latestEndDate: string;
   adjustedStartDate: string;
+  refreshTrigger?: number;
 }
 
 interface UseStockQuoteResult {
@@ -23,7 +24,8 @@ export function useStockQuote({
   stockSymbol,
   latestStartDate,
   latestEndDate,
-  adjustedStartDate
+  adjustedStartDate,
+  refreshTrigger
 }: UseStockQuoteParams): UseStockQuoteResult {
   const [quote, setQuote] = useState<Quote_V3 | undefined>();
   const [timeSeries, setTimeSeries] = useState<HistoricalPriceFull_V3[]>([]);
@@ -90,7 +92,7 @@ export function useStockQuote({
     };
 
     fetchStockData();
-  }, [stockSymbol, latestStartDate, latestEndDate, adjustedStartDate]);
+  }, [stockSymbol, latestStartDate, latestEndDate, adjustedStartDate, refreshTrigger]);
 
   return {
     quote,

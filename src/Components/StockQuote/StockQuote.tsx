@@ -8,9 +8,11 @@ import { useStockQuote } from '../../hooks/useStockQuote';
 interface  StockQuoteProps{
   stockSymbol: string;
   onSetCurrentQuote(currentQuoteIn: Quote_V3, timeSeriesIn:HistoricalPriceFull_V3[], adjustedTimeSeriesIn:HistoricalPriceFull_V3[], statementAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[] ):void;
+  onLoadingChange(loading: boolean): void;
   latestStartDate: string;
   latestEndDate: string;
   adjustedStartDate: string;
+  refreshTrigger?: number;
 }
 
 const StockQuote = (props:StockQuoteProps) => {
@@ -20,8 +22,14 @@ const StockQuote = (props:StockQuoteProps) => {
       stockSymbol: props.stockSymbol,
       latestStartDate: props.latestStartDate,
       latestEndDate: props.latestEndDate,
-      adjustedStartDate: props.adjustedStartDate
+      adjustedStartDate: props.adjustedStartDate,
+      refreshTrigger: props.refreshTrigger
     });
+
+    // Propagate loading state to parent
+    useEffect(() => {
+      props.onLoadingChange(loading);
+    }, [loading, props.onLoadingChange]);
 
     // Call parent callback when data is ready (only after loading completes)
     useEffect(() => {

@@ -7,6 +7,8 @@ interface TickerSidebarProps {
   selectTickerButtonHandler: (tickerIn: string, currentQuantityOnHandIn: number, totalCostIn: number) => void;
   buttonBackgroundColor: string;
   backgroundLeft: string;
+  isLoading?: boolean;
+  currentTicker?: string;
 }
 
 const TickerSidebar = (props: TickerSidebarProps) => {
@@ -22,6 +24,7 @@ const TickerSidebar = (props: TickerSidebarProps) => {
           currentQuantityOnHand={tickerEntry.unitsOnHand}
           selectTickerButtonHandler={props.selectTickerButtonHandler}
           backgroundColor={props.buttonBackgroundColor}
+          isLoading={props.isLoading && props.currentTicker === tickerEntry.ticker}
         />
       ))}
     </div>

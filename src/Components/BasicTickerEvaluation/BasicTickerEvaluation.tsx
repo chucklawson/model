@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../../Lib/Quote_V3"
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
@@ -52,6 +52,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [showChart, setShowChart] = useState(false);
     const [dataFetched, setDataFetched] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const widthOfStroke = 2;
     const [rangeValue, setRangeValue] = useState("50.0");
@@ -302,36 +306,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setStartDate(startDate.trim());
             setEndDate(endDate.trim());
             setAdjustedStartDate(adjustedStartDate.trim());
-
-            // Clear time series data to trigger chart data clearing
+            setRefreshTrigger(prev => prev + 1);  // Increment to force refresh
             setDataFetched(false);
-            setTimeSeries([{date: "",
-              open: 0,
-              high: 0,
-              low: 0,
-              close: 0,
-              adjClose: 0,
-              volume: 0,
-              unadjustedVolume: 0,
-              change: 0,
-              changePercent: 0,
-              vwap: 0,
-              label: "",
-              changeOverTime: 0}]);
-            setAdjustedTimeSeries([{date: "",
-              open: 0,
-              high: 0,
-              low: 0,
-              close: 0,
-              adjClose: 0,
-              volume: 0,
-              unadjustedVolume: 0,
-              change: 0,
-              changePercent: 0,
-              vwap: 0,
-              label: "",
-              changeOverTime: 0}]);
-
             setUpdateTickerValue(true);
 
 
@@ -423,41 +399,23 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     };
 
     const selectTickerButtonHandler = useCallback((tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
-        setTickerToGet(tickerIn);
-        setUpdateTickerValue(true);
-        setCurrentQuantityOnHand(currentQuantityOnHandIn)
-        setTotalCost(totalCostIn)
-        props.onSetHeader(props.baseHeader + " - " + tickerIn);
-        props.onSelectTickerButtonHandler(tickerIn)
-        // Clear time series data to trigger chart data clearing
-        setDataFetched(false);
-        setTimeSeries([{date: "",
-          open: 0,
-          high: 0,
-          low: 0,
-          close: 0,
-          adjClose: 0,
-          volume: 0,
-          unadjustedVolume: 0,
-          change: 0,
-          changePercent: 0,
-          vwap: 0,
-          label: "",
-          changeOverTime: 0}]);
-        setAdjustedTimeSeries([{date: "",
-          open: 0,
-          high: 0,
-          low: 0,
-          close: 0,
-          adjClose: 0,
-          volume: 0,
-          unadjustedVolume: 0,
-          change: 0,
-          changePercent: 0,
-          vwap: 0,
-          label: "",
-          changeOverTime: 0}]);
-        //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
+        // Clear any existing debounce timer
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+
+        // Set a new debounce timer (300ms delay)
+        debounceTimerRef.current = setTimeout(() => {
+            setTickerToGet(tickerIn);
+            setUpdateTickerValue(true);
+            setCurrentQuantityOnHand(currentQuantityOnHandIn)
+            setTotalCost(totalCostIn)
+            setRefreshTrigger(prev => prev + 1);  // Increment to force refresh
+            props.onSetHeader(props.baseHeader + " - " + tickerIn);
+            props.onSelectTickerButtonHandler(tickerIn)
+            setDataFetched(false);
+            //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
+        }, 300);
     }, [props.onSetHeader, props.baseHeader, props.onSelectTickerButtonHandler])
 
     const calculateProfitLossButtonHandler = useCallback(() =>
@@ -492,19 +450,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     {
         // Validate that incoming data is for the ticker we're currently requesting
         // Reject stale data from previous ticker selections
-        if (currentQuoteIn.symbol !== tickerToGet && tickerToGet !== '') {
+        // Only validate if we're not loading (prevents rejecting data during transitions)
+        if (currentQuoteIn.symbol !== tickerToGet && tickerToGet !== '' && !isLoading) {
             console.log("Rejecting data for wrong ticker. Got:", currentQuoteIn.symbol, "Expected:", tickerToGet);
             setDataFetched(true);
             return;
         }
 
-        // Validate that we have real data, not stale/empty data
-        // Reject if timeSeries has empty date strings (indicates cleared/default state)
-        if (timeSeriesIn.length > 0 && timeSeriesIn[0].date === "") {
-            console.log("Rejecting empty/cleared data");
-            setDataFetched(true);
-            return;
-        }
+        // Empty data validation removed - we no longer clear data so this check is unnecessary
+        // and can cause false rejections during loading transitions
 
         // Validate that data is for the requested date range
         // Check if any data points fall within the requested range
@@ -552,7 +506,11 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             //console.log('timeSeriesIn[0].close: ' + timeSeriesIn[0].close + ', timeSeriesIn[timeSeriesIn.length-1].close: '+timeSeriesIn[timeSeriesIn.length-1].close)
         }
 
-    }, [setProfitLoss, tickerToGet, startDate, endDate])
+    }, [setProfitLoss, tickerToGet, startDate, endDate, isLoading])
+
+    const onLoadingChange = useCallback((loading: boolean) => {
+        setIsLoading(loading);
+    }, []);
 
     const [bollingerChecked, setBollingerChecked] = React.useState(false);
 
@@ -607,6 +565,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             selectTickerButtonHandler={selectTickerButtonHandler}
             buttonBackgroundColor={props.buttonBackgroundColor}
             backgroundLeft={props.backgroundLeft}
+            isLoading={isLoading}
+            currentTicker={tickerToGet}
         />
 
         <div className='col-start-3 col-span-7'>
@@ -634,7 +594,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         <TickerInput  onTickerValue={onTickerChangeHandler} currentTicker={tickerToGet} startDate={startDate} endDate={endDate}
             containerBackGround= {props.buttonBackgroundColor}></TickerInput>
 
-        <StockQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote} latestStartDate={startDate} latestEndDate={endDate} adjustedStartDate={adjustedStartDate}/>
+        <StockQuote
+            stockSymbol={tickerToGet}
+            onSetCurrentQuote={onSetCurrentQuote}
+            onLoadingChange={onLoadingChange}
+            latestStartDate={startDate}
+            latestEndDate={endDate}
+            adjustedStartDate={adjustedStartDate}
+            refreshTrigger={refreshTrigger}
+        />
 
 
         {(showChart === true && graphData.length !== undefined && graphData.length > 0) ?
