@@ -14,7 +14,10 @@ import {
   EyeOff,
   ChevronDown,
   FileText,
-  Briefcase
+  Briefcase,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import type { TickerLot } from '../types';
 import ColumnCustomization, { type ColumnConfig } from './ColumnCustomization';
@@ -53,6 +56,8 @@ export default function TickerLotSpreadsheet({
   const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
   const [showCustomization, setShowCustomization] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<string>('purchaseDate');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const allSelected = lots.length > 0 && selectedRows.size === lots.length;
   const visibleColumns = columns.filter(col => col.visible);
@@ -66,6 +71,52 @@ export default function TickerLotSpreadsheet({
     );
     setDropdownOpen(null);
   };
+
+  const handleSort = (columnId: string) => {
+    if (columnId === 'checkbox' || columnId === 'actions') return;
+
+    if (sortColumn === columnId) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(columnId);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedLots = [...lots].sort((a, b) => {
+    let compareValue = 0;
+
+    switch (sortColumn) {
+      case 'ticker':
+        compareValue = a.ticker.localeCompare(b.ticker);
+        break;
+      case 'portfolio':
+        compareValue = a.portfolios.join(', ').localeCompare(b.portfolios.join(', '));
+        break;
+      case 'shares':
+        compareValue = a.shares - b.shares;
+        break;
+      case 'costPerShare':
+        compareValue = a.costPerShare - b.costPerShare;
+        break;
+      case 'totalCost':
+        compareValue = a.totalCost - b.totalCost;
+        break;
+      case 'purchaseDate':
+        compareValue = new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime();
+        break;
+      case 'baseYield':
+        compareValue = a.baseYield - b.baseYield;
+        break;
+      case 'notes':
+        compareValue = (a.notes || '').localeCompare(b.notes || '');
+        break;
+      default:
+        compareValue = 0;
+    }
+
+    return sortDirection === 'asc' ? compareValue : -compareValue;
+  });
 
   const renderCellContent = (colId: string, lot: TickerLot) => {
     switch (colId) {
@@ -136,14 +187,18 @@ export default function TickerLotSpreadsheet({
         return (
           <div className="flex gap-2 justify-end">
             <button
-              onClick={() => onEdit(lot)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(lot);
+              }}
               className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
               title="Edit Lot"
             >
               <Edit2 size={18} />
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 if (confirm('Delete this lot?')) {
                   onDelete(lot.id);
                 }
@@ -181,9 +236,10 @@ export default function TickerLotSpreadsheet({
               return (
                 <th
                   key={col.id}
-                  className={`p-4 font-bold text-slate-700 uppercase text-xs tracking-wide ${
+                  className={`p-2 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
-                  }`}
+                  } ${col.id !== 'checkbox' && col.id !== 'actions' ? 'cursor-pointer hover:bg-slate-200' : ''}`}
+                  onClick={() => handleSort(col.id)}
                 >
                   {col.id === 'checkbox' ? (
                     <input
@@ -191,11 +247,25 @@ export default function TickerLotSpreadsheet({
                       className="w-4 h-4 rounded border-slate-300"
                       checked={allSelected}
                       onChange={onToggleAll}
+                      onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <div className="flex items-center gap-2 relative">
                       {Icon && <Icon size={16} />}
                       <span>{col.label}</span>
+                      {col.id !== 'actions' && (
+                        <span className="ml-1">
+                          {sortColumn === col.id ? (
+                            sortDirection === 'asc' ? (
+                              <ArrowUp size={14} className="text-blue-600" />
+                            ) : (
+                              <ArrowDown size={14} className="text-blue-600" />
+                            )
+                          ) : (
+                            <ArrowUpDown size={14} className="text-slate-400" />
+                          )}
+                        </span>
+                      )}
                       {!col.required && (
                         <button
                           onClick={(e) => {
@@ -238,7 +308,7 @@ export default function TickerLotSpreadsheet({
               </td>
             </tr>
           ) : (
-            lots.map((lot, idx) => (
+            sortedLots.map((lot, idx) => (
               <tr
                 key={lot.id}
                 className={`border-b border-slate-200 hover:bg-blue-50 transition-colors ${
@@ -246,7 +316,7 @@ export default function TickerLotSpreadsheet({
                 }`}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-4 ${col.id === 'actions' ? 'text-right' : ''}`}>
+                  <td key={col.id} className={`p-2 ${col.id === 'actions' ? 'text-right' : ''}`}>
                     {renderCellContent(col.id, lot)}
                   </td>
                 ))}

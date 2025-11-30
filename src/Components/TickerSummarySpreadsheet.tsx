@@ -234,7 +234,11 @@ export default function TickerSummarySpreadsheet({
 
   return (
     <>
-      <div className="flex justify-end mb-3">
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <TrendingUp size={20} className="text-blue-600" />
+          Ticker Summary
+        </h2>
         <button
           onClick={() => setShowCustomization(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium border border-slate-300"
@@ -253,7 +257,7 @@ export default function TickerSummarySpreadsheet({
               return (
                 <th
                   key={col.id}
-                  className={`p-4 font-bold text-slate-700 uppercase text-xs tracking-wide ${
+                  className={`p-2 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
                   }`}
                 >
@@ -310,7 +314,7 @@ export default function TickerSummarySpreadsheet({
                 onClick={() => onViewDetails(summary.ticker)}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-4 ${col.id === 'actions' ? 'text-right' : ''}`}>
+                  <td key={col.id} className={`p-2 ${col.id === 'actions' ? 'text-right' : ''}`}>
                     {renderCellContent(col.id, summary)}
                   </td>
                 ))}

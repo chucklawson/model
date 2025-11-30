@@ -1,5 +1,5 @@
 // ============================================
-// FILE: src/App.tsx
+// FILE: src/Pages/Tickers/Tickers.tsx
 // ============================================
 import { useState, useEffect } from 'react';
 import { generateClient } from 'aws-amplify/data';
@@ -390,7 +390,7 @@ interface LegacyLot {
                   <DollarSign className="text-green-600" size={28} />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600 font-bold uppercase">Portfolio Value</p>
+                  <p className="text-sm text-slate-600 font-bold uppercase">Portfolio Cost</p>
                   <p className="text-2xl font-bold text-green-600">
                     ${totalPortfolioValue.toFixed(2)}
                   </p>
@@ -413,16 +413,6 @@ interface LegacyLot {
 
           {/* Main Content */}
           <div className="p-6 flex-1 overflow-y-auto overflow-x-auto">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2">
-                <TrendingUp size={28} className="text-blue-600" />
-                Ticker Summary
-              </h2>
-              <p className="text-slate-600">
-                Click on any ticker row to view and manage individual lots
-              </p>
-            </div>
-
             {loading ? (
               <div className="text-center py-20">
                 <RefreshCw size={48} className="mx-auto mb-4 text-blue-600 animate-spin" />

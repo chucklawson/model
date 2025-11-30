@@ -41,5 +41,16 @@ export function calculateTickerSummaries(lots: TickerLot[], tickers: Ticker[] = 
 export function getLotsForTicker(lots: TickerLot[], ticker: string): TickerLot[] {
   return lots
     .filter(lot => lot.ticker === ticker)
-    .sort((a, b) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime());
+    .sort((a, b) => {
+      // Primary sort: by purchase date (oldest first)
+      const dateCompare = new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime();
+      if (dateCompare !== 0) return dateCompare;
+
+      // Secondary sort: by shares (largest first)
+      const sharesCompare = b.shares - a.shares;
+      if (sharesCompare !== 0) return sharesCompare;
+
+      // Tertiary sort: by cost per share (highest first)
+      return b.costPerShare - a.costPerShare;
+    });
 }

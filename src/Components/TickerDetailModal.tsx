@@ -177,70 +177,67 @@ export default function TickerDetailModal({
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 p-3 text-white">
           <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-3xl font-bold flex items-center gap-3">
-                <TrendingUp size={32} />
-                {ticker} - Lot Details
-              </h2>
-              <p className="text-blue-100 mt-1">Manage all purchase lots for this ticker</p>
-            </div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <TrendingUp size={20} />
+              {ticker} - Lot Details
+            </h2>
             <button
               onClick={onClose}
-              className="p-3 hover:bg-white hover:bg-opacity-20 rounded-full transition-all"
+              className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-all"
             >
-              <ArrowLeft size={28} />
+              <ArrowLeft size={20} />
             </button>
           </div>
         </div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-4 gap-4 p-6 bg-slate-50 border-b border-slate-200">
-          <div className="bg-white p-4 rounded-xl shadow-md border-2 border-blue-200">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <Package className="text-blue-600" size={24} />
+        <div className="grid grid-cols-4 gap-2 p-3 bg-slate-50 border-b border-slate-200">
+          <div className="bg-white p-2 rounded-lg shadow-md border border-blue-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Package className="text-blue-600" size={18} />
               </div>
               <div>
-                <p className="text-sm text-slate-600 font-semibold">Total Shares</p>
-                <p className="text-2xl font-bold text-slate-800">{totalShares.toLocaleString()}</p>
+                <p className="text-xs text-slate-600 font-semibold">Total Shares</p>
+                <p className="text-lg font-bold text-slate-800">{totalShares.toLocaleString()}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl shadow-md border-2 border-green-200">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-3 rounded-lg">
-                <DollarSign className="text-green-600" size={24} />
+          <div className="bg-white p-2 rounded-lg shadow-md border border-green-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <DollarSign className="text-green-600" size={18} />
               </div>
               <div>
-                <p className="text-sm text-slate-600 font-semibold">Total Investment</p>
-                <p className="text-2xl font-bold text-green-600">${totalCost.toFixed(2)}</p>
+                <p className="text-xs text-slate-600 font-semibold">Total Investment</p>
+                <p className="text-lg font-bold text-green-600">${totalCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl shadow-md border-2 border-purple-200">
-            <div className="flex items-center gap-3">
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <BarChart3 className="text-purple-600" size={24} />
+          <div className="bg-white p-2 rounded-lg shadow-md border border-purple-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <BarChart3 className="text-purple-600" size={18} />
               </div>
               <div>
-                <p className="text-sm text-slate-600 font-semibold">Avg Cost/Share</p>
-                <p className="text-2xl font-bold text-purple-600">${avgCost.toFixed(2)}</p>
+                <p className="text-xs text-slate-600 font-semibold">Avg Cost/Share</p>
+                <p className="text-lg font-bold text-purple-600">${avgCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl shadow-md border-2 border-orange-200">
-            <div className="flex items-center gap-3">
-              <div className="bg-orange-100 p-3 rounded-lg">
-                <TrendingUp className="text-orange-600" size={24} />
+          <div className="bg-white p-2 rounded-lg shadow-md border border-orange-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-orange-100 p-2 rounded-lg">
+                <TrendingUp className="text-orange-600" size={18} />
               </div>
               <div>
-                <p className="text-sm text-slate-600 font-semibold">Total Lots</p>
-                <p className="text-2xl font-bold text-orange-600">{lots.length}</p>
+                <p className="text-xs text-slate-600 font-semibold">Total Lots</p>
+                <p className="text-lg font-bold text-orange-600">{lots.length}</p>
               </div>
             </div>
           </div>
