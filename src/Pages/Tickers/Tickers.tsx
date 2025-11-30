@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import type { TickerLot, TickerSummary, LotFormData, Portfolio, Ticker } from '../../types';
 import { calculateTickerSummaries } from '../../utils/tickerCalculations';
-import TickerSummarySpreadsheet from '../../components/TickerSummarySpreadsheet';
+import TickerSummarySpreadsheet from '../../Components/TickerSummarySpreadsheet';
 import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
