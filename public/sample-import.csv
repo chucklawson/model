@@ -1,0 +1,6 @@
+Ticker,Date,Quantity,Cost,Portfolio
+AAPL,1/15/2024,100,150.25,Default
+MSFT,2/20/2024,50,380.00,Retirement
+GOOGL,3/10/2024,75,140.50,Trading
+TSLA,4/5/2024,25,245.75,Default
+NVDA,5/12/2024,40,890.00,Tech Portfolio

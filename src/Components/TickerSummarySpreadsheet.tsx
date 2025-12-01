@@ -56,6 +56,11 @@ export default function TickerSummarySpreadsheet({
   const visibleColumns = columns.filter(col => col.visible);
   const visibleColSpan = visibleColumns.length;
 
+  // Sort summaries by ticker symbol alphabetically
+  const sortedSummaries = [...summaries].sort((a, b) =>
+    a.ticker.localeCompare(b.ticker)
+  );
+
   const toggleColumnVisibility = (columnId: string) => {
     setColumns(prev =>
       prev.map(col =>
@@ -297,7 +302,7 @@ export default function TickerSummarySpreadsheet({
           </tr>
           </thead>
           <tbody>
-          {summaries.length === 0 ? (
+          {sortedSummaries.length === 0 ? (
             <tr>
               <td colSpan={visibleColSpan} className="p-12 text-center text-slate-400">
                 <TrendingUp size={48} className="mx-auto mb-3 opacity-50" />
@@ -305,7 +310,7 @@ export default function TickerSummarySpreadsheet({
               </td>
             </tr>
           ) : (
-            summaries.map((summary, idx) => (
+            sortedSummaries.map((summary, idx) => (
               <tr
                 key={summary.ticker}
                 className={`border-b border-slate-200 hover:bg-blue-50 transition-colors cursor-pointer ${

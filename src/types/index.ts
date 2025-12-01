@@ -58,3 +58,61 @@ export interface LotFormData {
   calculateAccumulatedProfitLoss: boolean;
   notes: string;
 }
+
+// CSV Import Types
+export interface ParsedCSVRow {
+  ticker: string;
+  companyName?: string;
+  baseYield?: number;
+  shares: number;
+  costPerShare: number;
+  purchaseDate: string;
+  portfolios: string[];
+  calculatePL?: boolean;
+  notes?: string;
+  rowIndex: number;
+  originalRow: string;
+}
+
+export interface ParsedCSVData {
+  rows: ParsedCSVRow[];
+  headers: string[];
+  totalRows: number;
+}
+
+export interface FieldError {
+  field: string;
+  message: string;
+}
+
+export type ValidationStatus = 'valid' | 'duplicate' | 'invalid';
+
+export interface ValidationResult {
+  row: ParsedCSVRow;
+  status: ValidationStatus;
+  errors: FieldError[];
+  isDuplicate?: boolean;
+  duplicateReason?: string;
+}
+
+export interface ImportProgress {
+  current: number;
+  total: number;
+  percentage: number;
+  currentOperation: string;
+}
+
+export interface ImportResult {
+  totalRows: number;
+  imported: number;
+  skipped: number;
+  failed: number;
+  tickersCreated: number;
+  tickersSkipped: number;
+  portfoliosCreated: string[];
+  details: {
+    row: ParsedCSVRow;
+    status: 'success' | 'skipped' | 'failed';
+    reason?: string;
+  }[];
+}

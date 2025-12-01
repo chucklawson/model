@@ -10,7 +10,8 @@ import {
   DollarSign,
   RefreshCw,
   Plus,
-  Settings
+  Settings,
+  Upload
 } from 'lucide-react';
 import type { TickerLot, TickerSummary, LotFormData, Portfolio, Ticker } from '../../types';
 import { calculateTickerSummaries } from '../../utils/tickerCalculations';
@@ -18,6 +19,7 @@ import TickerSummarySpreadsheet from '../../Components/TickerSummarySpreadsheet'
 import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
+import ImportCSVModal from '../../Components/ImportCSVModal';
 
 // Type for old data schema with single portfolio field
 interface LegacyLot {
@@ -36,6 +38,7 @@ interface LegacyLot {
   const [error, setError] = useState<string | null>(null);
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [showPortfolioManager, setShowPortfolioManager] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   useEffect(() => {
     initializeDefaultPortfolio();
@@ -352,6 +355,13 @@ interface LegacyLot {
                   Manage Portfolios
                 </button>
                 <button
+                  onClick={() => setShowImportModal(true)}
+                  className="bg-white bg-opacity-20 text-blue-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                >
+                  <Upload size={20} />
+                  Import CSV
+                </button>
+                <button
                   onClick={loadLots}
                   className="bg-white bg-opacity-20 text-blue-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
                 >
@@ -458,6 +468,22 @@ interface LegacyLot {
         <PortfolioManager
           portfolios={portfolios}
           onClose={() => setShowPortfolioManager(false)}
+        />
+      )}
+
+      {/* Import CSV Modal */}
+      {showImportModal && (
+        <ImportCSVModal
+          portfolios={portfolios}
+          existingTickers={tickers}
+          existingLots={lots}
+          onClose={() => setShowImportModal(false)}
+          onImportComplete={async () => {
+            await loadLots();
+            await loadTickers();
+            await loadPortfolios();
+            setShowImportModal(false);
+          }}
         />
       )}
     </div>

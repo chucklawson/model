@@ -5,7 +5,15 @@
       "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)",
+      "Bash(dir /b:*)",
+      "Bash(findstr:*)",
+      "Bash(npx ampx:*)",
+      "Bash(timeout 3 sleep:*)",
+      "Bash(dir:*)",
+      "Bash(npm run dev:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []
