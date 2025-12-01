@@ -42,7 +42,6 @@ export default function ImportCSVModal({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [currentStep, setCurrentStep] = useState<ImportStep>('upload');
-  const [file, setFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<ParsedCSVData | null>(null);
   const [validationResults, setValidationResults] = useState<ValidationResult[]>([]);
   const [missingPortfolios, setMissingPortfolios] = useState<string[]>([]);
@@ -57,7 +56,6 @@ export default function ImportCSVModal({
 
   const handleFileSelect = async (selectedFile: File) => {
     setError(null);
-    setFile(selectedFile);
 
     try {
       // Validate file size
@@ -81,7 +79,6 @@ export default function ImportCSVModal({
       setCurrentStep('preview');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to parse CSV file');
-      setFile(null);
     }
   };
 
@@ -114,7 +111,6 @@ export default function ImportCSVModal({
   };
 
   const handleImportAnother = () => {
-    setFile(null);
     setParsedData(null);
     setValidationResults([]);
     setMissingPortfolios([]);

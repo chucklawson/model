@@ -6,7 +6,6 @@
 import type { Schema } from '../../amplify/data/resource';
 import type { generateClient } from 'aws-amplify/data';
 import type {
-  ParsedCSVRow,
   ValidationResult,
   ImportResult,
   ImportProgress,
