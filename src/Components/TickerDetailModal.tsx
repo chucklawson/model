@@ -11,7 +11,8 @@ import {
   DollarSign,
   Package,
   BarChart3,
-  Settings
+  Settings,
+  Loader2
 } from 'lucide-react';
 import type { TickerLot, LotFormData, Portfolio, Ticker } from '../types';
 import { getLotsForTicker } from '../utils/tickerCalculations';
@@ -53,6 +54,10 @@ export default function TickerDetailModal({
     calculateAccumulatedProfitLoss: true,
     notes: '',
   });
+
+  // Bulk portfolio assignment
+  const [bulkPortfolios, setBulkPortfolios] = useState<string[]>([]);
+  const [isApplyingPortfolios, setIsApplyingPortfolios] = useState(false);
 
   // Ticker-level settings (applied to all lots of this ticker)
   const [tickerSettings, setTickerSettings] = useState({
@@ -176,6 +181,54 @@ export default function TickerDetailModal({
 
     await onDeleteSelected(Array.from(selectedRows));
     setSelectedRows(new Set());
+  };
+
+  const handleApplyBulkPortfolios = async () => {
+    if (selectedRows.size === 0) return;
+    if (bulkPortfolios.length === 0) {
+      alert('Please select at least one portfolio to apply');
+      return;
+    }
+
+    if (!confirm(`Add selected portfolios to ${selectedRows.size} lot(s)?\n\nNote: This will merge with existing portfolios, not replace them.`)) return;
+
+    setIsApplyingPortfolios(true);
+
+    try {
+      const selectedIds = Array.from(selectedRows);
+
+      // Update each selected lot with the new portfolios (merged with existing)
+      for (let i = 0; i < selectedIds.length; i++) {
+        const lotId = selectedIds[i];
+        const lot = lots.find(l => l.id === lotId);
+        if (lot) {
+          // Merge new portfolios with existing ones (no duplicates)
+          const mergedPortfolios = Array.from(
+            new Set([...lot.portfolios, ...bulkPortfolios])
+          );
+
+          const lotData: LotFormData = {
+            ticker: lot.ticker,
+            shares: lot.shares,
+            costPerShare: lot.costPerShare,
+            purchaseDate: lot.purchaseDate,
+            portfolios: mergedPortfolios,
+            calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss,
+            notes: lot.notes,
+          };
+          await onSaveLot(lotData, lot.id);
+        }
+      }
+
+      // Clear selections after successful update
+      setSelectedRows(new Set());
+      setBulkPortfolios([]);
+    } catch (err) {
+      console.error('Error applying bulk portfolios:', err);
+      alert('Failed to apply portfolios to selected lots');
+    } finally {
+      setIsApplyingPortfolios(false);
+    }
   };
 
   const formTotalCost = formData.shares * formData.costPerShare;
@@ -335,6 +388,82 @@ export default function TickerDetailModal({
               )}
             </div>
           </div>
+
+          {/* Bulk Portfolio Assignment */}
+          {selectedRows.size > 0 && (
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border-2 border-purple-200 mb-6 shadow-lg">
+              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <Settings size={22} className="text-purple-600" />
+                Add Portfolios to {selectedRows.size} Selected Lot(s)
+              </h3>
+
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-slate-700 mb-3">
+                  Select Portfolios to Add
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {portfolios.map((portfolio) => {
+                    const isChecked = bulkPortfolios.includes(portfolio.name);
+                    return (
+                      <label
+                        key={portfolio.id}
+                        className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                          isChecked
+                            ? 'bg-purple-100 border-purple-500'
+                            : 'bg-white border-slate-300 hover:border-purple-300'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            const newPortfolios = e.target.checked
+                              ? [...bulkPortfolios, portfolio.name]
+                              : bulkPortfolios.filter(p => p !== portfolio.name);
+                            setBulkPortfolios(newPortfolios);
+                          }}
+                          className="w-5 h-5 text-purple-600 rounded"
+                        />
+                        <div className="flex-1">
+                          <span className="font-semibold text-slate-800">{portfolio.name}</span>
+                          {portfolio.description && (
+                            <p className="text-xs text-slate-600">{portfolio.description}</p>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+                {bulkPortfolios.length > 0 && (
+                  <p className="text-xs text-slate-600 mt-2">
+                    Selected: {bulkPortfolios.join(', ')}
+                  </p>
+                )}
+              </div>
+
+              <button
+                onClick={handleApplyBulkPortfolios}
+                disabled={bulkPortfolios.length === 0 || isApplyingPortfolios}
+                className={`w-full px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-lg ${
+                  bulkPortfolios.length === 0 || isApplyingPortfolios
+                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
+                }`}
+              >
+                {isApplyingPortfolios ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    Adding to {selectedRows.size} lot(s)...
+                  </>
+                ) : (
+                  <>
+                    <Save size={20} />
+                    Add Portfolios to {selectedRows.size} Lot(s)
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
           {/* Form */}
           {isFormVisible && (
