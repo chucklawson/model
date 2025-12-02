@@ -1,213 +1,43 @@
 import { useState, useEffect } from 'react';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../../amplify/data/resource';
 import upGreenRight from '../../Images/UpGreenRight.png'
 import downRedRight from '../../Images/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
-import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+import type {TickersToEvaluate, PortfoliosToInclude} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+import type { TickerLot, Ticker } from '../../types';
+import { calculateCurrentHoldings } from '../../utils/currentHoldingsCalculations';
 
-const tickersToEvaluate:TickersToEvaluate[] =
+const portfoliosToInclude:PortfoliosToInclude[]=
   [
-    {
-      ticker: "DIA",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "VOO",
-      costBasis: '439.06',
-      unitsOnHand: 46,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "QQQ",
-      costBasis: '596.27',
-      unitsOnHand: 7,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: ''
-    },
-    {
-      ticker: "AAPL",
-      costBasis: '235.65',
-      unitsOnHand: 35,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "AMD",
-      costBasis: '187.33',
-      unitsOnHand: 30,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "AMZN",
-      costBasis: '162.46',
-      unitsOnHand: 85,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "AVGO",
-      costBasis: '276.07',
-      unitsOnHand: 58,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "BA",
-      costBasis: '185.60',
-      unitsOnHand: 7,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "COF",
-      //costBasis: '167.90',
-      //unitsOnHand: 217,
-      costBasis: '129.45',
-      unitsOnHand: 541,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "COST",
-      costBasis: '968.48',
-      unitsOnHand: 7,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "CRWD",
-      costBasis: '359.77',
-      unitsOnHand: 55,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "ENB",
-      costBasis: '38.86',
-      unitsOnHand: 110,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "ETN",
-      costBasis: '358.37',
-      unitsOnHand: 7,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "GEV",
-      costBasis: '478.18',
-      unitsOnHand: 16,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "GLW",
-      costBasis: '81.78',
-      unitsOnHand: 30,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "GOOGL",
-      costBasis: '202.89',
-      unitsOnHand: 25,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "GS",
-      costBasis: '600.54',
-      unitsOnHand: 7,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "HON",
-      costBasis: '211.74',
-      unitsOnHand: 10,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "META",
-      costBasis: '673.05',
-      unitsOnHand: 50,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "MSFT",
-      costBasis: '429.29',
-      unitsOnHand: 53,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "NLY",
-      costBasis: '20.20',
-      unitsOnHand: 400,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "NVDA",
-      costBasis: '58.52',
-      unitsOnHand: 305,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "O",
-      costBasis: '58.34',
-      unitsOnHand: 40,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "PG",
-      costBasis: '148.15',
-      unitsOnHand: 10,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "PANW",
-      costBasis: '181.29',
-      unitsOnHand: 25,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "USA",
-      costBasis: '7.06',
-      unitsOnHand: 355,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    },
-    {
-      ticker: "WFC",
-      costBasis: '67.27',
-      unitsOnHand: 210,
-      calculateAccumulatedProfitLoss: true,
-      baseYield: ''
-    }
+    {portfolio: "Reserve"},
+    {portfolio: "Dividend"},
+    {portfolio: "Financial"},
+    {portfolio: "Default"},
+    {portfolio: "Rollover"},
+    {portfolio: "General"},
+    {portfolio: "Roth"},
   ];
 
 
 function CurrentHoldings() {
+  const client = generateClient<Schema>();
+
+  // Database state
+  const [lots, setLots] = useState<TickerLot[]>([]);
+  const [tickers, setTickers] = useState<Ticker[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [stockSymbolToFetch,setStockSymbolToFetch] = useState('AAPL')
   const [headerValue,setHeaderValue] = useState('Current ')
   const [todaysPercentageChange, setTodaysPercentageChange] = useState(0.0);
   const [isTodaysChangePositive, setIsTodaysChangePositive] = useState(true);
   const [slope, setSlope] = useState(0.0)
-  const [currentHoldings,setCurrentHoldings]=useState(tickersToEvaluate);
+
+  // Calculate current holdings from database
+  const portfolioNames = portfoliosToInclude.map(p => p.portfolio);
+  const currentHoldings = calculateCurrentHoldings(lots, tickers, portfolioNames);
 
 
   const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
@@ -231,6 +61,63 @@ function CurrentHoldings() {
     setSlope(slopeIn)
   }
 
+  // Load ticker lots and tickers from database with real-time subscriptions
+  useEffect(() => {
+    // Subscribe to TickerLot changes
+    const lotSub = client.models.TickerLot.observeQuery().subscribe({
+      next: ({ items }) => {
+        const tickerLots: TickerLot[] = items
+          .filter((item) => item !== null)
+          .map((item) => ({
+            id: item.id,
+            ticker: item.ticker,
+            shares: item.shares,
+            costPerShare: item.costPerShare,
+            purchaseDate: item.purchaseDate,
+            portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
+            calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+            baseYield: item.baseYield ?? 0,
+            notes: item.notes ?? '',
+            totalCost: item.totalCost ?? item.shares * item.costPerShare,
+            createdAt: item.createdAt ?? undefined,
+            updatedAt: item.updatedAt ?? undefined,
+            owner: item.owner ?? undefined,
+          }));
+        setLots(tickerLots);
+        setLoading(false);
+      },
+      error: (err: Error) => {
+        console.error('Subscription error:', err);
+        setError('Failed to load ticker lots');
+        setLoading(false);
+      },
+    });
+
+    // Subscribe to Ticker changes
+    const tickerSub = client.models.Ticker.observeQuery().subscribe({
+      next: ({ items }) => {
+        const tickerList: Ticker[] = items
+          .filter(item => item !== null)
+          .map((item) => ({
+            id: item.id,
+            symbol: item.symbol,
+            companyName: item.companyName ?? '',
+            baseYield: item.baseYield ?? 0,
+            createdAt: item.createdAt ?? undefined,
+            updatedAt: item.updatedAt ?? undefined,
+            owner: item.owner ?? undefined,
+          }));
+        setTickers(tickerList);
+      },
+      error: (err: Error) => console.error('Ticker subscription error:', err),
+    });
+
+    return () => {
+      lotSub.unsubscribe();
+      tickerSub.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     document.title = "Current Holdings"
     setStockSymbolToFetch('AAPL');
@@ -238,13 +125,37 @@ function CurrentHoldings() {
     setTodaysPercentageChange(0.0);
     setIsTodaysChangePositive(true);
     setSlope(0.0);
-    setCurrentHoldings(currentHoldings);
  }, []);
 
 
-  useEffect(() => {  
+  useEffect(() => {
     //console.log("Running useEffect for: stockSymbolToFetch: " +stockSymbolToFetch)
 }, [stockSymbolToFetch,headerValue,slope]);
+
+  // Loading and error states
+  if (loading) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-gray-600">Loading holdings...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (currentHoldings.length === 0) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-gray-600">No holdings found in selected portfolios</div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center overflow-x-visible min-w-[1400px]">

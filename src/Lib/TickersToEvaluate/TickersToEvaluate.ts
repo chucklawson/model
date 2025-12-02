@@ -6,3 +6,7 @@ export interface TickersToEvaluate {
   calculateAccumulatedProfitLoss: boolean;
   baseYield?: string;
 }
+
+export interface PortfoliosToInclude{
+  portfolio: string;
+}

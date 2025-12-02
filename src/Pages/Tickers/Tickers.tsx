@@ -11,10 +11,12 @@ import {
   RefreshCw,
   Plus,
   Settings,
-  Upload
+  Upload,
+  Download
 } from 'lucide-react';
 import type { TickerLot, TickerSummary, LotFormData, Portfolio, Ticker } from '../../types';
 import { calculateTickerSummaries } from '../../utils/tickerCalculations';
+import { exportAllTickers } from '../../utils/tickerExporter';
 import TickerSummarySpreadsheet from '../../Components/TickerSummarySpreadsheet';
 import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
@@ -377,6 +379,16 @@ interface LegacyLot {
     }
   };
 
+  const handleExportTickers = async () => {
+    try {
+      const count = await exportAllTickers(lots);
+      console.log(`Exported ${count} ticker files`);
+    } catch (err) {
+      console.error('Export error:', err);
+      setError('Failed to export tickers');
+    }
+  };
+
   const totalPortfolioValue = summaries.reduce((sum, s) => sum + s.totalCost, 0);
   const totalTickers = summaries.length;
 
@@ -402,6 +414,13 @@ interface LegacyLot {
                 >
                   <Upload size={20} />
                   Import CSV
+                </button>
+                <button
+                  onClick={handleExportTickers}
+                  className="bg-white bg-opacity-20 text-green-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                >
+                  <Download size={20} />
+                  Export Tickers
                 </button>
                 <button
                   onClick={loadLots}
@@ -442,7 +461,7 @@ interface LegacyLot {
                   <DollarSign className="text-green-600" size={28} />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600 font-bold uppercase">Portfolio Cost</p>
+                  <p className="text-sm text-slate-600 font-bold uppercase">Total Cost</p>
                   <p className="text-2xl font-bold text-green-600">
                     ${totalPortfolioValue.toFixed(2)}
                   </p>
