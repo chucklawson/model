@@ -64,6 +64,13 @@ export default function TickerDetailModal({
     const tickerLots = getLotsForTicker(allLots, ticker);
     setLots(tickerLots);
 
+    // Clean up selectedRows - remove any IDs that no longer exist
+    const validIds = new Set(tickerLots.map(lot => lot.id));
+    setSelectedRows(prev => {
+      const filtered = new Set(Array.from(prev).filter(id => validIds.has(id)));
+      return filtered;
+    });
+
     // Initialize ticker settings from Ticker model
     const tickerData = tickers.find(t => t.symbol === ticker);
     if (tickerData) {
