@@ -163,14 +163,11 @@ function CurrentHoldings() {
     <header className="bg-indigo-100 text-purple-600 text-3xl font-bold h-30 justify-items-center min-w-[1400px]">
       <div>
         {headerValue}
-                {isTodaysChangePositive === true ?
-                    <div className='text-green-600 text-3xl font-bold'>
-                        Today's Change: {todaysPercentageChange} %
-                    </div> :
-                    <div className='text-red-600 text-3xl font-bold'>
-                        Today's Change: {todaysPercentageChange} %
-                    </div>
-                    }
+                <div className='text-black text-3xl font-bold'>
+                    Today's Change: <span className={isTodaysChangePositive ? 'text-green-600' : 'text-red-600'}>
+                        {todaysPercentageChange} %
+                    </span>
+                </div>
         {slope >= 0.0 ?
           <div className='text-green-600 text-3xl font-bold'>
                 <img className="inline-block w-10 h-8 ml-7 " src={upGreenRight} alt=""></img>                           

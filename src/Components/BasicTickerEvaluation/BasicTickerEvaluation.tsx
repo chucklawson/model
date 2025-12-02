@@ -584,7 +584,20 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
 
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
-          {calculatedTotalProfitLoss}
+          {calculatedTotalProfitLoss.includes('Today:') ? (
+            <>
+              <span className='text-black'>
+                {calculatedTotalProfitLoss.split('Today:')[0]}
+              </span>
+              <span className={calculatedTotalProfitLoss.split('Today:')[1].includes('-') ? 'text-red-600' : 'text-green-600'}>
+                Today:{calculatedTotalProfitLoss.split('Today:')[1]}
+              </span>
+            </>
+          ) : (
+            <span className={calculatedTotalProfitLoss.includes('-') ? 'text-red-600' : 'text-green-600'}>
+              {calculatedTotalProfitLoss}
+            </span>
+          )}
 
 
         </div>

@@ -151,17 +151,10 @@ const DividendEntries=()=> {
       <div>
         {headerValue}
       </div>
-      <div>
-                {isTodaysChangePositive === true ?
-                    <div className='text-green-600 text-3xl font-bold'>
-
-                        Today's Change: {todaysPercentageChange} %
-                    </div> :
-                    <div className='text-red-600 text-3xl font-bold'>
-
-                        Today's Change: {todaysPercentageChange} %
-                    </div>
-                    }
+      <div className='text-black text-3xl font-bold'>
+                Today's Change: <span className={isTodaysChangePositive ? 'text-green-600' : 'text-red-600'}>
+                    {todaysPercentageChange} %
+                </span>
       </div>     
       <div>
         {slope >= 0.0 ?
