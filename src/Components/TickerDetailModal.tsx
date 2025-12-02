@@ -214,7 +214,7 @@ export default function TickerDetailModal({
             purchaseDate: lot.purchaseDate,
             portfolios: mergedPortfolios,
             calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss,
-            notes: lot.notes,
+            notes: lot.notes ?? '',
           };
           await onSaveLot(lotData, lot.id);
         }
