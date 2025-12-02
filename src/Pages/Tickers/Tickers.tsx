@@ -57,7 +57,7 @@ interface LegacyLot {
             shares: item.shares,
             costPerShare: item.costPerShare,
             purchaseDate: item.purchaseDate,
-            portfolios: (item.portfolios ?? ['Default']).filter((p): p is string => p !== null),
+            portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
             baseYield: item.baseYield ?? 0,
             notes: item.notes ?? '',
@@ -168,18 +168,18 @@ interface LegacyLot {
       let nextToken: string | null | undefined = undefined;
 
       do {
-        const { data, errors, nextToken: token } = await client.models.Portfolio.list({
+        const response = await client.models.Portfolio.list({
           limit: 1000,
           nextToken: nextToken || undefined,
         });
 
-        if (errors) {
-          console.error('Portfolio load errors:', errors);
+        if (response.errors) {
+          console.error('Portfolio load errors:', response.errors);
           break;
         }
 
-        allData = [...allData, ...data];
-        nextToken = token;
+        allData = [...allData, ...response.data];
+        nextToken = response.nextToken as string | null | undefined;
       } while (nextToken);
 
       const portfolioList: Portfolio[] = allData.map((item) => ({
@@ -203,18 +203,18 @@ interface LegacyLot {
       let nextToken: string | null | undefined = undefined;
 
       do {
-        const { data, errors, nextToken: token } = await client.models.Ticker.list({
+        const response = await client.models.Ticker.list({
           limit: 1000,
           nextToken: nextToken || undefined,
         });
 
-        if (errors) {
-          console.error('Ticker load errors:', errors);
+        if (response.errors) {
+          console.error('Ticker load errors:', response.errors);
           break;
         }
 
-        allData = [...allData, ...data];
-        nextToken = token;
+        allData = [...allData, ...response.data];
+        nextToken = response.nextToken as string | null | undefined;
       } while (nextToken);
 
       const tickerList: Ticker[] = allData
@@ -244,19 +244,19 @@ interface LegacyLot {
       let nextToken: string | null | undefined = undefined;
 
       do {
-        const { data, errors, nextToken: token } = await client.models.TickerLot.list({
+        const response = await client.models.TickerLot.list({
           limit: 1000,
           nextToken: nextToken || undefined,
         });
 
-        if (errors) {
-          console.error('Load errors:', errors);
+        if (response.errors) {
+          console.error('Load errors:', response.errors);
           setError('Failed to load lots');
           break;
         }
 
-        allData = [...allData, ...data];
-        nextToken = token;
+        allData = [...allData, ...response.data];
+        nextToken = response.nextToken as string | null | undefined;
       } while (nextToken);
 
       const tickerLots: TickerLot[] = allData
@@ -267,7 +267,7 @@ interface LegacyLot {
           shares: item.shares,
           costPerShare: item.costPerShare,
           purchaseDate: item.purchaseDate,
-          portfolios: (item.portfolios ?? ['Default']).filter((p): p is string => p !== null),
+          portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
           calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
           baseYield: item.baseYield ?? 0,
           notes: item.notes ?? '',
