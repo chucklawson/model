@@ -163,20 +163,34 @@ interface LegacyLot {
 
   const loadPortfolios = async () => {
     try {
-      const { data, errors } = await client.models.Portfolio.list();
-      if (errors) {
-        console.error('Portfolio load errors:', errors);
-      } else {
-        const portfolioList: Portfolio[] = data.map((item) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description ?? '',
-          createdAt: item.createdAt ?? undefined,
-          updatedAt: item.updatedAt ?? undefined,
-          owner: item.owner ?? undefined,
-        }));
-        setPortfolios(portfolioList);
-      }
+      // Fetch all portfolios with pagination
+      let allData: any[] = [];
+      let nextToken: string | null | undefined = undefined;
+
+      do {
+        const { data, errors, nextToken: token } = await client.models.Portfolio.list({
+          limit: 1000,
+          nextToken: nextToken || undefined,
+        });
+
+        if (errors) {
+          console.error('Portfolio load errors:', errors);
+          break;
+        }
+
+        allData = [...allData, ...data];
+        nextToken = token;
+      } while (nextToken);
+
+      const portfolioList: Portfolio[] = allData.map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description ?? '',
+        createdAt: item.createdAt ?? undefined,
+        updatedAt: item.updatedAt ?? undefined,
+        owner: item.owner ?? undefined,
+      }));
+      setPortfolios(portfolioList);
     } catch (err) {
       console.error('Portfolio load error:', err);
     }
@@ -184,23 +198,37 @@ interface LegacyLot {
 
   const loadTickers = async () => {
     try {
-      const { data, errors } = await client.models.Ticker.list();
-      if (errors) {
-        console.error('Ticker load errors:', errors);
-      } else {
-        const tickerList: Ticker[] = data
-          .filter(item => item !== null)
-          .map((item) => ({
-            id: item.id,
-            symbol: item.symbol,
-            companyName: item.companyName ?? '',
-            baseYield: item.baseYield ?? 0,
-            createdAt: item.createdAt ?? undefined,
-            updatedAt: item.updatedAt ?? undefined,
-            owner: item.owner ?? undefined,
-          }));
-        setTickers(tickerList);
-      }
+      // Fetch all tickers with pagination
+      let allData: any[] = [];
+      let nextToken: string | null | undefined = undefined;
+
+      do {
+        const { data, errors, nextToken: token } = await client.models.Ticker.list({
+          limit: 1000,
+          nextToken: nextToken || undefined,
+        });
+
+        if (errors) {
+          console.error('Ticker load errors:', errors);
+          break;
+        }
+
+        allData = [...allData, ...data];
+        nextToken = token;
+      } while (nextToken);
+
+      const tickerList: Ticker[] = allData
+        .filter(item => item !== null)
+        .map((item) => ({
+          id: item.id,
+          symbol: item.symbol,
+          companyName: item.companyName ?? '',
+          baseYield: item.baseYield ?? 0,
+          createdAt: item.createdAt ?? undefined,
+          updatedAt: item.updatedAt ?? undefined,
+          owner: item.owner ?? undefined,
+        }));
+      setTickers(tickerList);
     } catch (err) {
       console.error('Ticker load error:', err);
     }
@@ -210,31 +238,45 @@ interface LegacyLot {
     try {
       setLoading(true);
       setError(null);
-      const { data, errors } = await client.models.TickerLot.list();
 
-      if (errors) {
-        console.error('Load errors:', errors);
-        setError('Failed to load lots');
-      } else {
-        const tickerLots: TickerLot[] = data
-          .filter((item) => item !== null)
-          .map((item) => ({
-            id: item.id,
-            ticker: item.ticker,
-            shares: item.shares,
-            costPerShare: item.costPerShare,
-            purchaseDate: item.purchaseDate,
-            portfolios: (item.portfolios ?? ['Default']).filter((p): p is string => p !== null),
-            calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
-            baseYield: item.baseYield ?? 0,
-            notes: item.notes ?? '',
-            totalCost: item.totalCost ?? item.shares * item.costPerShare,
-            createdAt: item.createdAt ?? undefined,
-            updatedAt: item.updatedAt ?? undefined,
-            owner: item.owner ?? undefined,
-          }));
-        setLots(tickerLots);
-      }
+      // Fetch all lots with pagination
+      let allData: any[] = [];
+      let nextToken: string | null | undefined = undefined;
+
+      do {
+        const { data, errors, nextToken: token } = await client.models.TickerLot.list({
+          limit: 1000,
+          nextToken: nextToken || undefined,
+        });
+
+        if (errors) {
+          console.error('Load errors:', errors);
+          setError('Failed to load lots');
+          break;
+        }
+
+        allData = [...allData, ...data];
+        nextToken = token;
+      } while (nextToken);
+
+      const tickerLots: TickerLot[] = allData
+        .filter((item) => item !== null)
+        .map((item) => ({
+          id: item.id,
+          ticker: item.ticker,
+          shares: item.shares,
+          costPerShare: item.costPerShare,
+          purchaseDate: item.purchaseDate,
+          portfolios: (item.portfolios ?? ['Default']).filter((p): p is string => p !== null),
+          calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+          baseYield: item.baseYield ?? 0,
+          notes: item.notes ?? '',
+          totalCost: item.totalCost ?? item.shares * item.costPerShare,
+          createdAt: item.createdAt ?? undefined,
+          updatedAt: item.updatedAt ?? undefined,
+          owner: item.owner ?? undefined,
+        }));
+      setLots(tickerLots);
     } catch (err) {
       console.error('Load error:', err);
       setError('Failed to load lots');
