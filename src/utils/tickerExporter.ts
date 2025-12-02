@@ -23,7 +23,7 @@ export function generateTickerCSV(ticker: string, lots: TickerLot[]): string {
     const notes = `"${(lot.notes || '').replace(/"/g, '""')}"`;  // Escape quotes
 
     return [
-      lot.ticker,
+      ticker,
       lot.purchaseDate,
       lot.shares,
       lot.costPerShare,

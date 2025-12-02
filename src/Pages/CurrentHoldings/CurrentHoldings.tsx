@@ -4,7 +4,7 @@ import type { Schema } from '../../../amplify/data/resource';
 import upGreenRight from '../../Images/UpGreenRight.png'
 import downRedRight from '../../Images/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
-import type {TickersToEvaluate, PortfoliosToInclude} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+import type {PortfoliosToInclude} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 import type { TickerLot, Ticker } from '../../types';
 import { calculateCurrentHoldings } from '../../utils/currentHoldingsCalculations';
 
