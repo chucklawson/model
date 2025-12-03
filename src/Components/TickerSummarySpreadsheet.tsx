@@ -2,7 +2,7 @@
 // FILE: src/components/TickerSummarySpreadsheet.tsx
 // ============================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Eye,
   TrendingUp,
@@ -17,11 +17,16 @@ import {
   Building2,
   Percent
 } from 'lucide-react';
-import type { TickerSummary, Ticker } from '../types';
+import type { TickerSummary, Ticker, Portfolio } from '../types';
 import ColumnCustomization, { type ColumnConfig } from './ColumnCustomization';
+import PortfolioFilter from './PortfolioFilter';
+import { loadFromLocalStorage, saveToLocalStorage, STORAGE_KEYS, STORAGE_VERSIONS } from '../utils/localStorage';
 
 interface Props {
   summaries: TickerSummary[];
+  portfolios: Portfolio[];
+  selectedPortfolios: string[];
+  onPortfolioFilterChange: (selected: string[]) => void;
   onViewDetails: (ticker: string) => void;
   onUpdateTicker: (ticker: Ticker) => Promise<void>;
 }
@@ -41,6 +46,9 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
 
 export default function TickerSummarySpreadsheet({
                                                    summaries,
+                                                   portfolios,
+                                                   selectedPortfolios,
+                                                   onPortfolioFilterChange,
                                                    onViewDetails,
                                                    onUpdateTicker,
                                                  }: Props) {
@@ -52,6 +60,46 @@ export default function TickerSummarySpreadsheet({
     field: 'companyName' | 'baseYield';
   } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
+
+  // Load column configuration from localStorage on mount
+  useEffect(() => {
+    interface SavedColumnData {
+      id: string;
+      visible: boolean;
+    }
+
+    const saved = loadFromLocalStorage<SavedColumnData[]>(
+      STORAGE_KEYS.TICKER_COLUMNS,
+      STORAGE_VERSIONS.TICKER_COLUMNS,
+      null
+    );
+
+    if (saved) {
+      // Reconstruct columns from DEFAULT_COLUMNS, preserving order and visibility from saved data
+      const savedMap = new Map(saved.map(col => [col.id, col.visible]));
+
+      // Apply saved order and visibility
+      const reconstructed = saved
+        .map(savedCol => {
+          const defaultCol = DEFAULT_COLUMNS.find(dc => dc.id === savedCol.id);
+          if (!defaultCol) return null;
+          return {
+            ...defaultCol,
+            visible: savedCol.visible,
+          };
+        })
+        .filter((col): col is ColumnConfig => col !== null);
+
+      // Add any new columns from DEFAULT_COLUMNS that weren't in saved data
+      DEFAULT_COLUMNS.forEach(defaultCol => {
+        if (!savedMap.has(defaultCol.id)) {
+          reconstructed.push(defaultCol);
+        }
+      });
+
+      setColumns(reconstructed);
+    }
+  }, []);
 
   const visibleColumns = columns.filter(col => col.visible);
   const visibleColSpan = visibleColumns.length;
@@ -253,6 +301,15 @@ export default function TickerSummarySpreadsheet({
         </button>
       </div>
 
+      {/* Portfolio Filter */}
+      <div className="mb-4">
+        <PortfolioFilter
+          portfolios={portfolios}
+          selectedPortfolios={selectedPortfolios}
+          onChange={onPortfolioFilterChange}
+        />
+      </div>
+
       <div className="overflow-auto max-h-[calc(100vh-400px)] rounded-xl border border-slate-200 shadow-lg">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-slate-100 to-slate-200 border-b-2 border-slate-300">
@@ -333,7 +390,22 @@ export default function TickerSummarySpreadsheet({
       {showCustomization && (
         <ColumnCustomization
           columns={columns}
-          onApply={setColumns}
+          onApply={(newColumns) => {
+            setColumns(newColumns);
+
+            // Save only the minimal data (id and visible) to avoid serialization issues with icons
+            const columnsToSave = newColumns.map(col => ({
+              id: col.id,
+              visible: col.visible,
+            }));
+
+            saveToLocalStorage(
+              STORAGE_KEYS.TICKER_COLUMNS,
+              STORAGE_VERSIONS.TICKER_COLUMNS,
+              columnsToSave
+            );
+            setShowCustomization(false);
+          }}
           onClose={() => setShowCustomization(false)}
         />
       )}

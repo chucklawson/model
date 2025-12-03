@@ -13,7 +13,14 @@
       "Bash(timeout 3 sleep:*)",
       "Bash(dir:*)",
       "Bash(npm run dev:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(aws dynamodb list-tables:*)",
+      "Bash(aws amplify list-apps:*)",
+      "Bash(aws amplify list-branches:*)",
+      "Bash(aws amplify get-branch:*)",
+      "Bash(aws amplify get-app:*)",
+      "Bash(aws cloudformation list-stacks:*)",
+      "Bash(aws cloudformation describe-stacks:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,7 +1,7 @@
 // ============================================
 // FILE: src/Pages/Tickers/Tickers.tsx
 // ============================================
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 import '@aws-amplify/ui-react/styles.css';
@@ -17,6 +17,8 @@ import {
 import type { TickerLot, TickerSummary, LotFormData, Portfolio, Ticker } from '../../types';
 import { calculateTickerSummaries } from '../../utils/tickerCalculations';
 import { exportAllTickers } from '../../utils/tickerExporter';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../utils/localStorage';
 import TickerSummarySpreadsheet from '../../Components/TickerSummarySpreadsheet';
 import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
@@ -41,6 +43,25 @@ interface LegacyLot {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [showPortfolioManager, setShowPortfolioManager] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+
+  // Portfolio filter state (persists to localStorage)
+  const [selectedPortfolios, setSelectedPortfolios] = useLocalStorage<string[]>(
+    STORAGE_KEYS.TICKER_PORTFOLIO_FILTER,
+    STORAGE_VERSIONS.TICKER_PORTFOLIO_FILTER,
+    [],
+    true // Auto-save on change
+  );
+
+  // Filter lots based on selected portfolios
+  const filteredLots = useMemo(() => {
+    // Empty array means "All" - show everything
+    if (selectedPortfolios.length === 0) return lots;
+
+    // Filter to lots that have at least one matching portfolio
+    return lots.filter(lot =>
+      lot.portfolios.some(p => selectedPortfolios.includes(p))
+    );
+  }, [lots, selectedPortfolios]);
 
   useEffect(() => {
     initializeDefaultPortfolio();
@@ -119,10 +140,26 @@ interface LegacyLot {
     };
   }, []);
 
-  // Recalculate summaries whenever lots or tickers change
+  // Recalculate summaries whenever filtered lots or tickers change
   useEffect(() => {
-    setSummaries(calculateTickerSummaries(lots, tickers));
-  }, [lots, tickers]);
+    setSummaries(calculateTickerSummaries(filteredLots, tickers));
+  }, [filteredLots, tickers]);
+
+  // Clean up deleted portfolios from filter
+  useEffect(() => {
+    // Don't run cleanup until portfolios have loaded
+    if (portfolios.length === 0) return;
+    // No cleanup needed for "All"
+    if (selectedPortfolios.length === 0) return;
+
+    const validNames = new Set(portfolios.map(p => p.name));
+    const cleaned = selectedPortfolios.filter(p => validNames.has(p));
+
+    // If any portfolios were removed, update the filter
+    if (cleaned.length !== selectedPortfolios.length) {
+      setSelectedPortfolios(cleaned);
+    }
+  }, [portfolios, selectedPortfolios, setSelectedPortfolios]);
 
   const initializeDefaultPortfolio = async () => {
     try {
@@ -492,6 +529,9 @@ interface LegacyLot {
             ) : (
               <TickerSummarySpreadsheet
                 summaries={summaries}
+                portfolios={portfolios}
+                selectedPortfolios={selectedPortfolios}
+                onPortfolioFilterChange={setSelectedPortfolios}
                 onViewDetails={(ticker) => setSelectedTicker(ticker)}
                 onUpdateTicker={handleUpdateTicker}
               />
