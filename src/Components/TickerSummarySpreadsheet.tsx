@@ -71,10 +71,10 @@ export default function TickerSummarySpreadsheet({
     const saved = loadFromLocalStorage<SavedColumnData[]>(
       STORAGE_KEYS.TICKER_COLUMNS,
       STORAGE_VERSIONS.TICKER_COLUMNS,
-      null
+      []
     );
 
-    if (saved) {
+    if (saved && saved.length > 0) {
       // Reconstruct columns from DEFAULT_COLUMNS, preserving order and visibility from saved data
       const savedMap = new Map(saved.map(col => [col.id, col.visible]));
 
