@@ -70,16 +70,17 @@ export default function TickerSummarySpreadsheet({
     [summaries]
   );
 
-  // Fetch after-hours data with 30-second polling
+  // Fetch after-hours data with 10-minute polling
   const {
     data: afterHoursData,
     regularPrices,
+    regularQuotes,
     isAfterHours,
     error: ahError
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
-    pollingInterval: 30000
+    pollingInterval: 600000
   });
 
   // Load column configuration from localStorage on mount
@@ -168,8 +169,9 @@ export default function TickerSummarySpreadsheet({
       case 'ticker':
         return <span className="font-bold text-blue-600 text-xl">{summary.ticker}</span>;
 
-      case 'lastPrice':
+      case 'lastPrice': {
         const regularPrice = regularPrices.get(summary.ticker);
+        const regularQuote = regularQuotes.get(summary.ticker);
         const ahQuote = afterHoursData.get(summary.ticker);
         const showAfterHours = isAfterHours && ahQuote;
 
@@ -180,7 +182,7 @@ export default function TickerSummarySpreadsheet({
               ${regularPrice ? regularPrice.toFixed(2) : '—'}
             </span>
 
-            {/* After-Hours Data */}
+            {/* After-Hours Data (when market is closed) */}
             {showAfterHours && (
               <div className="text-xs space-y-0.5">
                 <div className="text-slate-500 font-semibold">After Hours:</div>
@@ -201,10 +203,29 @@ export default function TickerSummarySpreadsheet({
                 </div>
               </div>
             )}
+
+            {/* Today's Change (during market hours) */}
+            {!isAfterHours && regularQuote && (
+              <div className="text-xs">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`font-mono font-semibold ${
+                    regularQuote.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {regularQuote.change >= 0 ? '+' : ''}${regularQuote.change.toFixed(2)}
+                  </span>
+                  <span className={`font-mono font-semibold ${
+                    regularQuote.changesPercentage >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    ({regularQuote.changesPercentage >= 0 ? '+' : ''}{regularQuote.changesPercentage.toFixed(2)}%)
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         );
+      }
 
-      case 'companyName':
+      case 'companyName': {
         const isEditingCompany = editingCell?.ticker === summary.ticker &&
                                  editingCell?.field === 'companyName';
 
@@ -241,8 +262,9 @@ export default function TickerSummarySpreadsheet({
             )}
           </div>
         );
+      }
 
-      case 'baseYield':
+      case 'baseYield': {
         const isEditingYield = editingCell?.ticker === summary.ticker &&
                                editingCell?.field === 'baseYield';
 
@@ -281,8 +303,9 @@ export default function TickerSummarySpreadsheet({
             {summary.baseYield.toFixed(2)}%
           </div>
         );
+      }
 
-      case 'portfolios':
+      case 'portfolios': {
         const portfolioCount = summary.portfolios.length;
         const portfolioList = summary.portfolios.join(', ');
 
@@ -300,6 +323,7 @@ export default function TickerSummarySpreadsheet({
             </div>
           </div>
         );
+      }
       case 'totalShares':
         return <span className="text-slate-700 font-semibold text-lg">{summary.totalShares.toLocaleString()}</span>;
       case 'totalCost':
@@ -392,7 +416,7 @@ export default function TickerSummarySpreadsheet({
                   key={col.id}
                   className={`p-2 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
-                  }`}
+                  } ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}
                 >
                   <div className="flex items-center gap-2 relative">
                     {Icon && <Icon size={16} />}
@@ -447,7 +471,7 @@ export default function TickerSummarySpreadsheet({
                 onClick={() => onViewDetails(summary.ticker)}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-2 ${col.id === 'actions' ? 'text-right' : ''}`}>
+                  <td key={col.id} className={`p-2 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}>
                     {renderCellContent(col.id, summary)}
                   </td>
                 ))}

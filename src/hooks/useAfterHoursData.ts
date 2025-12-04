@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type AfterHoursQuote_V3 from '../Lib/AfterHoursQuote_V3';
+import { shouldShowAfterHoursPricing } from '../utils/marketHours';
 
 interface UseAfterHoursDataParams {
   tickers: string[];
@@ -11,9 +12,16 @@ interface UseAfterHoursDataParams {
   pollingInterval?: number; // milliseconds (default: 30000 = 30s)
 }
 
+interface RegularQuote {
+  price: number;
+  change: number;
+  changesPercentage: number;
+}
+
 interface UseAfterHoursDataResult {
   data: Map<string, AfterHoursQuote_V3>;
   regularPrices: Map<string, number>;
+  regularQuotes: Map<string, RegularQuote>;
   loading: boolean;
   error: Error | null;
   isAfterHours: boolean;
@@ -21,38 +29,23 @@ interface UseAfterHoursDataResult {
 
 /**
  * Custom hook for fetching after-hours stock data with automatic polling
- * Only fetches data after 4 PM EST on weekdays
+ * Fetches during pre-market, after-hours, weekends, and holidays
+ * Market hours: 9:30 AM - 4:00 PM ET on trading days
  */
 export function useAfterHoursData({
   tickers,
   enabled,
-  pollingInterval = 30000
+  pollingInterval = 600000
 }: UseAfterHoursDataParams): UseAfterHoursDataResult {
   const [data, setData] = useState<Map<string, AfterHoursQuote_V3>>(new Map());
   const [regularPrices, setRegularPrices] = useState<Map<string, number>>(new Map());
+  const [regularQuotes, setRegularQuotes] = useState<Map<string, RegularQuote>>(new Map());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isAfterHours, setIsAfterHours] = useState(false);
 
   // Use ref to track if component is mounted (prevent state updates after unmount)
   const isMounted = useRef(true);
-
-  /**
-   * Check if current time is after market close (4 PM EST) on a weekday
-   */
-  const checkAfterHours = (): boolean => {
-    const now = new Date();
-    const estTime = new Date(now.toLocaleString('en-US', {
-      timeZone: 'America/New_York'
-    }));
-    const hour = estTime.getHours();
-    const day = estTime.getDay(); // 0=Sunday, 6=Saturday
-
-    const isWeekday = day >= 1 && day <= 5;
-    const isAfterMarketClose = hour >= 16; // 4 PM or later
-
-    return isWeekday && isAfterMarketClose;
-  };
 
   /**
    * Fetch after-hours data for all tickers with throttled batching
@@ -63,19 +56,11 @@ export function useAfterHoursData({
       return;
     }
 
-    // Check if we're in after-hours time
-    const afterHours = checkAfterHours();
+    // Check if we should show after-hours pricing
+    const afterHours = shouldShowAfterHoursPricing();
 
     if (isMounted.current) {
       setIsAfterHours(afterHours);
-    }
-
-    // Only fetch data if we're in after-hours period
-    if (!afterHours) {
-      return;
-    }
-
-    if (isMounted.current) {
       setLoading(true);
       setError(null);
     }
@@ -83,35 +68,38 @@ export function useAfterHoursData({
     const apiKey = import.meta.env.VITE_FMP_API_KEY;
     const newData = new Map<string, AfterHoursQuote_V3>();
     const newRegularPrices = new Map<string, number>();
+    const newRegularQuotes = new Map<string, RegularQuote>();
 
     try {
       // Process tickers in batches of 10 with no delay (paid API tier)
       for (let i = 0; i < tickers.length; i += 10) {
         const batch = tickers.slice(i, i + 10);
 
-        // Create fetch promises for this batch - need both aftermarket and regular quote
+        // Create fetch promises for this batch
         const promises = batch.map(async (ticker) => {
-          const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
           const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${ticker}?apikey=${apiKey}`;
 
-          try {
-            // Fetch both aftermarket and regular quote in parallel
-            const [aftermarketResponse, quoteResponse] = await Promise.all([
-              fetch(aftermarketUrl),
-              fetch(quoteUrl)
-            ]);
+          // Always fetch regular quote
+          const quoteResponse = await fetch(quoteUrl);
 
-            if (!aftermarketResponse.ok || !quoteResponse.ok) {
-              throw new Error(`HTTP error`);
-            }
-
-            const aftermarketData = await aftermarketResponse.json();
-            const quoteData = await quoteResponse.json();
-
-            return { ticker, aftermarketData, quoteData };
-          } catch (err) {
-            throw err;
+          if (!quoteResponse.ok) {
+            throw new Error(`HTTP error`);
           }
+
+          const quoteData = await quoteResponse.json();
+
+          // Only fetch aftermarket data if we're showing after-hours pricing
+          let aftermarketData = null;
+          if (afterHours) {
+            const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
+            const aftermarketResponse = await fetch(aftermarketUrl);
+
+            if (aftermarketResponse.ok) {
+              aftermarketData = await aftermarketResponse.json();
+            }
+          }
+
+          return { ticker, aftermarketData, quoteData };
         });
 
         // Use Promise.allSettled to handle partial failures gracefully
@@ -132,12 +120,19 @@ export function useAfterHoursData({
               ? quoteData[0]
               : null;
 
-            // Always store regular price if we have it
-            if (quote && quote.price) {
+            // Always store regular price and quote data if we have it
+            if (quote && quote.price !== undefined) {
               newRegularPrices.set(ticker, quote.price);
+
+              // Store full quote data with change information
+              newRegularQuotes.set(ticker, {
+                price: quote.price,
+                change: quote.change || 0,
+                changesPercentage: quote.changesPercentage || 0
+              });
             }
 
-            // Calculate change if we have both aftermarket trade and regular quote
+            // Calculate after-hours change if we have both aftermarket trade and regular quote
             if (aftermarketTrade && quote && aftermarketTrade.price && quote.price) {
               const change = aftermarketTrade.price - quote.price;
               const changesPercentage = (change / quote.price) * 100;
@@ -161,6 +156,7 @@ export function useAfterHoursData({
       if (isMounted.current) {
         setData(newData);
         setRegularPrices(newRegularPrices);
+        setRegularQuotes(newRegularQuotes);
       }
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Failed to fetch after-hours data');
@@ -195,6 +191,7 @@ export function useAfterHoursData({
   return {
     data,
     regularPrices,
+    regularQuotes,
     loading,
     error,
     isAfterHours
