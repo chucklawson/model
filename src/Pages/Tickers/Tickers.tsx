@@ -24,6 +24,7 @@ import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
+import { useAfterHoursData } from '../../hooks/useAfterHoursData';
 
 // Type for old data schema with single portfolio field
 interface LegacyLot {
@@ -429,6 +430,27 @@ interface LegacyLot {
   const totalPortfolioValue = summaries.reduce((sum, s) => sum + s.totalCost, 0);
   const totalTickers = summaries.length;
 
+  // Get ticker symbols for price data
+  const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
+
+  // Fetch real-time price data for calculating today's change
+  const { regularQuotes } = useAfterHoursData({
+    tickers: tickerSymbols,
+    enabled: true,
+    pollingInterval: 600000 // 10 minutes
+  });
+
+  // Calculate total today's change across all positions
+  const totalTodaysChange = useMemo(() => {
+    return summaries.reduce((total, summary) => {
+      const quote = regularQuotes.get(summary.ticker);
+      if (quote) {
+        return total + (quote.change * summary.totalShares);
+      }
+      return total;
+    }, 0);
+  }, [summaries, regularQuotes]);
+
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="h-full max-w-7xl mx-auto flex flex-col">
@@ -491,7 +513,7 @@ interface LegacyLot {
           )}
 
           {/* Portfolio Stats */}
-          <div className="grid grid-cols-2 gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50">
+          <div className="grid grid-cols-3 gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50">
             <div className="bg-white p-2 rounded-lg shadow border border-green-200">
               <div className="flex items-center gap-2">
                 <div className="bg-green-100 p-1 rounded">
@@ -501,6 +523,20 @@ interface LegacyLot {
                   <p className="text-xs text-slate-600 font-semibold uppercase">Total Cost</p>
                   <p className="text-base font-bold text-green-600">
                     ${totalPortfolioValue.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className={`bg-white p-2 rounded-lg shadow border ${totalTodaysChange >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+              <div className="flex items-center gap-2">
+                <div className={`${totalTodaysChange >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1 rounded`}>
+                  <TrendingUp className={`${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`} size={16} />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-600 font-semibold uppercase">Today's Change</p>
+                  <p className={`text-base font-bold ${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {totalTodaysChange >= 0 ? '+' : ''}${totalTodaysChange.toFixed(2)}
                   </p>
                 </div>
               </div>

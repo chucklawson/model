@@ -75,35 +75,64 @@ export function useAfterHoursData({
       for (let i = 0; i < tickers.length; i += 10) {
         const batch = tickers.slice(i, i + 10);
 
-        // Create fetch promises for this batch
-        const promises = batch.map(async (ticker) => {
-          const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${ticker}?apikey=${apiKey}`;
+        // Batch API call for regular quotes - single request for all tickers in batch
+        const batchQuoteUrl = `https://financialmodelingprep.com/api/v3/quote/${batch.join(',')}?apikey=${apiKey}`;
 
-          // Always fetch regular quote
-          const quoteResponse = await fetch(quoteUrl);
+        try {
+          const quoteResponse = await fetch(batchQuoteUrl);
 
           if (!quoteResponse.ok) {
-            throw new Error(`HTTP error`);
+            throw new Error(`HTTP error fetching batch quotes`);
           }
 
-          const quoteData = await quoteResponse.json();
+          const quotesArray = await quoteResponse.json();
+
+          // Create a map of ticker -> quote data for quick lookup
+          const quotesMap = new Map<string, Record<string, unknown>>();
+          if (Array.isArray(quotesArray)) {
+            quotesArray.forEach((quote: Record<string, unknown>) => {
+              if (quote.symbol) {
+                quotesMap.set(quote.symbol as string, quote);
+              }
+            });
+          }
 
           // Only fetch aftermarket data if we're showing after-hours pricing
-          let aftermarketData = null;
+          const aftermarketMap = new Map<string, unknown>();
           if (afterHours) {
-            const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
-            const aftermarketResponse = await fetch(aftermarketUrl);
+            // After-hours API may not support batch, so fetch individually in parallel
+            const aftermarketPromises = batch.map(async (ticker) => {
+              const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
+              try {
+                const response = await fetch(aftermarketUrl);
+                if (response.ok) {
+                  const data = await response.json();
+                  return { ticker, data };
+                }
+              } catch {
+                // Silently fail for individual after-hours data
+              }
+              return { ticker, data: null };
+            });
 
-            if (aftermarketResponse.ok) {
-              aftermarketData = await aftermarketResponse.json();
-            }
+            const aftermarketResults = await Promise.allSettled(aftermarketPromises);
+            aftermarketResults.forEach((result) => {
+              if (result.status === 'fulfilled' && result.value.data) {
+                aftermarketMap.set(result.value.ticker, result.value.data);
+              }
+            });
           }
 
-          return { ticker, aftermarketData, quoteData };
-        });
+          // Process each ticker in the batch
+          const results = batch.map((ticker) => {
+            const quoteData = quotesMap.get(ticker);
+            const aftermarketData = aftermarketMap.get(ticker);
 
-        // Use Promise.allSettled to handle partial failures gracefully
-        const results = await Promise.allSettled(promises);
+            return {
+              status: 'fulfilled' as const,
+              value: { ticker, aftermarketData, quoteData: quoteData ? [quoteData] : [] }
+            };
+          });
 
         // Process successful results
         results.forEach((result) => {
@@ -148,6 +177,11 @@ export function useAfterHoursData({
             }
           }
         });
+
+        } catch (batchError) {
+          // Log batch error but continue with other batches
+          console.error(`Error fetching batch ${i / 10 + 1}:`, batchError);
+        }
 
         // No delay needed with paid API tier
       }

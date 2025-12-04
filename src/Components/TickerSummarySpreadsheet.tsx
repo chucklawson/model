@@ -41,6 +41,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'portfolios', label: 'Portfolios', icon: Briefcase, visible: true },
   { id: 'totalShares', label: 'Total Shares', icon: Package, visible: true },
   { id: 'totalCost', label: 'Total Cost', icon: DollarSign, visible: true },
+  { id: 'todaysChange', label: "Today's Change", icon: TrendingUp, visible: true },
   { id: 'avgCost', label: 'Avg Cost/Share', icon: DollarSign, visible: true },
   { id: 'lotCount', label: 'Lots', icon: Hash, visible: true },
   { id: 'dateRange', label: 'Date Range', icon: Calendar, visible: true },
@@ -328,6 +329,21 @@ export default function TickerSummarySpreadsheet({
         return <span className="text-slate-700 font-semibold text-sm">{summary.totalShares.toLocaleString()}</span>;
       case 'totalCost':
         return <span className="font-bold text-green-600 text-sm">${summary.totalCost.toFixed(2)}</span>;
+      case 'todaysChange': {
+        const regularQuote = regularQuotes.get(summary.ticker);
+        if (!regularQuote) {
+          return <span className="text-slate-400 text-sm">—</span>;
+        }
+
+        const todaysChangeInDollars = regularQuote.change * summary.totalShares;
+        const isPositive = todaysChangeInDollars >= 0;
+
+        return (
+          <span className={`font-bold text-sm ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+            {isPositive ? '+' : ''}${todaysChangeInDollars.toFixed(2)}
+          </span>
+        );
+      }
       case 'avgCost':
         return <span className="text-slate-700 font-mono font-semibold">${summary.averageCostPerShare.toFixed(2)}</span>;
       case 'lotCount':
@@ -369,17 +385,17 @@ export default function TickerSummarySpreadsheet({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-0.5">
-        <h2 className="text-xs font-medium text-slate-800 flex items-center gap-0.5">
-          <TrendingUp size={10} className="text-blue-600" />
-          Ticker Summary
+      <div className="flex justify-between items-center py-1">
+        <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-0.5 leading-none">
+          <TrendingUp size={12} className="text-blue-600 flex-shrink-0" />
+          <span className="leading-none">Ticker Summary</span>
         </h2>
         <button
           onClick={() => setShowCustomization(true)}
-          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors font-medium border border-slate-300 text-xs"
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors font-medium border border-slate-300 text-xs leading-none"
         >
-          <Settings size={12} />
-          Customize Columns
+          <Settings size={12} className="flex-shrink-0" />
+          <span className="leading-none">Customize Columns</span>
         </button>
       </div>
 
