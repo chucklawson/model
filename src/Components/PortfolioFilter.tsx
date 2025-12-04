@@ -33,30 +33,30 @@ export default function PortfolioFilter({
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-50 to-blue-50 p-4 rounded-xl border border-slate-200">
-      <div className="flex items-center gap-3 mb-3">
-        <Briefcase size={20} className="text-purple-600" />
-        <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide">
+    <div className="bg-gradient-to-r from-slate-50 to-blue-50 p-1.5 rounded-lg border border-slate-200">
+      <div className="flex items-center gap-1 mb-1">
+        <Briefcase size={12} className="text-purple-600" />
+        <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
           Filter by Portfolio
         </h3>
         {!isAllSelected && (
-          <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+          <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
             {selectedPortfolios.length} selected
           </span>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1">
         {/* All Portfolios button */}
         <button
           onClick={handleAllClick}
-          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 ${
+          className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 ${
             isAllSelected
-              ? 'bg-purple-600 text-white shadow-md'
+              ? 'bg-purple-600 text-white shadow-sm'
               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
           }`}
         >
-          {isAllSelected && <Check size={16} />}
+          {isAllSelected && <Check size={12} />}
           All Portfolios
         </button>
 
@@ -68,14 +68,14 @@ export default function PortfolioFilter({
             <button
               key={portfolio.id}
               onClick={() => handlePortfolioClick(portfolio.name)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 ${
+              className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 ${
                 isSelected
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
               }`}
               title={portfolio.description || portfolio.name}
             >
-              {isSelected && <Check size={16} />}
+              {isSelected && <Check size={12} />}
               {portfolio.name}
             </button>
           );
@@ -84,7 +84,7 @@ export default function PortfolioFilter({
 
       {/* Selected portfolios summary */}
       {!isAllSelected && selectedPortfolios.length > 0 && (
-        <div className="mt-3 text-xs text-slate-600">
+        <div className="mt-1 text-xs text-slate-600">
           Showing tickers from: <span className="font-semibold">{selectedPortfolios.join(', ')}</span>
         </div>
       )}

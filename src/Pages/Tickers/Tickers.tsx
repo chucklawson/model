@@ -434,43 +434,43 @@ interface LegacyLot {
       <div className="h-full max-w-7xl mx-auto flex flex-col">
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-6 text-white">
+          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 py-2 px-4 text-white">
             <div className="flex justify-between items-center">
 
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button
                   onClick={() => setShowPortfolioManager(true)}
-                  className="bg-white bg-opacity-20 text-blue-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
                 >
-                  <Settings size={20} />
+                  <Settings size={16} />
                   Manage Portfolios
                 </button>
                 <button
                   onClick={() => setShowImportModal(true)}
-                  className="bg-white bg-opacity-20 text-blue-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
                 >
-                  <Upload size={20} />
+                  <Upload size={16} />
                   Import CSV
                 </button>
                 <button
                   onClick={handleExportTickers}
-                  className="bg-white bg-opacity-20 text-green-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                  className="bg-white bg-opacity-20 text-green-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
                 >
-                  <Download size={20} />
+                  <Download size={16} />
                   Export Tickers
                 </button>
                 <button
                   onClick={loadLots}
-                  className="bg-white bg-opacity-20 text-blue-500 px-5 py-3 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-2 font-semibold"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
                 >
-                  <RefreshCw size={20} strokeWidth={2.5} />
+                  <RefreshCw size={16} strokeWidth={2.5} />
                   Refresh
                 </button>
                 <button
                   onClick={() => setSelectedTicker('NEW')}
-                  className="bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-blue-50 transition-all flex items-center gap-2 shadow-lg"
+                  className="bg-white text-blue-600 px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-50 transition-all flex items-center gap-1.5 shadow-lg text-sm"
                 >
-                  <Plus size={22} />
+                  <Plus size={18} />
                   Add First Lot
                 </button>
               </div>
@@ -491,29 +491,29 @@ interface LegacyLot {
           )}
 
           {/* Portfolio Stats */}
-          <div className="grid grid-cols-2 gap-4 p-6 bg-gradient-to-r from-slate-50 to-blue-50">
-            <div className="bg-white p-5 rounded-xl shadow-lg border-2 border-green-200">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 p-4 rounded-lg">
-                  <DollarSign className="text-green-600" size={28} />
+          <div className="grid grid-cols-2 gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50">
+            <div className="bg-white p-2 rounded-lg shadow border border-green-200">
+              <div className="flex items-center gap-2">
+                <div className="bg-green-100 p-1 rounded">
+                  <DollarSign className="text-green-600" size={16} />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600 font-bold uppercase">Total Cost</p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-xs text-slate-600 font-semibold uppercase">Total Cost</p>
+                  <p className="text-base font-bold text-green-600">
                     ${totalPortfolioValue.toFixed(2)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-xl shadow-lg border-2 border-purple-200">
-              <div className="flex items-center gap-3">
-                <div className="bg-purple-100 p-4 rounded-lg">
-                  <TrendingUp className="text-purple-600" size={28} />
+            <div className="bg-white p-2 rounded-lg shadow border border-purple-200">
+              <div className="flex items-center gap-2">
+                <div className="bg-purple-100 p-1 rounded">
+                  <TrendingUp className="text-purple-600" size={16} />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-600 font-bold uppercase">Tickers</p>
-                  <p className="text-2xl font-bold text-purple-600">{totalTickers}</p>
+                  <p className="text-xs text-slate-600 font-semibold uppercase">Tickers</p>
+                  <p className="text-base font-bold text-purple-600">{totalTickers}</p>
                 </div>
               </div>
             </div>

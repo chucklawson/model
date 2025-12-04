@@ -167,7 +167,7 @@ export default function TickerSummarySpreadsheet({
   const renderCellContent = (colId: string, summary: TickerSummary) => {
     switch (colId) {
       case 'ticker':
-        return <span className="font-bold text-blue-600 text-xl">{summary.ticker}</span>;
+        return <span className="font-bold text-blue-600 text-base">{summary.ticker}</span>;
 
       case 'lastPrice': {
         const regularPrice = regularPrices.get(summary.ticker);
@@ -176,9 +176,9 @@ export default function TickerSummarySpreadsheet({
         const showAfterHours = isAfterHours && ahQuote;
 
         return (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
             {/* Regular Market Price */}
-            <span className="font-bold text-slate-700 text-lg">
+            <span className="font-bold text-slate-700 text-sm">
               ${regularPrice ? regularPrice.toFixed(2) : '—'}
             </span>
 
@@ -325,33 +325,30 @@ export default function TickerSummarySpreadsheet({
         );
       }
       case 'totalShares':
-        return <span className="text-slate-700 font-semibold text-lg">{summary.totalShares.toLocaleString()}</span>;
+        return <span className="text-slate-700 font-semibold text-sm">{summary.totalShares.toLocaleString()}</span>;
       case 'totalCost':
-        return <span className="font-bold text-green-600 text-lg">${summary.totalCost.toFixed(2)}</span>;
+        return <span className="font-bold text-green-600 text-sm">${summary.totalCost.toFixed(2)}</span>;
       case 'avgCost':
         return <span className="text-slate-700 font-mono font-semibold">${summary.averageCostPerShare.toFixed(2)}</span>;
       case 'lotCount':
         return <span className="text-slate-600 font-semibold">{summary.lotCount}</span>;
-      case 'dateRange':
+      case 'dateRange': {
+        const startDate = new Date(summary.earliestPurchase).toLocaleDateString('en-US', {
+          month: 'numeric',
+          day: 'numeric',
+          year: '2-digit'
+        });
+        const endDate = new Date(summary.latestPurchase).toLocaleDateString('en-US', {
+          month: 'numeric',
+          day: 'numeric',
+          year: '2-digit'
+        });
         return (
-          <div className="text-slate-600 text-sm">
-            <div>
-              {new Date(summary.earliestPurchase).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </div>
-            <div className="text-slate-400">to</div>
-            <div>
-              {new Date(summary.latestPurchase).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </div>
-          </div>
+          <span className="text-slate-600 text-xs whitespace-nowrap">
+            {startDate} - {endDate}
+          </span>
         );
+      }
       case 'actions':
         return (
           <button
@@ -359,10 +356,10 @@ export default function TickerSummarySpreadsheet({
               e.stopPropagation();
               onViewDetails(summary.ticker);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-semibold shadow-md"
+            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all font-medium shadow-sm text-xs"
           >
-            <Eye size={18} />
-            View Details
+            <Eye size={14} />
+            Details
           </button>
         );
       default:
@@ -372,22 +369,22 @@ export default function TickerSummarySpreadsheet({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <TrendingUp size={20} className="text-blue-600" />
+      <div className="flex justify-between items-center mb-0.5">
+        <h2 className="text-xs font-medium text-slate-800 flex items-center gap-0.5">
+          <TrendingUp size={10} className="text-blue-600" />
           Ticker Summary
         </h2>
         <button
           onClick={() => setShowCustomization(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium border border-slate-300"
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors font-medium border border-slate-300 text-xs"
         >
-          <Settings size={18} />
+          <Settings size={12} />
           Customize Columns
         </button>
       </div>
 
       {/* Portfolio Filter */}
-      <div className="mb-4">
+      <div className="mb-1">
         <PortfolioFilter
           portfolios={portfolios}
           selectedPortfolios={selectedPortfolios}
@@ -405,7 +402,7 @@ export default function TickerSummarySpreadsheet({
         </div>
       )}
 
-      <div className="overflow-auto max-h-[calc(100vh-400px)] rounded-xl border border-slate-200 shadow-lg">
+      <div className="overflow-auto max-h-[calc(100vh-180px)] rounded-xl border border-slate-200 shadow-lg">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-slate-100 to-slate-200 border-b-2 border-slate-300">
           <tr>
@@ -414,7 +411,7 @@ export default function TickerSummarySpreadsheet({
               return (
                 <th
                   key={col.id}
-                  className={`p-2 font-bold text-slate-700 uppercase text-xs tracking-wide ${
+                  className={`p-1 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
                   } ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}
                 >
@@ -471,7 +468,7 @@ export default function TickerSummarySpreadsheet({
                 onClick={() => onViewDetails(summary.ticker)}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-2 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}>
+                  <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}>
                     {renderCellContent(col.id, summary)}
                   </td>
                 ))}

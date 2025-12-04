@@ -24,7 +24,10 @@
       "WebFetch(domain:financialmodelingprep.com)",
       "Bash(curl:*)",
       "WebSearch",
-      "WebFetch(domain:site.financialmodelingprep.com)"
+      "WebFetch(domain:site.financialmodelingprep.com)",
+      "Bash(git log:*)",
+      "Bash(grep:*)",
+      "Bash(npx eslint:*)"
     ],
     "deny": [],
     "ask": []
