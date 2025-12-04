@@ -65,11 +65,6 @@ export function useAfterHoursData({
 
     // Check if we're in after-hours time
     const afterHours = checkAfterHours();
-    console.log('[AfterHours] Time check:', {
-      isAfterHours: afterHours,
-      currentTime: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-      tickerCount: tickers.length
-    });
 
     if (isMounted.current) {
       setIsAfterHours(afterHours);
@@ -77,7 +72,6 @@ export function useAfterHoursData({
 
     // Only fetch data if we're in after-hours period
     if (!afterHours) {
-      console.log('[AfterHours] Not in after-hours period, skipping fetch');
       return;
     }
 
@@ -94,14 +88,11 @@ export function useAfterHoursData({
       // Process tickers in batches of 10 with no delay (paid API tier)
       for (let i = 0; i < tickers.length; i += 10) {
         const batch = tickers.slice(i, i + 10);
-        console.log(`[AfterHours] Fetching batch ${Math.floor(i / 10) + 1}:`, batch);
 
         // Create fetch promises for this batch - need both aftermarket and regular quote
         const promises = batch.map(async (ticker) => {
           const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
           const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${ticker}?apikey=${apiKey}`;
-
-          console.log(`[AfterHours] Fetching ${ticker} aftermarket from:`, aftermarketUrl);
 
           try {
             // Fetch both aftermarket and regular quote in parallel
@@ -117,12 +108,8 @@ export function useAfterHoursData({
             const aftermarketData = await aftermarketResponse.json();
             const quoteData = await quoteResponse.json();
 
-            console.log(`[AfterHours] Aftermarket response for ${ticker}:`, aftermarketData);
-            console.log(`[AfterHours] Quote response for ${ticker}:`, quoteData);
-
             return { ticker, aftermarketData, quoteData };
           } catch (err) {
-            console.error(`[AfterHours] Error fetching ${ticker}:`, err);
             throw err;
           }
         });
@@ -131,7 +118,7 @@ export function useAfterHoursData({
         const results = await Promise.allSettled(promises);
 
         // Process successful results
-        results.forEach((result, idx) => {
+        results.forEach((result) => {
           if (result.status === 'fulfilled') {
             const { ticker, aftermarketData, quoteData } = result.value;
 
@@ -144,13 +131,6 @@ export function useAfterHoursData({
             const quote = Array.isArray(quoteData) && quoteData.length > 0
               ? quoteData[0]
               : null;
-
-            console.log(`[AfterHours] Processing ${ticker}:`, {
-              hasAftermarket: !!aftermarketTrade,
-              hasQuote: !!quote,
-              aftermarketPrice: aftermarketTrade?.price,
-              regularPrice: quote?.price
-            });
 
             // Always store regular price if we have it
             if (quote && quote.price) {
@@ -170,13 +150,7 @@ export function useAfterHoursData({
                 timestamp: aftermarketTrade.timestamp || Date.now(),
                 regularMarketPrice: quote.price
               });
-              console.log(`[AfterHours] Added ${ticker} to data map - AH: $${aftermarketTrade.price.toFixed(2)}, Change: $${change.toFixed(2)} (${changesPercentage.toFixed(2)}%)`);
-            } else {
-              console.log(`[AfterHours] No after-hours data for ${ticker} - missing ${!aftermarketTrade ? 'aftermarket' : ''} ${!quote ? 'quote' : ''}`);
             }
-          } else {
-            // Log individual ticker failures but don't break the entire fetch
-            console.warn(`Failed to fetch after-hours data for ${batch[idx]}:`, result.reason);
           }
         });
 
@@ -185,7 +159,6 @@ export function useAfterHoursData({
 
       // Update state with new data if component is still mounted
       if (isMounted.current) {
-        console.log(`[AfterHours] Setting data map with ${newData.size} entries, regular prices: ${newRegularPrices.size}`);
         setData(newData);
         setRegularPrices(newRegularPrices);
       }
@@ -194,7 +167,6 @@ export function useAfterHoursData({
       if (isMounted.current) {
         setError(error);
       }
-      console.error('After-hours data fetch error:', error);
     } finally {
       if (isMounted.current) {
         setLoading(false);

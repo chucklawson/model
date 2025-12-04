@@ -74,7 +74,6 @@ export default function TickerSummarySpreadsheet({
   const {
     data: afterHoursData,
     regularPrices,
-    loading: ahLoading,
     isAfterHours,
     error: ahError
   } = useAfterHoursData({
@@ -98,8 +97,6 @@ export default function TickerSummarySpreadsheet({
 
     if (saved && saved.length > 0) {
       // Reconstruct columns from DEFAULT_COLUMNS, preserving order and visibility from saved data
-      const savedMap = new Map(saved.map(col => [col.id, col.visible]));
-
       // Apply saved order and visibility
       const reconstructed = saved
         .map(savedCol => {
