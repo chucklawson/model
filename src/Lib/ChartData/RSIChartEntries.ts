@@ -75,6 +75,13 @@ export default class RSIChartEntries {
 
         //console.log('refAddressToStartFrom: ' + refAddressToStartFrom + ', (tempRSIData.length-1):' + (tempRSIData.length-1))
 
+        // Check if the start address was found
+        if(refAddressToStartFrom === -1)
+        {
+            console.log('Insufficient data for RSI calculation. Could not find starting date: ' + this.standardValues[0].date)
+            return null;
+        }
+
         const RSIData = [];
         for(let i=refAddressToStartFrom;i<(tempRSIData.length);++i)
         {

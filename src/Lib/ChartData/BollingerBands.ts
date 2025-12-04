@@ -100,7 +100,12 @@ export default class BollingerBands {
         //console.log('Number of possible this.standardValues: ' + this.standardValues.length)
         //console.log('Date looking for: ' + this.standardValues[0].date)
 
-
+        // Check if the start address was found
+        if(refBollingerBandAddress === -1)
+        {
+            console.log('Insufficient data for Bollinger Bands calculation. Could not find starting date: ' + this.standardValues[0].date)
+            return null;
+        }
 
         const bollingerBands=[]
 

@@ -62,12 +62,22 @@ export function useTechnicalIndicators({
 
       // Calculate RSI if checked
       if (rsiChecked) {
-        setRsiData(calculateAverages.getRsiChartData(timeSeries, adjustedTimeSeries)!);
+        const rsiResult = calculateAverages.getRsiChartData(timeSeries, adjustedTimeSeries);
+        if (rsiResult !== null) {
+          setRsiData(rsiResult);
+        } else {
+          setRsiData([]);
+        }
       }
 
       // Calculate Stochastic if checked
       if (stochasticChecked) {
-        setStochasticData(calculateAverages.getStochasticChartData(timeSeries, adjustedTimeSeries)!);
+        const stochasticResult = calculateAverages.getStochasticChartData(timeSeries, adjustedTimeSeries);
+        if (stochasticResult !== null) {
+          setStochasticData(stochasticResult);
+        } else {
+          setStochasticData([]);
+        }
       }
 
       // Calculate Price to Earnings if checked

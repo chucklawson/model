@@ -48,7 +48,7 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
         />
       </div>
 
-      {props.rsiChecked === true && props.rsiData.length !== undefined ? (
+      {props.rsiChecked === true && props.rsiData !== undefined && props.rsiData.length > 0 ? (
         <div className='ml-20 mt-5'>
           <div className="text-1xl text-green-600 font-bold underline h-5">
             RSI Measures - Speed and Magnitude of Price Change Momentum
@@ -65,7 +65,7 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
         </div>
       ) : <React.Fragment />}
 
-      {props.stochasticChecked === true && props.stochasticData.length !== undefined ? (
+      {props.stochasticChecked === true && props.stochasticData !== undefined && props.stochasticData.length > 0 ? (
         <div className='ml-20 mt-5'>
           <div className="text-1xl text-green-600 font-bold underline h-5">
             Stochastic Measures - Closing Price Momentum

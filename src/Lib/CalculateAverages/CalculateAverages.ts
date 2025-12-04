@@ -120,7 +120,12 @@ export class CalculateAverages {
 
 
     const bollingerBands = new BollingerBands(standardValuesIn, adjustedToContainFullYearOfDataValuesIn, numberOfDaysToLookBackNoRounding)
-    const bollingers = bollingerBands.generateBollingerBands()!
+    const bollingers = bollingerBands.generateBollingerBands()
+
+    // If Bollinger Bands calculation failed due to insufficient data, return the chart data without Bollinger Bands
+    if (bollingers === null) {
+      return accumulatedChartDataIn;
+    }
 
     const adjustedChartData = [];
     for (let j = 0; j < accumulatedChartDataIn.length; ++j) {

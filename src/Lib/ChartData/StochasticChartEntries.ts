@@ -62,7 +62,14 @@ export default class StochasticChartEntries {
         //console.log('startingAddressFastValues: ' + startingAddressFastValues)
 
         //console.log('startingAddressSlowValues: ' + startingAddressSlowValues + ',total entries: ' + slowStochasticValues.length)
-        
+
+        // Check if the start addresses were found
+        if(startingAddressFastValues === -1 || startingAddressSlowValues === -1)
+        {
+            console.log('Insufficient data for Stochastic calculation. Could not find starting date: ' + this.standardValues[0].date)
+            return;
+        }
+
         for(let i=startingAddressFastValues,j=startingAddressSlowValues;i<fastStochasticValues.length;++i,++j)
         {
             const aStochasticChartDataEntry=new StochasticChartData(fastStochasticValues[i].dateOfClose,fastStochasticValues[i].stochasticValue,slowStochasticValues[j].stochasticValue)
