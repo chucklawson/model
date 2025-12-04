@@ -73,7 +73,7 @@ export function useTechnicalIndicators({
       // Calculate Stochastic if checked
       if (stochasticChecked) {
         const stochasticResult = calculateAverages.getStochasticChartData(timeSeries, adjustedTimeSeries);
-        if (stochasticResult !== null) {
+        if (stochasticResult !== null && stochasticResult !== undefined) {
           setStochasticData(stochasticResult);
         } else {
           setStochasticData([]);
