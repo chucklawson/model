@@ -14,7 +14,7 @@ export const STORAGE_KEYS = {
  * Storage versions for schema migration
  */
 export const STORAGE_VERSIONS = {
-  TICKER_COLUMNS: 1,
+  TICKER_COLUMNS: 2, // Incremented to add "Last Price" column
   TICKER_PORTFOLIO_FILTER: 1,
 } as const;
 

@@ -20,7 +20,11 @@
       "Bash(aws amplify get-branch:*)",
       "Bash(aws amplify get-app:*)",
       "Bash(aws cloudformation list-stacks:*)",
-      "Bash(aws cloudformation describe-stacks:*)"
+      "Bash(aws cloudformation describe-stacks:*)",
+      "WebFetch(domain:financialmodelingprep.com)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:site.financialmodelingprep.com)"
     ],
     "deny": [],
     "ask": []

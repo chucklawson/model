@@ -2,7 +2,7 @@
 // FILE: src/components/TickerSummarySpreadsheet.tsx
 // ============================================
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Eye,
   TrendingUp,
@@ -15,12 +15,14 @@ import {
   ChevronDown,
   Briefcase,
   Building2,
-  Percent
+  Percent,
+  AlertCircle
 } from 'lucide-react';
 import type { TickerSummary, Ticker, Portfolio } from '../types';
 import ColumnCustomization, { type ColumnConfig } from './ColumnCustomization';
 import PortfolioFilter from './PortfolioFilter';
 import { loadFromLocalStorage, saveToLocalStorage, STORAGE_KEYS, STORAGE_VERSIONS } from '../utils/localStorage';
+import { useAfterHoursData } from '../hooks/useAfterHoursData';
 
 interface Props {
   summaries: TickerSummary[];
@@ -33,6 +35,7 @@ interface Props {
 
 const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'ticker', label: 'Ticker', icon: TrendingUp, required: true, visible: true },
+  { id: 'lastPrice', label: 'Last Price', icon: DollarSign, visible: true },
   { id: 'companyName', label: 'Company', icon: Building2, visible: true },
   { id: 'baseYield', label: 'Yield %', icon: Percent, visible: true },
   { id: 'portfolios', label: 'Portfolios', icon: Briefcase, visible: true },
@@ -60,6 +63,25 @@ export default function TickerSummarySpreadsheet({
     field: 'companyName' | 'baseYield';
   } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
+
+  // Extract ticker symbols for after-hours data
+  const tickerSymbols = useMemo(() =>
+    summaries.map(s => s.ticker),
+    [summaries]
+  );
+
+  // Fetch after-hours data with 30-second polling
+  const {
+    data: afterHoursData,
+    regularPrices,
+    loading: ahLoading,
+    isAfterHours,
+    error: ahError
+  } = useAfterHoursData({
+    tickers: tickerSymbols,
+    enabled: true,
+    pollingInterval: 30000
+  });
 
   // Load column configuration from localStorage on mount
   useEffect(() => {
@@ -91,13 +113,19 @@ export default function TickerSummarySpreadsheet({
         .filter((col): col is ColumnConfig => col !== null);
 
       // Add any new columns from DEFAULT_COLUMNS that weren't in saved data
+      // Insert at the correct position to maintain order
+      const finalColumns: ColumnConfig[] = [];
       DEFAULT_COLUMNS.forEach(defaultCol => {
-        if (!savedMap.has(defaultCol.id)) {
-          reconstructed.push(defaultCol);
+        const savedCol = reconstructed.find(rc => rc.id === defaultCol.id);
+        if (savedCol) {
+          finalColumns.push(savedCol);
+        } else {
+          // New column not in saved data - add it with default visibility
+          finalColumns.push(defaultCol);
         }
       });
 
-      setColumns(reconstructed);
+      setColumns(finalColumns);
     }
   }, []);
 
@@ -142,6 +170,42 @@ export default function TickerSummarySpreadsheet({
     switch (colId) {
       case 'ticker':
         return <span className="font-bold text-blue-600 text-xl">{summary.ticker}</span>;
+
+      case 'lastPrice':
+        const regularPrice = regularPrices.get(summary.ticker);
+        const ahQuote = afterHoursData.get(summary.ticker);
+        const showAfterHours = isAfterHours && ahQuote;
+
+        return (
+          <div className="flex flex-col gap-1">
+            {/* Regular Market Price */}
+            <span className="font-bold text-slate-700 text-lg">
+              ${regularPrice ? regularPrice.toFixed(2) : '—'}
+            </span>
+
+            {/* After-Hours Data */}
+            {showAfterHours && (
+              <div className="text-xs space-y-0.5">
+                <div className="text-slate-500 font-semibold">After Hours:</div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono font-bold text-slate-700">
+                    ${ahQuote.price.toFixed(2)}
+                  </span>
+                  <span className={`font-mono font-semibold ${
+                    ahQuote.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {ahQuote.change >= 0 ? '+' : ''}${ahQuote.change.toFixed(2)}
+                  </span>
+                  <span className={`font-mono font-semibold ${
+                    ahQuote.changesPercentage >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    ({ahQuote.changesPercentage >= 0 ? '+' : ''}{ahQuote.changesPercentage.toFixed(2)}%)
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
 
       case 'companyName':
         const isEditingCompany = editingCell?.ticker === summary.ticker &&
@@ -309,6 +373,16 @@ export default function TickerSummarySpreadsheet({
           onChange={onPortfolioFilterChange}
         />
       </div>
+
+      {/* After-Hours Error Banner */}
+      {ahError && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+          <AlertCircle size={20} className="flex-shrink-0" />
+          <div className="text-sm">
+            <span className="font-semibold">After-hours data unavailable:</span> {ahError.message}
+          </div>
+        </div>
+      )}
 
       <div className="overflow-auto max-h-[calc(100vh-400px)] rounded-xl border border-slate-200 shadow-lg">
         <table className="w-full">
