@@ -437,7 +437,7 @@ interface LegacyLot {
   const { regularQuotes } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
-    pollingInterval: 600000 // 10 minutes
+    pollingIntervalRegularHours: 600000 // 10 minutes
   });
 
   // Calculate total today's change across all positions
@@ -513,8 +513,8 @@ interface LegacyLot {
           )}
 
           {/* Portfolio Stats */}
-          <div className="grid grid-cols-3 gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50">
-            <div className="bg-white p-2 rounded-lg shadow border border-green-200">
+          <div className="flex gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50 overflow-x-auto">
+            <div className="bg-white p-2 rounded-lg shadow border border-green-200 flex-shrink-0 min-w-[200px]">
               <div className="flex items-center gap-2">
                 <div className="bg-green-100 p-1 rounded">
                   <DollarSign className="text-green-600" size={16} />
@@ -528,7 +528,7 @@ interface LegacyLot {
               </div>
             </div>
 
-            <div className={`bg-white p-2 rounded-lg shadow border ${totalTodaysChange >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+            <div className={`bg-white p-2 rounded-lg shadow border flex-shrink-0 min-w-[200px] ${totalTodaysChange >= 0 ? 'border-green-200' : 'border-red-200'}`}>
               <div className="flex items-center gap-2">
                 <div className={`${totalTodaysChange >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1 rounded`}>
                   <TrendingUp className={`${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`} size={16} />
@@ -542,7 +542,7 @@ interface LegacyLot {
               </div>
             </div>
 
-            <div className="bg-white p-2 rounded-lg shadow border border-purple-200">
+            <div className="bg-white p-2 rounded-lg shadow border border-purple-200 flex-shrink-0 min-w-[200px]">
               <div className="flex items-center gap-2">
                 <div className="bg-purple-100 p-1 rounded">
                   <TrendingUp className="text-purple-600" size={16} />

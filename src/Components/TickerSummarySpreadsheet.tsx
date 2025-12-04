@@ -81,7 +81,7 @@ export default function TickerSummarySpreadsheet({
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
-    pollingInterval: 60000
+    pollingIntervalAfterHours: 60000
   });
 
   // Load column configuration from localStorage on mount

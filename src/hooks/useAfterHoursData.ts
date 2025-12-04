@@ -9,7 +9,8 @@ import { shouldShowAfterHoursPricing } from '../utils/marketHours';
 interface UseAfterHoursDataParams {
   tickers: string[];
   enabled: boolean;
-  pollingInterval?: number; // milliseconds (default: 30000 = 30s)
+  pollingIntervalAfterHours?: number; // milliseconds (default: 60000 = 60s)
+  pollingIntervalRegularHours?: number; // milliseconds (default: 600000 = 10 minutes)
 }
 
 interface RegularQuote {
@@ -49,7 +50,8 @@ interface UseAfterHoursDataResult {
 export function useAfterHoursData({
   tickers,
   enabled,
-  pollingInterval = 60000
+  pollingIntervalAfterHours = 60000,
+  pollingIntervalRegularHours = 600000
 }: UseAfterHoursDataParams): UseAfterHoursDataResult {
   const [data, setData] = useState<Map<string, AfterHoursQuote_V3>>(new Map());
   const [regularPrices, setRegularPrices] = useState<Map<string, number>>(new Map());
@@ -232,15 +234,20 @@ export function useAfterHoursData({
     // Initial fetch
     fetchAfterHoursData();
 
+    // Determine which polling interval to use based on market hours
+    const currentPollingInterval = shouldShowAfterHoursPricing()
+      ? pollingIntervalAfterHours
+      : pollingIntervalRegularHours;
+
     // Set up polling interval
-    const intervalId = setInterval(fetchAfterHoursData, pollingInterval);
+    const intervalId = setInterval(fetchAfterHoursData, currentPollingInterval);
 
     // Cleanup function
     return () => {
       isMounted.current = false;
       clearInterval(intervalId);
     };
-  }, [fetchAfterHoursData, pollingInterval]);
+  }, [fetchAfterHoursData, pollingIntervalAfterHours, pollingIntervalRegularHours]);
 
   return {
     data,
