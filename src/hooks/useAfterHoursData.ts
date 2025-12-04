@@ -2,7 +2,7 @@
 // FILE: src/hooks/useAfterHoursData.ts
 // ============================================
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type AfterHoursQuote_V3 from '../Lib/AfterHoursQuote_V3';
 import { shouldShowAfterHoursPricing } from '../utils/marketHours';
 
@@ -16,6 +16,20 @@ interface RegularQuote {
   price: number;
   change: number;
   changesPercentage: number;
+}
+
+interface QuoteData {
+  symbol: string;
+  price: number;
+  change?: number;
+  changesPercentage?: number;
+  [key: string]: unknown;
+}
+
+interface AftermarketData {
+  price: number;
+  timestamp?: number;
+  [key: string]: unknown;
 }
 
 interface UseAfterHoursDataResult {
@@ -51,7 +65,7 @@ export function useAfterHoursData({
    * Fetch after-hours data for all tickers with throttled batching
    * Processes 5 tickers at a time with 200ms delay between batches
    */
-  const fetchAfterHoursData = async () => {
+  const fetchAfterHoursData = useCallback(async () => {
     if (!enabled || tickers.length === 0) {
       return;
     }
@@ -88,17 +102,18 @@ export function useAfterHoursData({
           const quotesArray = await quoteResponse.json();
 
           // Create a map of ticker -> quote data for quick lookup
-          const quotesMap = new Map<string, Record<string, unknown>>();
+          const quotesMap = new Map<string, QuoteData>();
           if (Array.isArray(quotesArray)) {
-            quotesArray.forEach((quote: Record<string, unknown>) => {
-              if (quote.symbol) {
-                quotesMap.set(quote.symbol as string, quote);
+            quotesArray.forEach((quote: unknown) => {
+              const quoteData = quote as QuoteData;
+              if (quoteData.symbol) {
+                quotesMap.set(quoteData.symbol, quoteData);
               }
             });
           }
 
           // Only fetch aftermarket data if we're showing after-hours pricing
-          const aftermarketMap = new Map<string, unknown>();
+          const aftermarketMap = new Map<string, AftermarketData[]>();
           if (afterHours) {
             // After-hours API may not support batch, so fetch individually in parallel
             const aftermarketPromises = batch.map(async (ticker) => {
@@ -150,19 +165,24 @@ export function useAfterHoursData({
               : null;
 
             // Always store regular price and quote data if we have it
-            if (quote && quote.price !== undefined) {
+            if (quote && typeof quote.price === 'number') {
               newRegularPrices.set(ticker, quote.price);
 
               // Store full quote data with change information
               newRegularQuotes.set(ticker, {
                 price: quote.price,
-                change: quote.change || 0,
-                changesPercentage: quote.changesPercentage || 0
+                change: typeof quote.change === 'number' ? quote.change : 0,
+                changesPercentage: typeof quote.changesPercentage === 'number' ? quote.changesPercentage : 0
               });
             }
 
             // Calculate after-hours change if we have both aftermarket trade and regular quote
-            if (aftermarketTrade && quote && aftermarketTrade.price && quote.price) {
+            if (
+              aftermarketTrade &&
+              quote &&
+              typeof aftermarketTrade.price === 'number' &&
+              typeof quote.price === 'number'
+            ) {
               const change = aftermarketTrade.price - quote.price;
               const changesPercentage = (change / quote.price) * 100;
 
@@ -171,7 +191,7 @@ export function useAfterHoursData({
                 price: aftermarketTrade.price,
                 change: change,
                 changesPercentage: changesPercentage,
-                timestamp: aftermarketTrade.timestamp || Date.now(),
+                timestamp: typeof aftermarketTrade.timestamp === 'number' ? aftermarketTrade.timestamp : Date.now(),
                 regularMarketPrice: quote.price
               });
             }
@@ -202,7 +222,7 @@ export function useAfterHoursData({
         setLoading(false);
       }
     }
-  };
+  }, [enabled, tickers]);
 
   // Set up polling effect
   useEffect(() => {
@@ -220,7 +240,7 @@ export function useAfterHoursData({
       isMounted.current = false;
       clearInterval(intervalId);
     };
-  }, [tickers.join(','), enabled, pollingInterval]); // Use tickers.join(',') to avoid array reference issues
+  }, [fetchAfterHoursData, pollingInterval]);
 
   return {
     data,
