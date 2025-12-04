@@ -162,11 +162,11 @@ return (
     </div>
 
     <div className='col-start-1 col-span-12'>
-            <header className="bg-lime-100 text-lime-600 text-3xl font-bold h-18 justify-items-center p-1">
+            <header className="bg-lime-100 text-lime-600 text-xl font-bold h-18 justify-items-center p-1">
                 <div>
                     {headerValue}
                 </div>
-                <div className='text-green-600 text-3xl font-bold'>
+                <div className='text-green-600 text-xl font-bold'>
                     Yield: {currentYield} %
                 </div>
             </header>        

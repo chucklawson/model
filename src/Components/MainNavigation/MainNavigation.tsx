@@ -4,7 +4,7 @@ import statistics from '../../Images/statistics.png'
 //import clipboard from '../../Images/clipboard.png'
 //import math from '../../Images/math.ico'
 import banks from '../../Images/bank.png'
-//import robot from '../../Images/robot.png'
+import robot from '../../Images/robot.png'
 import budget from '../../Images/budget.png'
 
 
@@ -18,7 +18,7 @@ function MainNavigation(){
             {/* this grouping builds menu items from the left to right on the left side of screen */}
             <div className="left md:w-3/4 sm:w-1/3 flex">
               <Tab pagePath='/' tabImage = {home} tabText='Home' tabWidth='125px'/>
-              <Tab pagePath='/tickers' tabImage = {statistics} tabText='Tickers' tabWidth='135px'/>
+              <Tab pagePath='/tickers' tabImage = {robot} tabText='Tickers' tabWidth='135px'/>
               <Tab pagePath='/current' tabImage = {statistics} tabText='Current' tabWidth='135px'/>
               <Tab pagePath='/dividendentries' tabImage = {statistics} tabText='Div Entries' tabWidth='190px'/>
               <Tab pagePath='/banks' tabImage = {banks} tabText='Financial' tabWidth='150px'/>

@@ -297,24 +297,24 @@ function WatchList() {
 
   return (
     <div className="text-center overflow-x-visible min-w-[1400px]">
-    <header className="bg-emerald-100 text-sky-600 text-3xl font-bold h-30 justify-items-center min-w-[1400px]">
+    <header className="bg-emerald-100 text-sky-600 text-xl font-bold h-23 justify-items-center min-w-[1400px]">
       <div>
         {headerValue}
       </div>
-      <div className='text-black text-3xl font-bold'>
+      <div className='text-black text-xl font-bold'>
                 Today's Change: <span className={isTodaysChangePositive ? 'text-green-600' : 'text-red-600'}>
                     {todaysPercentageChange} %
                 </span>
       </div>     
       <div>
         {slope >= 0.0 ?
-          <div className='text-green-600 text-3xl font-bold'>            
+          <div className='text-green-600 text-xl font-bold'>
                 {/*Exponential change: {slope}  */}              
-                <img className="inline-block w-10 h-8 ml-7 " src={upGreenRight} alt=""></img>                           
+                <img className="inline-block w-7 h-5 ml-7 " src={upGreenRight} alt=""></img>
           </div> :
-          <div className='text-red-600 text-3xl font-bold'>
+          <div className='text-red-600 text-xl font-bold'>
                 {/*} Exponential change: {slope} */} 
-                  <img className="inline-block w-12 h-10 ml-7" src={downRedRight} alt=""></img> 
+                  <img className="inline-block w-7 h-5 ml-7" src={downRedRight} alt=""></img>
           </div>
           }
       </div>          
