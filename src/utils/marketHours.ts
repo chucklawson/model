@@ -183,19 +183,21 @@ export function shouldShowAfterHoursPricing(): boolean {
 }
 
 /**
- * Get the current market period
+ * Market period constants
  * Useful for displaying market status to users
  */
-export enum MarketPeriod {
-  PRE_MARKET = 'PRE_MARKET',
-  MARKET_HOURS = 'MARKET_HOURS',
-  AFTER_HOURS = 'AFTER_HOURS',
-  MARKET_CLOSED = 'MARKET_CLOSED'
-}
+export const MarketPeriod = {
+  PRE_MARKET: 'PRE_MARKET',
+  MARKET_HOURS: 'MARKET_HOURS',
+  AFTER_HOURS: 'AFTER_HOURS',
+  MARKET_CLOSED: 'MARKET_CLOSED'
+} as const;
+
+export type MarketPeriod = typeof MarketPeriod[keyof typeof MarketPeriod];
 
 /**
  * Get the current market period
- * @returns MarketPeriod enum indicating current market status
+ * @returns MarketPeriod indicating current market status
  */
 export function getCurrentMarketPeriod(): MarketPeriod {
   const now = getEasternTime();
