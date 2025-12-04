@@ -49,7 +49,7 @@ interface UseAfterHoursDataResult {
 export function useAfterHoursData({
   tickers,
   enabled,
-  pollingInterval = 600000
+  pollingInterval = 60000
 }: UseAfterHoursDataParams): UseAfterHoursDataResult {
   const [data, setData] = useState<Map<string, AfterHoursQuote_V3>>(new Map());
   const [regularPrices, setRegularPrices] = useState<Map<string, number>>(new Map());

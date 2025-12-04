@@ -71,7 +71,7 @@ export default function TickerSummarySpreadsheet({
     [summaries]
   );
 
-  // Fetch after-hours data with 10-minute polling
+  // Fetch after-hours data with 1-minute polling
   const {
     data: afterHoursData,
     regularPrices,
@@ -81,7 +81,7 @@ export default function TickerSummarySpreadsheet({
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
-    pollingInterval: 600000
+    pollingInterval: 60000
   });
 
   // Load column configuration from localStorage on mount
