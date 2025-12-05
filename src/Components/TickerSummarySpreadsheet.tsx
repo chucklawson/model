@@ -41,6 +41,8 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'portfolios', label: 'Portfolios', icon: Briefcase, visible: true },
   { id: 'totalShares', label: 'Total Shares', icon: Package, visible: true },
   { id: 'totalCost', label: 'Total Cost', icon: DollarSign, visible: true },
+  { id: 'value', label: 'Value', icon: DollarSign, visible: true },
+  { id: 'weight', label: 'Weight', icon: Percent, visible: true },
   { id: 'todaysChange', label: "Today's Change", icon: TrendingUp, visible: true },
   { id: 'avgCost', label: 'Avg Cost/Share', icon: DollarSign, visible: true },
   { id: 'lotCount', label: 'Lots', icon: Hash, visible: true },
@@ -83,6 +85,17 @@ export default function TickerSummarySpreadsheet({
     enabled: true,
     pollingIntervalAfterHours: 60000
   });
+
+  // Calculate total portfolio value for weight calculations
+  const totalPortfolioValue = useMemo(() => {
+    return summaries.reduce((total, summary) => {
+      const price = regularPrices.get(summary.ticker);
+      if (price) {
+        return total + (price * summary.totalShares);
+      }
+      return total;
+    }, 0);
+  }, [summaries, regularPrices]);
 
   // Load column configuration from localStorage on mount
   useEffect(() => {
@@ -329,6 +342,23 @@ export default function TickerSummarySpreadsheet({
         return <span className="text-slate-700 font-semibold text-sm">{summary.totalShares.toLocaleString()}</span>;
       case 'totalCost':
         return <span className="font-bold text-green-600 text-sm">${summary.totalCost.toFixed(2)}</span>;
+      case 'value': {
+        const regularPrice = regularPrices.get(summary.ticker);
+        if (!regularPrice) {
+          return <span className="text-slate-400 text-sm">—</span>;
+        }
+        const value = regularPrice * summary.totalShares;
+        return <span className="font-bold text-blue-600 text-sm">${value.toFixed(2)}</span>;
+      }
+      case 'weight': {
+        const regularPrice = regularPrices.get(summary.ticker);
+        if (!regularPrice || totalPortfolioValue === 0) {
+          return <span className="text-slate-400 text-sm">—</span>;
+        }
+        const value = regularPrice * summary.totalShares;
+        const weight = (value / totalPortfolioValue) * 100;
+        return <span className="font-semibold text-purple-600 text-sm">{weight.toFixed(2)}%</span>;
+      }
       case 'todaysChange': {
         const regularQuote = regularQuotes.get(summary.ticker);
         if (!regularQuote) {

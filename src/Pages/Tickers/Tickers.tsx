@@ -434,7 +434,7 @@ interface LegacyLot {
   const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
 
   // Fetch real-time price data for calculating today's change
-  const { regularQuotes } = useAfterHoursData({
+  const { regularQuotes, regularPrices } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
     pollingIntervalRegularHours: 600000 // 10 minutes
@@ -450,6 +450,17 @@ interface LegacyLot {
       return total;
     }, 0);
   }, [summaries, regularQuotes]);
+
+  // Calculate total portfolio value based on current prices
+  const totalValue = useMemo(() => {
+    return summaries.reduce((total, summary) => {
+      const price = regularPrices.get(summary.ticker);
+      if (price) {
+        return total + (price * summary.totalShares);
+      }
+      return total;
+    }, 0);
+  }, [summaries, regularPrices]);
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
@@ -523,6 +534,20 @@ interface LegacyLot {
                   <p className="text-xs text-slate-600 font-semibold uppercase">Total Cost</p>
                   <p className="text-base font-bold text-green-600">
                     ${totalPortfolioValue.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-2 rounded-lg shadow border border-blue-200 flex-shrink-0 min-w-[200px]">
+              <div className="flex items-center gap-2">
+                <div className="bg-blue-100 p-1 rounded">
+                  <DollarSign className="text-blue-600" size={16} />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-600 font-semibold uppercase">Value</p>
+                  <p className="text-base font-bold text-blue-600">
+                    ${totalValue.toFixed(2)}
                   </p>
                 </div>
               </div>
