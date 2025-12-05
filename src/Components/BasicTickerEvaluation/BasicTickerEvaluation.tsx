@@ -557,8 +557,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
 
-    return <div className='bg-gray-100 min-w-[1400px]'>
-      <div className='grid grid-cols-11 gap-4 w-[1400px] min-w-[1400px]'>
+    return <div className='bg-gray-100 w-full overflow-x-auto'>
+      <div className='grid grid-cols-11 gap-4 w-full min-w-fit'>
 
         <TickerSidebar
             tickerEntries={props.tickerEntries}

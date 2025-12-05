@@ -158,9 +158,9 @@ function CurrentHoldings() {
   }
 
   return (
-    <div className="text-center overflow-x-visible min-w-[1400px]">
+    <div className="text-center overflow-x-auto w-full">
 
-    <header className="bg-indigo-100 text-purple-600 text-xl font-bold h-23 justify-items-center min-w-[1400px]">
+    <header className="bg-indigo-100 text-purple-600 text-xl font-bold h-23 justify-items-center w-full">
       <div>
         {headerValue}
                 <div className='text-black text-xl font-bold'>
