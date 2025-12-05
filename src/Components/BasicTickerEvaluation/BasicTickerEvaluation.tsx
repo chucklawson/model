@@ -11,7 +11,7 @@ import StockQuote from '../StockQuote/StockQuote.tsx';
 import {calculateOverallProfitAndLoss} from '../../Lib/ProfitLoss/CalculateOverallProfitLoss'
 import {GetBuyPoints}  from '../../Lib/ProfitLoss/GetBuyPoints'
 import type {BuyPoints} from '../../Lib/ProfitLoss/GetBuyPoints'
-import TickerSidebar from '../TickerSidebar/TickerSidebar';
+import TickerChipBar from '../TickerChipBar/TickerChipBar';
 import ChartControls from '../ChartControls/ChartControls';
 import StockChartDisplay from '../StockChartDisplay/StockChartDisplay';
 import TradingRangeSidebar from '../TradingRangeSidebar/TradingRangeSidebar';
@@ -560,8 +560,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         const updateGraphWidth = () => {
             if (chartContainerRef.current) {
                 const containerWidth = chartContainerRef.current.offsetWidth;
-                // Set graph width to container width minus some padding
-                const newWidth = Math.max(300, containerWidth - 40);
+                // Set graph width to container width minus padding and margins
+                // Increased from 40 to 80 to account for grid gaps and internal padding
+                const newWidth = Math.max(300, containerWidth - 80);
                 setGraphWidth(newWidth);
             }
         };
@@ -575,18 +576,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }, []);
 
     return <div className='bg-gray-100 w-full overflow-x-auto'>
-      <div className='grid grid-cols-11 gap-4 min-w-[1200px]'>
+      <div className='grid grid-cols-9 gap-4 min-w-[1200px]'>
 
-        <TickerSidebar
+        <div ref={chartContainerRef} className='col-start-1 col-span-7 overflow-hidden'>
+        <TickerChipBar
             tickerEntries={props.tickerEntries}
-            selectTickerButtonHandler={selectTickerButtonHandler}
-            buttonBackgroundColor={props.buttonBackgroundColor}
-            backgroundLeft={props.backgroundLeft}
+            selectedTicker={tickerToGet}
+            onSelectTicker={selectTickerButtonHandler}
             isLoading={isLoading}
-            currentTicker={tickerToGet}
         />
-
-        <div ref={chartContainerRef} className='col-start-3 col-span-7'>
         <ChartControls
             bollingerChecked={bollingerChecked}
             rsiChecked={rsiChecked}
@@ -663,6 +661,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         </div>
 
 
+        <div className='col-start-8 col-span-2'>
         <TradingRangeSidebar
             lowRangeValueOneYear={lowRangeValueOneYear}
             rangeValueOneYear={rangeValueOneYear}
@@ -682,6 +681,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             gainIsPositive={gainIsPositive}
             percentageChangeAcrossRange={percentageChangeAcrossRange}
         />
+        </div>
 
 
     </div>
