@@ -12,9 +12,9 @@ function MainNavigation(){
 
   return(
     <header>
-      <div className="bg-gray-100 px-1 py-0.5 h-12">
-        <nav >
-          <ul className='flex'>
+      <div className="bg-gray-100 px-1 py-0.5 h-12 overflow-x-auto">
+        <nav>
+          <ul className='flex flex-nowrap'>
             {/* this grouping builds menu items from the left to right on the left side of screen */}
             <div className="left md:w-3/4 sm:w-1/3 flex">
               <Tab pagePath='/' tabImage = {home} tabText='Home' tabWidth='125px'/>

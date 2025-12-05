@@ -442,7 +442,7 @@ export default function TickerSummarySpreadsheet({
       )}
 
       <div className="overflow-auto max-h-[calc(100vh-180px)] rounded-xl border border-slate-200 shadow-lg">
-        <table className="w-full">
+        <table className="w-full min-w-max">
           <thead className="bg-gradient-to-r from-slate-100 to-slate-200 border-b-2 border-slate-300">
           <tr>
             {visibleColumns.map(col => {
