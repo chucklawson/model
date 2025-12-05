@@ -48,3 +48,29 @@ body {
     height: -webkit-fill-available;
   }
 }
+
+/* Smooth scrolling for mobile devices */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Prevent content from being cut off on small screens */
+@media (max-width: 640px) {
+  body {
+    min-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Add subtle shadow to indicate scrollable content on mobile */
+  .overflow-x-auto {
+    background:
+      linear-gradient(90deg, white 30%, rgba(255,255,255,0)),
+      linear-gradient(90deg, rgba(255,255,255,0), white 70%) 100% 0,
+      radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+    background-attachment: local, local, scroll, scroll;
+  }
+}
