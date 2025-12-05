@@ -12,8 +12,9 @@ html {
 body {
   height: 100%;
   height: 100dvh;
-  overflow-x: visible;
-  min-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
   /* Prevent pull-to-refresh on mobile */
   overscroll-behavior-y: none;
   /* Better touch handling */
@@ -24,8 +25,9 @@ body {
 #root {
   height: 100%;
   height: 100dvh;
-  overflow-x: visible;
-  min-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 /* Custom utility for full viewport height that works on all devices */

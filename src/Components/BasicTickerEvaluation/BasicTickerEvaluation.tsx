@@ -586,7 +586,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             currentTicker={tickerToGet}
         />
 
-        <div ref={chartContainerRef} className='col-start-3 col-span-7 overflow-hidden'>
+        <div ref={chartContainerRef} className='col-start-3 col-span-7'>
         <ChartControls
             bollingerChecked={bollingerChecked}
             rsiChecked={rsiChecked}
