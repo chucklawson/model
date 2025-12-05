@@ -16,7 +16,7 @@ function MainNavigation(){
         <nav>
           <ul className='flex flex-nowrap'>
             {/* this grouping builds menu items from the left to right on the left side of screen */}
-            <div className="left md:w-3/4 sm:w-1/3 flex">
+            <div className="left flex flex-shrink-0">
               <Tab pagePath='/' tabImage = {home} tabText='Home' tabWidth='125px'/>
               <Tab pagePath='/tickers' tabImage = {robot} tabText='Tickers' tabWidth='135px'/>
               <Tab pagePath='/current' tabImage = {statistics} tabText='Current' tabWidth='135px'/>

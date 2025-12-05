@@ -467,46 +467,43 @@ interface LegacyLot {
       <div className="h-full w-full max-w-7xl mx-auto flex flex-col min-w-0">
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full overflow-auto min-w-0">
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 py-2 px-4 text-white">
-            <div className="flex justify-between items-center">
-
-              <div className="flex gap-2">
+          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 py-2 px-4 text-white overflow-x-auto">
+            <div className="flex gap-2 flex-nowrap min-w-max">
                 <button
                   onClick={() => setShowPortfolioManager(true)}
-                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <Settings size={16} />
                   Manage Portfolios
                 </button>
                 <button
                   onClick={() => setShowImportModal(true)}
-                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <Upload size={16} />
                   Import CSV
                 </button>
                 <button
                   onClick={handleExportTickers}
-                  className="bg-white bg-opacity-20 text-green-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
+                  className="bg-white bg-opacity-20 text-green-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <Download size={16} />
                   Export Tickers
                 </button>
                 <button
                   onClick={loadLots}
-                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm"
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <RefreshCw size={16} strokeWidth={2.5} />
                   Refresh
                 </button>
                 <button
                   onClick={() => setSelectedTicker('NEW')}
-                  className="bg-white text-blue-600 px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-50 transition-all flex items-center gap-1.5 shadow-lg text-sm"
+                  className="bg-white text-blue-600 px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-50 transition-all flex items-center gap-1.5 shadow-lg text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <Plus size={18} />
                   Add First Lot
                 </button>
-              </div>
             </div>
           </div>
 

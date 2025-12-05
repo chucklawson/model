@@ -46,11 +46,11 @@ export default function PortfolioFilter({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-nowrap gap-1 overflow-x-auto">
         {/* All Portfolios button */}
         <button
           onClick={handleAllClick}
-          className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 ${
+          className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
             isAllSelected
               ? 'bg-purple-600 text-white shadow-sm'
               : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
@@ -68,7 +68,7 @@ export default function PortfolioFilter({
             <button
               key={portfolio.id}
               onClick={() => handlePortfolioClick(portfolio.name)}
-              className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 ${
+              className={`px-2 py-0.5 rounded font-medium text-xs transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
                 isSelected
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-100'
