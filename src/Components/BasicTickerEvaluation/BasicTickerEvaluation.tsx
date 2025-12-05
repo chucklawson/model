@@ -201,7 +201,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       capexPerShare: 0,}]);
 
     const [calculatedTotalProfitLoss, setCalculatedTotalProfitLoss] = useState<string>('$ Unknown');
-    const graphWidth = 850;
+    const [graphWidth, setGraphWidth] = useState(850);
+    const chartContainerRef = useRef<HTMLDivElement>(null);
 
     const getValuesBasedOnDate=new GetValuesBasedOnDate();
 
@@ -554,8 +555,24 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         props.onSetSlope(slope);
     }, [slope, props.onSetSlope]);
 
+    // Dynamically calculate graph width based on container size
+    useEffect(() => {
+        const updateGraphWidth = () => {
+            if (chartContainerRef.current) {
+                const containerWidth = chartContainerRef.current.offsetWidth;
+                // Set graph width to container width minus some padding
+                const newWidth = Math.max(300, containerWidth - 40);
+                setGraphWidth(newWidth);
+            }
+        };
 
+        // Initial calculation
+        updateGraphWidth();
 
+        // Update on window resize
+        window.addEventListener('resize', updateGraphWidth);
+        return () => window.removeEventListener('resize', updateGraphWidth);
+    }, []);
 
     return <div className='bg-gray-100 w-full overflow-x-auto'>
       <div className='grid grid-cols-11 gap-4 min-w-[1200px]'>
@@ -569,7 +586,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             currentTicker={tickerToGet}
         />
 
-        <div className='col-start-3 col-span-7'>
+        <div ref={chartContainerRef} className='col-start-3 col-span-7 overflow-hidden'>
         <ChartControls
             bollingerChecked={bollingerChecked}
             rsiChecked={rsiChecked}
