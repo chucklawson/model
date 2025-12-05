@@ -50,8 +50,8 @@ interface UseAfterHoursDataResult {
 export function useAfterHoursData({
   tickers,
   enabled,
-  pollingIntervalAfterHours = 60000,
-  pollingIntervalRegularHours = 600000
+  pollingIntervalAfterHours = 300000,
+  pollingIntervalRegularHours = 60000
 }: UseAfterHoursDataParams): UseAfterHoursDataResult {
   const [data, setData] = useState<Map<string, AfterHoursQuote_V3>>(new Map());
   const [regularPrices, setRegularPrices] = useState<Map<string, number>>(new Map());

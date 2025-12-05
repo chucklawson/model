@@ -83,7 +83,7 @@ export default function TickerSummarySpreadsheet({
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
-    pollingIntervalAfterHours: 60000
+    pollingIntervalAfterHours: 300000
   });
 
   // Calculate total portfolio value for weight calculations
