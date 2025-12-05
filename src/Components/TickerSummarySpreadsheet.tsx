@@ -408,14 +408,14 @@ export default function TickerSummarySpreadsheet({
 
   return (
     <>
-      <div className="flex justify-between items-center py-1">
-        <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-0.5 leading-none">
+      <div className="flex justify-between items-center py-1 overflow-x-auto gap-2 flex-nowrap">
+        <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-0.5 leading-none whitespace-nowrap flex-shrink-0">
           <TrendingUp size={12} className="text-blue-600 flex-shrink-0" />
           <span className="leading-none">Ticker Summary</span>
         </h2>
         <button
           onClick={() => setShowCustomization(true)}
-          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors font-medium border border-slate-300 text-xs leading-none"
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors font-medium border border-slate-300 text-xs leading-none whitespace-nowrap flex-shrink-0"
         >
           <Settings size={12} className="flex-shrink-0" />
           <span className="leading-none">Customize Columns</span>
@@ -423,7 +423,7 @@ export default function TickerSummarySpreadsheet({
       </div>
 
       {/* Portfolio Filter */}
-      <div className="mb-1">
+      <div className="mb-1 overflow-x-auto">
         <PortfolioFilter
           portfolios={portfolios}
           selectedPortfolios={selectedPortfolios}
