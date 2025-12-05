@@ -11,6 +11,8 @@ interface UseAfterHoursDataParams {
   enabled: boolean;
   pollingIntervalAfterHours?: number; // milliseconds (default: 60000 = 60s)
   pollingIntervalRegularHours?: number; // milliseconds (default: 600000 = 10 minutes)
+  maximumPollingPeriodAfterHours?: number; // minutes (default: 60 minutes)
+  maximumPollingPeriodRegularHours?: number; // minutes (default: 120 minutes)
 }
 
 interface RegularQuote {
@@ -51,7 +53,9 @@ export function useAfterHoursData({
   tickers,
   enabled,
   pollingIntervalAfterHours = 300000,
-  pollingIntervalRegularHours = 60000
+  pollingIntervalRegularHours = 60000,
+  maximumPollingPeriodAfterHours = 30,
+  maximumPollingPeriodRegularHours = 60
 }: UseAfterHoursDataParams): UseAfterHoursDataResult {
   const [data, setData] = useState<Map<string, AfterHoursQuote_V3>>(new Map());
   const [regularPrices, setRegularPrices] = useState<Map<string, number>>(new Map());
@@ -62,6 +66,9 @@ export function useAfterHoursData({
 
   // Use ref to track if component is mounted (prevent state updates after unmount)
   const isMounted = useRef(true);
+
+  // Track when polling started (in milliseconds)
+  const pollingStartTime = useRef<number | null>(null);
 
   /**
    * Fetch after-hours data for all tickers with throttled batching
@@ -231,23 +238,52 @@ export function useAfterHoursData({
     // Track mounted state
     isMounted.current = true;
 
+    // Set polling start time
+    pollingStartTime.current = Date.now();
+
     // Initial fetch
     fetchAfterHoursData();
 
-    // Determine which polling interval to use based on market hours
-    const currentPollingInterval = shouldShowAfterHoursPricing()
+    // Determine which polling interval and maximum period to use based on market hours
+    const afterHours = shouldShowAfterHoursPricing();
+    const currentPollingInterval = afterHours
       ? pollingIntervalAfterHours
       : pollingIntervalRegularHours;
+    const maximumPeriod = afterHours
+      ? maximumPollingPeriodAfterHours
+      : maximumPollingPeriodRegularHours;
 
-    // Set up polling interval
-    const intervalId = setInterval(fetchAfterHoursData, currentPollingInterval);
+    // Convert maximum period from minutes to milliseconds
+    const maximumPeriodMs = maximumPeriod * 60 * 1000;
+
+    // Set up polling interval with maximum period check
+    const intervalId = setInterval(() => {
+      const elapsedTime = Date.now() - (pollingStartTime.current || Date.now());
+
+      // Check if maximum polling period has been exceeded
+      if (elapsedTime >= maximumPeriodMs) {
+        console.log(`Maximum polling period of ${maximumPeriod} minutes reached. Polling stopped.`);
+        clearInterval(intervalId);
+        return;
+      }
+
+      // Continue polling
+      fetchAfterHoursData();
+    }, currentPollingInterval);
 
     // Cleanup function
     return () => {
       isMounted.current = false;
+      pollingStartTime.current = null;
       clearInterval(intervalId);
     };
-  }, [fetchAfterHoursData, pollingIntervalAfterHours, pollingIntervalRegularHours]);
+  }, [
+    fetchAfterHoursData,
+    pollingIntervalAfterHours,
+    pollingIntervalRegularHours,
+    maximumPollingPeriodAfterHours,
+    maximumPollingPeriodRegularHours
+  ]);
 
   return {
     data,
