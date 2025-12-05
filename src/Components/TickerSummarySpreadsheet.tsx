@@ -111,8 +111,7 @@ export default function TickerSummarySpreadsheet({
     );
 
     if (saved && saved.length > 0) {
-      // Reconstruct columns from DEFAULT_COLUMNS, preserving order and visibility from saved data
-      // Apply saved order and visibility
+      // Reconstruct columns from saved data, preserving the saved order
       const reconstructed = saved
         .map(savedCol => {
           const defaultCol = DEFAULT_COLUMNS.find(dc => dc.id === savedCol.id);
@@ -125,17 +124,11 @@ export default function TickerSummarySpreadsheet({
         .filter((col): col is ColumnConfig => col !== null);
 
       // Add any new columns from DEFAULT_COLUMNS that weren't in saved data
-      // Insert at the correct position to maintain order
-      const finalColumns: ColumnConfig[] = [];
-      DEFAULT_COLUMNS.forEach(defaultCol => {
-        const savedCol = reconstructed.find(rc => rc.id === defaultCol.id);
-        if (savedCol) {
-          finalColumns.push(savedCol);
-        } else {
-          // New column not in saved data - add it with default visibility
-          finalColumns.push(defaultCol);
-        }
-      });
+      // Append them at the end with default visibility
+      const savedIds = new Set(saved.map(s => s.id));
+      const newColumns = DEFAULT_COLUMNS.filter(dc => !savedIds.has(dc.id));
+
+      const finalColumns = [...reconstructed, ...newColumns];
 
       setColumns(finalColumns);
     }

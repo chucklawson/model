@@ -463,7 +463,7 @@ interface LegacyLot {
   }, [summaries, regularPrices]);
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+    <div className="h-screen-safe overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="h-full max-w-7xl mx-auto flex flex-col">
         <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full overflow-hidden">
           {/* Header */}
