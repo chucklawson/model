@@ -11,6 +11,7 @@ import WatchList from "./Pages/WatchList/WatchList.tsx";
 import StatementSpreadSheet from "./Pages/StatementSpreadSheet/StatementSpreadSheet";
 import HistoricalDividends from "./Pages/HistoricalDividends/HistoricalDividends";
 import Tickers from "./Pages/Tickers/Tickers";
+import Research from "./Pages/Research/Research";
 //import SummarySpreadSheet from "./Pages/SummarySpreadSheet/SummarySpreadSheet";
 
 
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       {path: '/dividendentries', element: <DividendEntries/>},
       {path: '/banks', element: <Banks/>},
       {path: '/watchlist', element: <WatchList/>},
+      {path: '/research', element: <Research/>},
       {path: '/statmententries', element: <StatementSpreadSheet/>},
       {path: '/historicaldividendentries', element: <HistoricalDividends/>},
       {/*}

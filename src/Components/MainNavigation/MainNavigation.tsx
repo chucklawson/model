@@ -1,7 +1,7 @@
 import Tab from '../Tab/Tab'
 import home from '../../Images/home.png'
 import statistics from '../../Images/statistics.png'
-//import clipboard from '../../Images/clipboard.png'
+import clipboard from '../../Images/clipboard.png'
 //import math from '../../Images/math.ico'
 import banks from '../../Images/bank.png'
 import robot from '../../Images/robot.png'
@@ -23,6 +23,7 @@ function MainNavigation(){
               <Tab pagePath='/dividendentries' tabImage = {statistics} tabText='Div Entries' tabWidth='190px'/>
               <Tab pagePath='/banks' tabImage = {banks} tabText='Financial' tabWidth='150px'/>
               <Tab pagePath='/watchlist' tabImage = {budget} tabText='Watchlist' tabWidth='185px'/>
+              <Tab pagePath='/research' tabImage = {clipboard} tabText='News' tabWidth='165px'/>
               <Tab pagePath='/statmententries' tabImage = {budget} tabText='Statements' tabWidth='185px'/>
               <Tab pagePath='/historicaldividendentries' tabImage = {budget} tabText='Dividends' tabWidth='185px'/>
               {/*
