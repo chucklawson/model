@@ -27,7 +27,8 @@
       "WebFetch(domain:site.financialmodelingprep.com)",
       "Bash(git log:*)",
       "Bash(grep:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

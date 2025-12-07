@@ -1,57 +1,35 @@
+import { useEffect } from 'react'
+import GlobeScene from '../../Components/Globe3D/GlobeScene'
 
+export default function HomePage() {
+  useEffect(() => {
+    document.title = "Home"
 
-import {useEffect,useState} from "react";
-import reactLogo from "../../../src/assets/react.svg";
-import viteLogo from '../../../public/vite.svg'
-import '../../App.css'
+    // Load Google Font for calligraphic style
+    const link = document.createElement('link')
+    link.href = 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap'
+    link.rel = 'stylesheet'
+    document.head.appendChild(link)
 
-function HomePage(){
-    //const [headerValue,setHeaderValue] = useState('Howdy !')
-    const headerValue = 'Howdy !';
-    useEffect(() => {
-        document.title = "Home"
-     }, []);
+    return () => {
+      document.head.removeChild(link)
+    }
+  }, [])
 
-  const [count, setCount] = useState(0)
+  return (
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Optional header overlay */}
+      <header className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/50 to-transparent p-6">
+        <h1
+          className="text-6xl text-white text-center drop-shadow-lg"
+          style={{ fontFamily: "'Great Vibes', cursive" }}
+        >
+          Welcome to Your Portfolio
+        </h1>
+      </header>
 
-    //setHeaderValue('Howdy !');
-
-return(
-    <>
-      <div className="text-center">
-        <header className="bg-green-100 text-green-600 text-3xl font-bold h-20 justify-items-center p-5">
-          <div>
-            {headerValue}
-          </div>
-        </header>
-      </div>
-
-      <>
-        <div className="images">
-          <a href="https://vite.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo"/>
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo"/>
-          </a>
-        </div>
-
-        <h1 className='text-red-500'>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </>
-
-
-    </>
-)
+      {/* 3D Scene */}
+      <GlobeScene />
+    </div>
+  )
 }
-export default HomePage;
