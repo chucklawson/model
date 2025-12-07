@@ -147,32 +147,39 @@ const DividendEntries=()=> {
 
   return (
     <div className="text-center overflow-x-auto w-full">
-    <header className="bg-teal-100 text-teal-600 text-xl font-bold h-23 justify-items-center w-full">
-      <div>
-        {headerValue}
-      </div>
-      <div className='text-black text-xl font-bold'>
-                Today's Change: <span className={isTodaysChangePositive ? 'text-green-600' : 'text-red-600'}>
-                    {todaysPercentageChange} %
-                </span>
-      </div>     
-      <div>
-        {slope >= 0.0 ?
-          <div className='text-green-600 text-xl font-bold'>
-                {/*Exponential change: {slope}  */}              
-                <img className="inline-block w-7 h-5 ml-7 " src={upGreenRight} alt=""></img>
-          </div> :
-          <div className='text-red-600 text-xl font-bold'>
-                {/*} Exponential change: {slope} */} 
-                  <img className="inline-block w-7 h-5 ml-7" src={downRedRight} alt=""></img>
+    <header className="bg-gradient-to-r from-teal-100 to-cyan-100 rounded-lg shadow-md p-4 mb-3">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-teal-700">
+          {headerValue}
+        </h1>
+        <div className="flex items-center gap-4">
+          <div className="bg-white rounded-md shadow-sm p-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                Today's Change:
+              </span>
+              <span className={`text-lg font-bold ${
+                isTodaysChangePositive ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {isTodaysChangePositive ? '+' : ''}{todaysPercentageChange}%
+              </span>
+              {slope >= 0.0 ? (
+                <img className="w-5 h-5" src={upGreenRight} alt="Upward trend" />
+              ) : (
+                <img className="w-5 h-5" src={downRedRight} alt="Downward trend" />
+              )}
+            </div>
           </div>
-          
-          }
-        <div className='text-green-600 text-xl font-bold mt-3 mb-3'>
-            Projected Div's: ${accumulatedValues.totalProjectedGain}/Yield: {accumulatedValues.percentageGainLoss}%                       
+          <div className="bg-white rounded-md shadow-sm p-3">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+              Projected Dividends
+            </div>
+            <div className="text-lg font-bold text-green-600">
+              ${accumulatedValues.totalProjectedGain} / {accumulatedValues.percentageGainLoss}%
+            </div>
+          </div>
         </div>
-          
-      </div>          
+      </div>
     </header>
     <div className='mt-10 mb-5'>
       <BasicTickerEvaluation onSelectTickerButtonHandler = {onSelectTickerButtonHandler} onSetHeader = {onSetHeader} baseHeader='Dividend Entries'

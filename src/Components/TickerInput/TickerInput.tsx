@@ -32,7 +32,7 @@ const TickerInput =( props:TickerInputProps )=> {
     useEffect (() => {
       setEnteredValue('DIA');
       initializeStartAndEndDates()
-      setContainerClassValues(props.containerBackGround + ' mt-5 flex p-5 justify-center items-center rounded')
+      setContainerClassValues('bg-white rounded-lg shadow-md p-6 mb-4')
   },
   [oneYearHistoryChecked,tFirstTermChecked,bidenTermChecked])
 
@@ -203,71 +203,120 @@ const TickerInput =( props:TickerInputProps )=> {
 
       <div className={containerClassValues}>
 
-      <form className='w-full max-w-lg' onSubmit={formSubmitHandler}> 
-      <label className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3 pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={tFirstTermChecked}
-                onChange={tFirstTermChangeHandler}
-                />
-                2017-2020
-            </label>
-            <label className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3 pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={oneYearHistoryChecked}
-                onChange={oneYearHistoryChangeHandler}
-                />
-                Go Back One Year
-            </label>
-            <label className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3 pl-2 pr-2'>
-                <input
-                type="checkbox"
-                checked={bidenTermChecked}
-                onChange={bidenTermChangeHandler}
-                />
-                2021-2024
-            </label>
-            
-            
-        <div className='flex flex-wrap md:flex-nowrap'>      
-            
-          <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0 ml-1'>
-            { isValid === true ?
-              <label className='block uppercase text-xs text-gray-700 font-bold mb-2 tracking-wider'> Ticker {/*{enteredValue}*/}</label>:
-              <label className='block uppercase text-xs text-gray-200 font-bold mb-2 tracking-wider bg-red-700 rounded'> Ticker {/*{enteredValue}*/}</label>
-            }
-            {/*placeholder='AAPL'*/}
-              <input className='block py-1 px-2 rounded text-gray-700 w-full border border-green-500 bg-emerald-50' type="text" onChange={tickerInputChangeHandler}
-                                   style={{ width: '70px'}} value = {enteredValue}/>     
-          </div>     
+      <form className='w-full' onSubmit={formSubmitHandler}>
+      <div className="mb-6 flex flex-col items-center">
+        <label className="block text-sm font-semibold text-slate-700 mb-3">
+          Preset Date Ranges
+        </label>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <button
+            type="button"
+            onClick={tFirstTermChangeHandler}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              tFirstTermChecked
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50'
+            }`}
+          >
+            2017-2020
+          </button>
+          <button
+            type="button"
+            onClick={oneYearHistoryChangeHandler}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              oneYearHistoryChecked
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50'
+            }`}
+          >
+            Go Back One Year
+          </button>
+          <button
+            type="button"
+            onClick={bidenTermChangeHandler}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              bidenTermChecked
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50'
+            }`}
+          >
+            2021-2024
+          </button>
+        </div>
+      </div>
 
-          <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
-              { startDateIsValid === true ?
-                <label className='block uppercase text-xs text-gray-700 font-bold mb-2 tracking-wider'> Startdate {/*{startDate}*/}</label>:
-                <label className='block uppercase text-xs text-gray-200 font-bold mb-2 tracking-wider bg-red-700 rounded'> Startdate {/*{startDate}*/}</label>
-              }
-              <input className='block py-1 px-2 rounded w-full border border-green-500 bg-emerald-50'
-                                 type='date' min='2017-01-01' max='2030-12-31' value={startDate}
-                                  onChange={startDateChangeHandler}  style={{ width: '130px'}}/>     
+
+        <div className='flex flex-wrap gap-4 items-end justify-center'>
+          <div className='flex-shrink-0'>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Ticker Symbol
+            </label>
+            <input
+              className={`px-4 py-3 rounded-lg font-bold text-lg uppercase transition-all w-24 ${
+                isValid
+                  ? 'border-2 border-slate-300 focus:border-blue-500 bg-white'
+                  : 'border-2 border-red-500 bg-red-50'
+              } focus:outline-none focus:ring-2 focus:ring-blue-200`}
+              type="text"
+              onChange={tickerInputChangeHandler}
+              value={enteredValue}
+            />
+            {!isValid && (
+              <p className="text-xs text-red-600 mt-1">Please enter a valid ticker</p>
+            )}
           </div>
 
-          <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
-            {endDateIsValid === true ?
-              <label className='block uppercase text-xs text-gray-700 font-bold mb-2 tracking-wider'> Enddate {/*{endDate}*/}</label>:
-              <label className='block uppercase text-xs text-gray-200 font-bold mb-2 tracking-wider bg-red-700 rounded'> Enddate {/*{endDate}*/}</label>
-            }
-              <input className='block py-1 px-2 rounded w-full border border-green-500 bg-emerald-50'
-                     type='date' min='2019-01-01' max='2099-12-31' value={endDate}
-                      onChange={endDateChangeHandler} style={{ width: '130px'}} />     
+          <div className='flex-shrink-0'>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Start Date
+            </label>
+            <input
+              className={`px-4 py-3 rounded-lg transition-all w-36 ${
+                startDateIsValid
+                  ? 'border-2 border-slate-300 focus:border-blue-500 bg-white'
+                  : 'border-2 border-red-500 bg-red-50'
+              } focus:outline-none focus:ring-2 focus:ring-blue-200`}
+              type='date'
+              min='2017-01-01'
+              max='2030-12-31'
+              value={startDate}
+              onChange={startDateChangeHandler}
+            />
+            {!startDateIsValid && (
+              <p className="text-xs text-red-600 mt-1">Please select a start date</p>
+            )}
           </div>
 
-          <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
-            < button className='block uppercase text-xs bg-stone-500 p-1 rounded-md ml-2 mr-2 mt-5 text-white font-semibold hover:text-black transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 hover:bg-stone-200 duration-300' style={{ width: '75px' }} type='submit'>
-                                    Update Chart
+          <div className='flex-shrink-0'>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              End Date
+            </label>
+            <input
+              className={`px-4 py-3 rounded-lg transition-all w-36 ${
+                endDateIsValid
+                  ? 'border-2 border-slate-300 focus:border-blue-500 bg-white'
+                  : 'border-2 border-red-500 bg-red-50'
+              } focus:outline-none focus:ring-2 focus:ring-blue-200`}
+              type='date'
+              min='2019-01-01'
+              max='2099-12-31'
+              value={endDate}
+              onChange={endDateChangeHandler}
+            />
+            {!endDateIsValid && (
+              <p className="text-xs text-red-600 mt-1">Please select an end date</p>
+            )}
+          </div>
+
+          <div className='flex-shrink-0'>
+            <button
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold
+                         hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+              type='submit'
+            >
+              Update Chart
             </button>
           </div>
-
         </div>
       </form>
             {/*div that contains the form*/}

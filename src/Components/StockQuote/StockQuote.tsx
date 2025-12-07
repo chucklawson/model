@@ -3,6 +3,8 @@ import type Quote_V3 from "../../Lib/Quote_V3.ts"
 import type AnalysisKeyMetricsItem_V3 from '../../Lib/AnalysisKeyMetricsItem_V3.ts'
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3.ts';
 import { useStockQuote } from '../../hooks/useStockQuote';
+import StockQuoteSkeleton from './StockQuoteSkeleton';
+import StockQuoteSummaryCard from './StockQuoteSummaryCard';
 
 
 interface  StockQuoteProps{
@@ -44,12 +46,13 @@ const StockQuote = (props:StockQuoteProps) => {
       return <React.Fragment/>;
     }
 
-    // Handle loading or no data state
+    // Handle loading state - show skeleton
     if (loading || !quote) {
-      return <React.Fragment/>;
+      return <StockQuoteSkeleton />;
     }
 
-    return <React.Fragment/>   
+    // Handle loaded state - show summary card
+    return <StockQuoteSummaryCard quote={quote} />   
 };
 
 export default StockQuote;
