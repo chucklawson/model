@@ -40,7 +40,6 @@ const HistoricalDividends = () =>{
       timestamp: 0});
     const [dividendData,setDividendData] = useState<HistoricalDividendData[]>([]);
     const [periodsToShow, setPeriodsToShow] = useState(8);
-    const [period,setPeriod] = useState('quarter')
     const [currentYield,setCurrentYield] = useState(0)
 
     const [data, setData]=useState<rowValues[][]>([])
@@ -48,7 +47,7 @@ const HistoricalDividends = () =>{
     const [col,setCol]=useState<string[]>([])
     const [row,setRow]=useState<string[]>([])
 
-    const [headerValue,setHeaderValue] = useState("Historical Dividends")
+    const headerValue = "Historical Dividends"
 
     useEffect(() => {
         document.title = "Dividends";
