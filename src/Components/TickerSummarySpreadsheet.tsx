@@ -454,7 +454,7 @@ export default function TickerSummarySpreadsheet({
                   key={col.id}
                   className={`p-1 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
-                  } ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}
+                  } ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''}`}
                 >
                   <div className="flex items-center gap-2 relative">
                     {Icon && <Icon size={16} />}
@@ -509,7 +509,7 @@ export default function TickerSummarySpreadsheet({
                 onClick={() => onViewDetails(summary.ticker)}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[240px]' : ''}`}>
+                  <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''}`}>
                     {renderCellContent(col.id, summary)}
                   </td>
                 ))}

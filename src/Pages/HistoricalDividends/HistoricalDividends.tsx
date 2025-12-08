@@ -14,10 +14,7 @@ const HistoricalDividends = () =>{
 
     const [tickerToGet, setTickerToGet] = useState('');
     const [tickerInput, setTickerInput] = useState('');
-    const [periodsInput, setPeriodsInput] = useState('8');
-    const [updateTickerValue, setUpdateTickerValue] = useState(false);
-    const [buttonBackgroundColor,setbuttonBackgroundColor]= useState('bg-lime-400');
-    const [classValuesLeft,setClassValuesLeft]=useState('')
+    const [periodsInput, setPeriodsInput] = useState('8')
     const [currentQuote, setcurrentQuote] = useState <Quote_V3>( {
       symbol: "",
       name: "",
@@ -55,11 +52,6 @@ const HistoricalDividends = () =>{
 
     useEffect(() => {
         document.title = "Dividends";
-        setbuttonBackgroundColor('bg-lime-400');
-        setUpdateTickerValue(updateTickerValue);
-        setHeaderValue(headerValue);
-        setClassValuesLeft(classValuesLeft);
-        setPeriod(period);
      }, []);
 
     const handleUpdateClick = () => {
@@ -69,38 +61,6 @@ const HistoricalDividends = () =>{
         setPeriodsToShow(Number(periodsInput) || 8);
       }
     };
-
-    const onTickerChangeHandler = (tickerValue:string) => {
-      if (tickerValue.trim().length > 0)       {
-          // looks like a couple of guys that need a reducer
-          //console.log('tickerValue: ' + tickerValue)
-          setTickerToGet(tickerValue.trim());
-
-          setUpdateTickerValue(true);
-
-
-          //props.onSetHeader( props.baseHeader + " - " + tickerValue.trim());
-          //console.log("tickerValue: " + tickerValue);
-
-
-      }
-   }
-
-   const onPeriodsChangeHandler = (periodsToUse:string) => {
-    if (periodsToUse.trim().length > 0)       {
-        // looks like a couple of guys that need a reducer
-        //console.log('periodsToUse: ' + periodsToUse)
-        setPeriodsToShow(Number(periodsToUse.trim()));
-
-        setUpdateTickerValue(true);
-
-
-        //props.onSetHeader( props.baseHeader + " - " + tickerValue.trim());
-        //console.log("periodsToShow: " + periodsToShow);
-
-
-    }
-   }
 
    const onSetCurrentQuote=(currentQuoteIn:Quote_V3,dividendDataIn:HistoricalDividendData[])=>
     {
