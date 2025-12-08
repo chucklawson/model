@@ -8,51 +8,46 @@ import CurrentHoldings from './Pages/CurrentHoldings/CurrentHoldings';
 import DividendEntries from "./Pages/DividendEntries/DividendEntries";
 import Banks from "./Pages/Banks/Banks";
 import WatchList from "./Pages/WatchList/WatchList.tsx";
-import StatementSpreadSheet from "./Pages/StatementSpreadSheet/StatementSpreadSheet";
 import HistoricalDividends from "./Pages/HistoricalDividends/HistoricalDividends";
 import Tickers from "./Pages/Tickers/Tickers";
 import Research from "./Pages/Research/Research";
+import KeyMetrics from "./Pages/KeyMetrics/KeyMetrics";
 //import SummarySpreadSheet from "./Pages/SummarySpreadSheet/SummarySpreadSheet";
 
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <RootLayout />,
-    children: [
-      {path: '/', element: <HomePage/>},
-      {path: '/tickers', element: <Tickers/>},
-      {path: '/current', element: <CurrentHoldings/>},
-      {path: '/dividendentries', element: <DividendEntries/>},
-      {path: '/banks', element: <Banks/>},
-      {path: '/watchlist', element: <WatchList/>},
-      {path: '/research', element: <Research/>},
-      {path: '/statmententries', element: <StatementSpreadSheet/>},
-      {path: '/historicaldividendentries', element: <HistoricalDividends/>},
-      {/*}
-      {path: '/summaryentries', element: <SummarySpreadSheet/>},
-      */}
-    ]
-  },
-
-]);
 function App() {
 
 
   return (
     <Authenticator>
-      {({ signOut }) => (
-    <>
+      {({ signOut }) => {
+        const router = createBrowserRouter([
+          {
+            path: '/',
+            element: <RootLayout signOut={signOut} />,
+            children: [
+              {path: '/', element: <HomePage/>},
+              {path: '/tickers', element: <Tickers/>},
+              {path: '/current', element: <CurrentHoldings/>},
+              {path: '/dividendentries', element: <DividendEntries/>},
+              {path: '/banks', element: <Banks/>},
+              {path: '/watchlist', element: <WatchList/>},
+              {path: '/research', element: <Research/>},
+              {path: '/keymetrics', element: <KeyMetrics/>},
+              {path: '/historicaldividendentries', element: <HistoricalDividends/>},
+              {/*}
+              {path: '/summaryentries', element: <SummarySpreadSheet/>},
+              */}
+            ]
+          },
+        ]);
 
-
-      <div className="App">
-        <RouterProvider router={router}/>
-        <button onClick={signOut}>Sign out</button>
-      </div>
-
-    </>
-    )
-      }
+        return (
+          <div className="App">
+            <RouterProvider router={router}/>
+          </div>
+        );
+      }}
     </Authenticator>
   );
 }

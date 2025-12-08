@@ -7,14 +7,17 @@ import banks from '../../Images/bank.png'
 import robot from '../../Images/robot.png'
 import budget from '../../Images/budget.png'
 
+interface MainNavigationProps {
+  signOut?: () => void;
+}
 
-function MainNavigation(){
+function MainNavigation({ signOut }: MainNavigationProps){
 
   return(
     <header>
       <div className="bg-gray-100 px-1 py-0.5 h-12 overflow-x-auto">
         <nav>
-          <ul className='flex flex-nowrap'>
+          <ul className='flex flex-nowrap justify-between items-center'>
             {/* this grouping builds menu items from the left to right on the left side of screen */}
             <div className="left flex flex-shrink-0">
               <Tab pagePath='/' tabImage = {home} tabText='Home' tabWidth='125px'/>
@@ -24,7 +27,7 @@ function MainNavigation(){
               <Tab pagePath='/banks' tabImage = {banks} tabText='Financial' tabWidth='150px'/>
               <Tab pagePath='/watchlist' tabImage = {budget} tabText='Watchlist' tabWidth='185px'/>
               <Tab pagePath='/research' tabImage = {clipboard} tabText='News' tabWidth='165px'/>
-              <Tab pagePath='/statmententries' tabImage = {budget} tabText='Statements' tabWidth='185px'/>
+              <Tab pagePath='/keymetrics' tabImage={statistics} tabText='Key Metrics' tabWidth='190px'/>
               <Tab pagePath='/historicaldividendentries' tabImage = {budget} tabText='Dividends' tabWidth='185px'/>
               {/*
               <Tab pagePath='/summaryentries' tabImage = {robot} tabText='Summary' tabWidth='185px'/>
@@ -32,14 +35,18 @@ function MainNavigation(){
 
             </div>
 
-
-            {/* This works to move menu items over to the right side.
-        <div className="right md:w-1/4 sm:w-2/3 flex ">
-            <Tab pagePath='/' tabImage = {home} tabText='Right' tabWidth='150px'/>
-            <NavLink to='/current'> Current </NavLink>
-            <NavLink to='/current'> Current </NavLink>
-        </div>
-        */}
+            {/* Sign out button on the right side */}
+            {signOut && (
+              <div className="right flex-shrink-0 mr-2">
+                <button
+                  onClick={signOut}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold text-sm
+                             hover:bg-red-700 transition-all shadow-md hover:shadow-lg"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
           </ul>
         </nav>
       </div>
