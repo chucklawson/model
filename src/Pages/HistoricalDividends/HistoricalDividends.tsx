@@ -1,7 +1,5 @@
-
 import {useEffect, useState } from "react";
 import SpreadSheet from 'react-spreadsheet'
-import StatementInput from '../../Components/SatementInput/StatementInput.jsx';
 import HistoricalDividendQuote from '../../Components/ApiCalls/HistoricalDividendQuote.jsx';
 import {loadHistoricalMetricsData,buildColumnTitles,buildRowTitles,buildHstoricalDataToShow,calculateYield} from '../../Lib/DividendData/CollectHistoricalDividendData'
 import type HistoricalDividendData from "../../Lib/DividendData/HistoricalDividendData.tsx";
@@ -13,8 +11,10 @@ interface rowValues{
 
 const HistoricalDividends = () =>{
 
-  
+
     const [tickerToGet, setTickerToGet] = useState('');
+    const [tickerInput, setTickerInput] = useState('');
+    const [periodsInput, setPeriodsInput] = useState('8');
     const [updateTickerValue, setUpdateTickerValue] = useState(false);
     const [buttonBackgroundColor,setbuttonBackgroundColor]= useState('bg-lime-400');
     const [classValuesLeft,setClassValuesLeft]=useState('')
@@ -46,14 +46,12 @@ const HistoricalDividends = () =>{
     const [period,setPeriod] = useState('quarter')
     const [currentYield,setCurrentYield] = useState(0)
 
-
     const [data, setData]=useState<rowValues[][]>([])
-  
+
     const [col,setCol]=useState<string[]>([])
     const [row,setRow]=useState<string[]>([])
 
-
-    const [headerValue,setHeaderValue] = useState("Dividends")
+    const [headerValue,setHeaderValue] = useState("Historical Dividends")
 
     useEffect(() => {
         document.title = "Dividends";
@@ -64,21 +62,27 @@ const HistoricalDividends = () =>{
         setPeriod(period);
      }, []);
 
-    
-        
+    const handleUpdateClick = () => {
+      // Update the actual state when button is clicked
+      if (tickerInput.trim().length > 0) {
+        setTickerToGet(tickerInput.trim().toUpperCase());
+        setPeriodsToShow(Number(periodsInput) || 8);
+      }
+    };
+
     const onTickerChangeHandler = (tickerValue:string) => {
       if (tickerValue.trim().length > 0)       {
           // looks like a couple of guys that need a reducer
           //console.log('tickerValue: ' + tickerValue)
-          setTickerToGet(tickerValue.trim());                   
+          setTickerToGet(tickerValue.trim());
 
           setUpdateTickerValue(true);
 
-          
+
           //props.onSetHeader( props.baseHeader + " - " + tickerValue.trim());
-          //console.log("tickerValue: " + tickerValue); 
-          
-          
+          //console.log("tickerValue: " + tickerValue);
+
+
       }
    }
 
@@ -90,11 +94,11 @@ const HistoricalDividends = () =>{
 
         setUpdateTickerValue(true);
 
-        
+
         //props.onSetHeader( props.baseHeader + " - " + tickerValue.trim());
-        //console.log("periodsToShow: " + periodsToShow); 
-        
-        
+        //console.log("periodsToShow: " + periodsToShow);
+
+
     }
    }
 
@@ -155,40 +159,136 @@ const HistoricalDividends = () =>{
 
 
 return (
+    <div className="text-center overflow-x-auto w-full">
 
-    <div className='bg-gray-100 min-w-[1200px]'>
-    <div className='grid grid-cols-12 gap-4 w-[1200px] min-w-[1200px]'>
-      <div className={classValuesLeft}>
-    </div>
+      <header className="bg-gradient-to-r from-lime-100 to-emerald-100 rounded-lg shadow-md p-4 mb-3">
+        <h1 className="text-2xl font-bold text-lime-700">
+          {headerValue}
+        </h1>
+      </header>
 
-    <div className='col-start-1 col-span-12'>
-            <header className="bg-lime-100 text-lime-600 text-xl font-bold h-18 justify-items-center p-1">
-                <div>
-                    {headerValue}
+      <div className="flex justify-center mb-4">
+        <div className="bg-white rounded-lg shadow-md p-6 mb-4 max-w-4xl w-full">
+
+          {/* Current Yield Display */}
+          {currentYield > 0 && (
+            <div className="flex justify-center mb-6">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg shadow-sm p-4 border-2 border-green-200">
+                <div className="text-sm font-semibold text-slate-600 mb-1">
+                  Current Yield
                 </div>
-                <div className='text-green-600 text-xl font-bold'>
-                    Yield: {currentYield} %
+                <div className="text-3xl font-bold text-green-600">
+                  {currentYield.toFixed(2)}%
                 </div>
-            </header>        
-    </div>
+              </div>
+            </div>
+          )}
 
-      <div className='col-start-5 col-span-4'>
+          {/* Input Form */}
+          <form onSubmit={(e) => { e.preventDefault(); }} className="w-full mb-6">
+            <div className="flex flex-wrap gap-4 items-end justify-center">
 
-          <StatementInput  onTickerValue={onTickerChangeHandler} onPeriodsValue={onPeriodsChangeHandler} currentTicker={tickerToGet}
-              containerBackGround= {buttonBackgroundColor} runningStatement={false}></StatementInput> 
-          <HistoricalDividendQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote}/>
-               
+              {/* Ticker Input */}
+              <div className="flex-shrink-0">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Ticker Symbol
+                </label>
+                <input
+                  className="px-4 py-3 rounded-lg font-bold text-lg uppercase transition-all w-24
+                             border-2 border-slate-300 focus:border-blue-500 bg-white
+                             focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  type="text"
+                  onChange={(e) => setTickerInput(e.target.value)}
+                  value={tickerInput}
+                  placeholder="AAPL"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUpdateClick();
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Periods Input */}
+              <div className="flex-shrink-0">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Periods to Show
+                </label>
+                <input
+                  className="px-4 py-3 rounded-lg font-bold text-lg transition-all w-20
+                             border-2 border-slate-300 focus:border-blue-500 bg-white
+                             focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  type="number"
+                  onChange={(e) => setPeriodsInput(e.target.value)}
+                  value={periodsInput}
+                  min="1"
+                  max="20"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUpdateClick();
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Update Button */}
+              <div className="flex-shrink-0">
+                <button
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold
+                             hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+                  type="button"
+                  onClick={handleUpdateClick}
+                >
+                  Update Data
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Hidden component for data fetching */}
+          <div className="hidden">
+            <HistoricalDividendQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote}/>
+          </div>
+
+        </div>
       </div>
 
-      <div className='col-start-1 col-span-12 justify-items-center p-1'>
-
-          <SpreadSheet data={data} columnLabels={col} rowLabels={row} />
-
+      <div className="flex justify-center px-4">
+        <div className="w-full max-w-7xl">
+          <div className="overflow-auto max-h-[calc(100vh-400px)] rounded-xl border border-slate-200 shadow-lg sticky-spreadsheet">
+            <style>{`
+              .sticky-spreadsheet table thead,
+              .sticky-spreadsheet .Spreadsheet__table thead,
+              .sticky-spreadsheet thead {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 10 !important;
+                background: linear-gradient(to right, rgb(243 244 246), rgb(226 232 240)) !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+              }
+              .sticky-spreadsheet table thead th,
+              .sticky-spreadsheet thead th,
+              .sticky-spreadsheet table thead td,
+              .sticky-spreadsheet thead td {
+                position: sticky !important;
+                top: 0 !important;
+                background: linear-gradient(to right, rgb(243 244 246), rgb(226 232 240)) !important;
+                z-index: 10 !important;
+              }
+              .sticky-spreadsheet table tr:first-child th,
+              .sticky-spreadsheet table tr:first-child td {
+                position: sticky !important;
+                top: 0 !important;
+                background: linear-gradient(to right, rgb(243 244 246), rgb(226 232 240)) !important;
+                z-index: 10 !important;
+              }
+            `}</style>
+            <SpreadSheet data={data} columnLabels={col} rowLabels={row} />
+          </div>
+        </div>
       </div>
 
     </div>
-    </div>
-
-    )
+  )
 }
 export default HistoricalDividends;
