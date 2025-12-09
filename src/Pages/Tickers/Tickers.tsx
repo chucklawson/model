@@ -1,7 +1,8 @@
 // ============================================
 // FILE: src/Pages/Tickers/Tickers.tsx
 // ============================================
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 import '@aws-amplify/ui-react/styles.css';
@@ -35,6 +36,8 @@ interface LegacyLot {
 
   const Tickers = () =>{
   const client = generateClient<Schema>();
+  const location = useLocation();
+  const previousPathRef = useRef<string>('');
   const [lots, setLots] = useState<TickerLot[]>([]);
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [summaries, setSummaries] = useState<TickerSummary[]>([]);
@@ -434,11 +437,25 @@ interface LegacyLot {
   const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
 
   // Fetch real-time price data for calculating today's change
-  const { regularQuotes, regularPrices } = useAfterHoursData({
+  const { regularQuotes, regularPrices, refetch } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
     pollingIntervalRegularHours: 600000 // 10 minutes
   });
+
+  // Re-fetch price data when navigating to Tickers tab
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const previousPath = previousPathRef.current;
+
+    // Only refetch when we navigate TO /tickers from a different route
+    if (currentPath === '/tickers' && previousPath !== '/tickers' && tickerSymbols.length > 0) {
+      refetch();
+    }
+
+    // Update the ref for next time
+    previousPathRef.current = currentPath;
+  }, [location.pathname, tickerSymbols, refetch]);
 
   // Calculate total today's change across all positions
   const totalTodaysChange = useMemo(() => {
@@ -491,7 +508,10 @@ interface LegacyLot {
                   Export Tickers
                 </button>
                 <button
-                  onClick={loadLots}
+                  onClick={() => {
+                    loadLots();
+                    refetch();
+                  }}
                   className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <RefreshCw size={16} strokeWidth={2.5} />

@@ -42,6 +42,7 @@ interface UseAfterHoursDataResult {
   loading: boolean;
   error: Error | null;
   isAfterHours: boolean;
+  refetch: () => void;
 }
 
 /**
@@ -63,6 +64,7 @@ export function useAfterHoursData({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isAfterHours, setIsAfterHours] = useState(false);
+  const [refetchCounter, setRefetchCounter] = useState(0);
 
   // Use ref to track if component is mounted (prevent state updates after unmount)
   const isMounted = useRef(true);
@@ -233,6 +235,14 @@ export function useAfterHoursData({
     }
   }, [enabled, tickers]);
 
+  // Refetch function to manually trigger data refresh
+  const refetch = useCallback(() => {
+    // Reset polling start time to restart the maximum polling period
+    pollingStartTime.current = Date.now();
+    // Increment counter to trigger useEffect
+    setRefetchCounter(prev => prev + 1);
+  }, []);
+
   // Set up polling effect
   useEffect(() => {
     // Track mounted state
@@ -282,7 +292,8 @@ export function useAfterHoursData({
     pollingIntervalAfterHours,
     pollingIntervalRegularHours,
     maximumPollingPeriodAfterHours,
-    maximumPollingPeriodRegularHours
+    maximumPollingPeriodRegularHours,
+    refetchCounter
   ]);
 
   return {
@@ -291,6 +302,7 @@ export function useAfterHoursData({
     regularQuotes,
     loading,
     error,
-    isAfterHours
+    isAfterHours,
+    refetch
   };
 }

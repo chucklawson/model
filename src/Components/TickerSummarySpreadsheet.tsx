@@ -79,7 +79,8 @@ export default function TickerSummarySpreadsheet({
     regularPrices,
     regularQuotes,
     isAfterHours,
-    error: ahError
+    error: ahError,
+    refetch
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
@@ -185,9 +186,25 @@ export default function TickerSummarySpreadsheet({
         return (
           <div className="flex flex-col gap-0.5">
             {/* Regular Market Price */}
-            <span className="font-bold text-slate-700 text-sm">
-              ${regularPrice ? regularPrice.toFixed(2) : '—'}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-slate-700 text-sm">
+                ${regularPrice ? regularPrice.toFixed(2) : '—'}
+              </span>
+              {regularQuote && (
+                <>
+                  <span className={`font-mono font-semibold text-xs ${
+                    regularQuote.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {regularQuote.change >= 0 ? '+' : ''}${regularQuote.change.toFixed(2)}
+                  </span>
+                  <span className={`font-mono font-semibold text-xs ${
+                    regularQuote.changesPercentage >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    ({regularQuote.changesPercentage >= 0 ? '+' : ''}{regularQuote.changesPercentage.toFixed(2)}%)
+                  </span>
+                </>
+              )}
+            </div>
 
             {/* After-Hours Data (when market is closed) */}
             {showAfterHours && (
