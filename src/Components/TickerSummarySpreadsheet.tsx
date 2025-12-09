@@ -184,26 +184,37 @@ export default function TickerSummarySpreadsheet({
 
         return (
           <div className="flex flex-col gap-0.5">
-            {/* Regular Market Price */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-bold text-slate-700 text-sm">
-                ${regularPrice ? regularPrice.toFixed(2) : '—'}
-              </span>
-              {regularQuote && (
-                <>
-                  <span className={`font-mono font-semibold text-xs ${
-                    regularQuote.change >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {regularQuote.change >= 0 ? '+' : ''}${regularQuote.change.toFixed(2)}
-                  </span>
-                  <span className={`font-mono font-semibold text-xs ${
-                    regularQuote.changesPercentage >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    ({regularQuote.changesPercentage >= 0 ? '+' : ''}{regularQuote.changesPercentage.toFixed(2)}%)
-                  </span>
-                </>
-              )}
-            </div>
+            {/* During regular hours: show current price without day's gain/loss */}
+            {!showAfterHours && regularPrice && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-slate-700 text-sm">
+                  ${regularPrice.toFixed(2)}
+                </span>
+              </div>
+            )}
+
+            {/* During after-hours: show closing price with day's gain/loss */}
+            {showAfterHours && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-slate-700 text-sm">
+                  ${regularPrice ? regularPrice.toFixed(2) : '—'}
+                </span>
+                {regularQuote && (
+                  <>
+                    <span className={`font-mono font-semibold text-xs ${
+                      regularQuote.change >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {regularQuote.change >= 0 ? '+' : ''}${regularQuote.change.toFixed(2)}
+                    </span>
+                    <span className={`font-mono font-semibold text-xs ${
+                      regularQuote.changesPercentage >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      ({regularQuote.changesPercentage >= 0 ? '+' : ''}{regularQuote.changesPercentage.toFixed(2)}%)
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
 
             {/* After-Hours Data (when market is closed) */}
             {showAfterHours && (
