@@ -578,13 +578,17 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     return <div className='bg-gray-100 w-full overflow-x-auto'>
       <div className='grid grid-cols-9 gap-4 min-w-[1200px]'>
 
+        {/* Full-width TickerChipBar at top */}
+        <div className='col-span-9'>
+          <TickerChipBar
+              tickerEntries={props.tickerEntries}
+              selectedTicker={tickerToGet}
+              onSelectTicker={selectTickerButtonHandler}
+              isLoading={isLoading}
+          />
+        </div>
+
         <div ref={chartContainerRef} className='col-start-1 col-span-7'>
-        <TickerChipBar
-            tickerEntries={props.tickerEntries}
-            selectedTicker={tickerToGet}
-            onSelectTicker={selectTickerButtonHandler}
-            isLoading={isLoading}
-        />
         <ChartControls
             bollingerChecked={bollingerChecked}
             rsiChecked={rsiChecked}
@@ -683,8 +687,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         />
         </div>
 
-        {/* Footer TickerChipBar - aligned with top TickerChipBar */}
-        <div className='col-start-1 col-span-7 mt-4 border-t-2 border-gray-300 pt-4'>
+        {/* Footer TickerChipBar - full width */}
+        <div className='col-span-9 mt-4 border-t-2 border-gray-300 pt-4'>
           <TickerChipBar
               tickerEntries={props.tickerEntries}
               selectedTicker={tickerToGet}
