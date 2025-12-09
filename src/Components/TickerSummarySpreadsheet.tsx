@@ -79,8 +79,7 @@ export default function TickerSummarySpreadsheet({
     regularPrices,
     regularQuotes,
     isAfterHours,
-    error: ahError,
-    refetch
+    error: ahError
   } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,

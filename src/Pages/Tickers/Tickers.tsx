@@ -449,13 +449,14 @@ interface LegacyLot {
     const previousPath = previousPathRef.current;
 
     // Only refetch when we navigate TO /tickers from a different route
-    if (currentPath === '/tickers' && previousPath !== '/tickers' && tickerSymbols.length > 0) {
+    if (currentPath === '/tickers' && previousPath !== '/tickers' && previousPath !== '') {
       refetch();
     }
 
     // Update the ref for next time
     previousPathRef.current = currentPath;
-  }, [location.pathname, tickerSymbols, refetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]); // Only depend on pathname - refetch is stable, tickerSymbols changes too often
 
   // Calculate total today's change across all positions
   const totalTodaysChange = useMemo(() => {
