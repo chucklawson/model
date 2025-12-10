@@ -15,8 +15,7 @@ import {
   ChevronDown,
   Briefcase,
   Building2,
-  Percent,
-  AlertCircle
+  Percent
 } from 'lucide-react';
 import type { TickerSummary, Ticker, Portfolio } from '../types';
 import ColumnCustomization, { type ColumnConfig } from './ColumnCustomization';
