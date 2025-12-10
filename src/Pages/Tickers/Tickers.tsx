@@ -431,7 +431,8 @@ interface LegacyLot {
   };
 
   const totalPortfolioValue = summaries.reduce((sum, s) => sum + s.totalCost, 0);
-  const totalTickers = summaries.length;
+  // Only count tickers with actual holdings (exclude watchlist entries with 0 cost or 0 shares)
+  const totalTickers = summaries.filter(s => s.totalCost > 0 && s.totalShares > 0).length;
 
   // Get ticker symbols for price data
   const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
