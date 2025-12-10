@@ -22,7 +22,18 @@ import type { TickerSummary, Ticker, Portfolio } from '../types';
 import ColumnCustomization, { type ColumnConfig } from './ColumnCustomization';
 import PortfolioFilter from './PortfolioFilter';
 import { loadFromLocalStorage, saveToLocalStorage, STORAGE_KEYS, STORAGE_VERSIONS } from '../utils/localStorage';
-import { useAfterHoursData } from '../hooks/useAfterHoursData';
+
+interface RegularQuote {
+  price: number;
+  change: number;
+  changesPercentage: number;
+}
+
+interface AfterHoursQuote {
+  price: number;
+  change: number;
+  changesPercentage: number;
+}
 
 interface Props {
   summaries: TickerSummary[];
@@ -31,6 +42,10 @@ interface Props {
   onPortfolioFilterChange: (selected: string[]) => void;
   onViewDetails: (ticker: string) => void;
   onUpdateTicker: (ticker: Ticker) => Promise<void>;
+  regularPrices: Map<string, number>;
+  regularQuotes: Map<string, RegularQuote>;
+  afterHoursData: Map<string, AfterHoursQuote>;
+  isAfterHours: boolean;
 }
 
 const DEFAULT_COLUMNS: ColumnConfig[] = [
@@ -57,6 +72,10 @@ export default function TickerSummarySpreadsheet({
                                                    onPortfolioFilterChange,
                                                    onViewDetails,
                                                    onUpdateTicker,
+                                                   regularPrices,
+                                                   regularQuotes,
+                                                   afterHoursData,
+                                                   isAfterHours,
                                                  }: Props) {
   const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
   const [showCustomization, setShowCustomization] = useState(false);
@@ -66,25 +85,6 @@ export default function TickerSummarySpreadsheet({
     field: 'companyName' | 'baseYield';
   } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
-
-  // Extract ticker symbols for after-hours data
-  const tickerSymbols = useMemo(() =>
-    summaries.map(s => s.ticker),
-    [summaries]
-  );
-
-  // Fetch after-hours data with 1-minute polling
-  const {
-    data: afterHoursData,
-    regularPrices,
-    regularQuotes,
-    isAfterHours,
-    error: ahError
-  } = useAfterHoursData({
-    tickers: tickerSymbols,
-    enabled: true,
-    pollingIntervalAfterHours: 300000
-  });
 
   // Calculate total portfolio value for weight calculations
   const totalPortfolioValue = useMemo(() => {
@@ -141,6 +141,13 @@ export default function TickerSummarySpreadsheet({
   const sortedSummaries = [...summaries].sort((a, b) =>
     a.ticker.localeCompare(b.ticker)
   );
+
+  // Filter out watchlist entries (0 shares or 0 cost) when viewing all portfolios
+  // Note: Empty selectedPortfolios array means "All portfolios" view
+  const isViewingAllPortfolios = selectedPortfolios.length === 0;
+  const filteredSummaries = isViewingAllPortfolios
+    ? sortedSummaries.filter(s => s.totalShares > 0 && s.totalCost > 0)
+    : sortedSummaries;
 
   const toggleColumnVisibility = (columnId: string) => {
     setColumns(prev =>
@@ -470,16 +477,6 @@ export default function TickerSummarySpreadsheet({
         />
       </div>
 
-      {/* After-Hours Error Banner */}
-      {ahError && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-          <AlertCircle size={20} className="flex-shrink-0" />
-          <div className="text-sm">
-            <span className="font-semibold">After-hours data unavailable:</span> {ahError.message}
-          </div>
-        </div>
-      )}
-
       <div className="overflow-auto max-h-[calc(100vh-180px)] rounded-xl border border-slate-200 shadow-lg">
         <table className="w-full min-w-max">
           <thead className="bg-gradient-to-r from-slate-100 to-slate-200 border-b-2 border-slate-300 sticky top-0 z-10">
@@ -529,7 +526,7 @@ export default function TickerSummarySpreadsheet({
           </tr>
           </thead>
           <tbody>
-          {sortedSummaries.length === 0 ? (
+          {filteredSummaries.length === 0 ? (
             <tr>
               <td colSpan={visibleColSpan} className="p-12 text-center text-slate-400">
                 <TrendingUp size={48} className="mx-auto mb-3 opacity-50" />
@@ -537,7 +534,7 @@ export default function TickerSummarySpreadsheet({
               </td>
             </tr>
           ) : (
-            sortedSummaries.map((summary, idx) => (
+            filteredSummaries.map((summary, idx) => (
               <tr
                 key={summary.ticker}
                 className={`border-b border-slate-200 transition-colors ${

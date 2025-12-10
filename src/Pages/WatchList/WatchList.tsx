@@ -1,269 +1,37 @@
 import { useState, useEffect } from 'react';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../../amplify/data/resource';
 import upGreenRight from '../../Images/UpGreenRight.png'
 import downRedRight from '../../Images/DownRedRight.png'
 import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicTickerEvaluation'
-import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+import type {PortfoliosToInclude} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
+import type { TickerLot, Ticker } from '../../types';
+import { calculateCurrentHoldings } from '../../utils/currentHoldingsCalculations';
 
-const tickersToEvaluate:TickersToEvaluate[] =
+const portfoliosToInclude:PortfoliosToInclude[]=
   [
-    {
-      ticker: "DIA",
-      costBasis: '0.0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "VOO",
-      costBasis: '0.0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "QQQ",
-      costBasis: '0.0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "ADC",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "ADBE",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "AXP",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "BKE",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "CAT",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "CRWV",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "CVS",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "DOV",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "ETN",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "ET",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "GLD",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "HD",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "HPQ",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "INTC",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "INTU",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "JPM",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "MDB",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "MO",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "MPLX",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "NOW",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "NUE",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "NXT",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "ORCL",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "SPG",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "TGT",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "TSM",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "UBER",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "UTG",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "VICI",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "VOOG",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "WMT",
-      costBasis: '0',
-      unitsOnHand: 0,
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    },
-    {
-      ticker: "WPC",
-      costBasis: '0',
-      unitsOnHand: 0, 
-      calculateAccumulatedProfitLoss: false,
-      baseYield: '',
-    }
-    
-
+    {portfolio: "Watchlist"},
   ];
 
 
 function WatchList() {
+  const client = generateClient<Schema>();
+
+  // Database state
+  const [lots, setLots] = useState<TickerLot[]>([]);
+  const [tickers, setTickers] = useState<Ticker[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [stockSymbolToFetch,setStockSymbolToFetch] = useState('AAPL')
   const [headerValue,setHeaderValue] = useState('Watch List')
   const [todaysPercentageChange, setTodaysPercentageChange] = useState(0.0);
   const [isTodaysChangePositive, setIsTodaysChangePositive] = useState(true);
   const [slope, setSlope] = useState(0.0)
-  const [currentHoldings,setCurrentHoldings]=useState(tickersToEvaluate);
+
+  // Calculate current holdings from database
+  const portfolioNames = portfoliosToInclude.map(p => p.portfolio);
+  const currentHoldings = calculateCurrentHoldings(lots, tickers, portfolioNames);
 
   const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
   {
@@ -285,15 +53,95 @@ function WatchList() {
     setSlope(slopeIn)
   }
 
+  // Load ticker lots and tickers from database with real-time subscriptions
+  useEffect(() => {
+    // Subscribe to TickerLot changes
+    const lotSub = client.models.TickerLot.observeQuery().subscribe({
+      next: ({ items }) => {
+        const tickerLots: TickerLot[] = items
+          .filter((item) => item !== null)
+          .map((item) => ({
+            id: item.id,
+            ticker: item.ticker,
+            shares: item.shares,
+            costPerShare: item.costPerShare,
+            purchaseDate: item.purchaseDate,
+            portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
+            calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+            baseYield: item.baseYield ?? 0,
+            notes: item.notes ?? '',
+            totalCost: item.totalCost ?? item.shares * item.costPerShare,
+            createdAt: item.createdAt ?? undefined,
+            updatedAt: item.updatedAt ?? undefined,
+            owner: item.owner ?? undefined,
+          }));
+        setLots(tickerLots);
+        setLoading(false);
+      },
+      error: (err: Error) => {
+        console.error('Subscription error:', err);
+        setError('Failed to load ticker lots');
+        setLoading(false);
+      },
+    });
+
+    // Subscribe to Ticker changes
+    const tickerSub = client.models.Ticker.observeQuery().subscribe({
+      next: ({ items }) => {
+        const tickerList: Ticker[] = items
+          .filter(item => item !== null)
+          .map((item) => ({
+            id: item.id,
+            symbol: item.symbol,
+            companyName: item.companyName ?? '',
+            baseYield: item.baseYield ?? 0,
+            createdAt: item.createdAt ?? undefined,
+            updatedAt: item.updatedAt ?? undefined,
+            owner: item.owner ?? undefined,
+          }));
+        setTickers(tickerList);
+      },
+      error: (err: Error) => console.error('Ticker subscription error:', err),
+    });
+
+    return () => {
+      lotSub.unsubscribe();
+      tickerSub.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     document.title = "Watch List"
-
-    setCurrentHoldings(currentHoldings);
  }, []);
 
-  useEffect(() => {  
+  useEffect(() => {
     //console.log("Running useEffect for: stockSymbolToFetch: " +stockSymbolToFetch)
 }, [stockSymbolToFetch,headerValue,slope]);
+
+  // Loading and error states
+  if (loading) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-emerald-600">Loading watchlist...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (currentHoldings.length === 0) {
+    return (
+      <div className="text-center p-10">
+        <div className="text-2xl text-emerald-600">No holdings found in Watchlist portfolio</div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-center overflow-x-auto w-full">

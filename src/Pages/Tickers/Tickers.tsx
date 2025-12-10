@@ -437,26 +437,39 @@ interface LegacyLot {
   const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
 
   // Fetch real-time price data for calculating today's change
-  const { regularQuotes, regularPrices, refetch } = useAfterHoursData({
+  const { regularQuotes, regularPrices, data: afterHoursData, isAfterHours, refetch } = useAfterHoursData({
     tickers: tickerSymbols,
     enabled: true,
     pollingIntervalRegularHours: 600000 // 10 minutes
   });
 
-  // Re-fetch price data when navigating to Tickers tab
+  // Re-fetch price data when navigating to Tickers tab or when summaries are ready
   useEffect(() => {
     const currentPath = location.pathname;
     const previousPath = previousPathRef.current;
 
-    // Only refetch when we navigate TO /tickers from a different route
+    // Refetch when navigating TO /tickers from a different route
     if (currentPath === '/tickers' && previousPath !== '/tickers' && previousPath !== '') {
+      // If we have tickers, refetch immediately
+      if (tickerSymbols.length > 0) {
+        console.log('Refetching prices on navigation to Tickers (immediate)');
+        refetch();
+        previousPathRef.current = currentPath;
+      } else {
+        // If we don't have tickers yet, wait for them to load
+        // Don't update previousPath yet so we can refetch when tickers are ready
+        console.log('Waiting for tickers to load before refetching');
+      }
+    } else if (currentPath === '/tickers' && previousPath !== '/tickers' && tickerSymbols.length > 0) {
+      // Tickers just loaded after navigation, refetch now
+      console.log('Refetching prices after tickers loaded');
       refetch();
+      previousPathRef.current = currentPath;
+    } else {
+      // Update the ref for next time (normal case)
+      previousPathRef.current = currentPath;
     }
-
-    // Update the ref for next time
-    previousPathRef.current = currentPath;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]); // Only depend on pathname - refetch is stable, tickerSymbols changes too often
+  }, [location.pathname, tickerSymbols.length, refetch]);
 
   // Calculate total today's change across all positions
   const totalTodaysChange = useMemo(() => {
@@ -613,6 +626,10 @@ interface LegacyLot {
                 onPortfolioFilterChange={setSelectedPortfolios}
                 onViewDetails={(ticker) => setSelectedTicker(ticker)}
                 onUpdateTicker={handleUpdateTicker}
+                regularPrices={regularPrices}
+                regularQuotes={regularQuotes}
+                afterHoursData={afterHoursData}
+                isAfterHours={isAfterHours}
               />
             )}
           </div>

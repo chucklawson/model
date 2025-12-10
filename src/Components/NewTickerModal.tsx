@@ -25,7 +25,7 @@ export default function NewTickerModal({
   });
 
   const handleSave = async () => {
-    if (!formData.ticker || formData.shares <= 0 || formData.costPerShare <= 0) {
+    if (!formData.ticker || formData.shares < 0 || formData.costPerShare < 0) {
       alert('Please fill in all required fields with valid values');
       return;
     }
