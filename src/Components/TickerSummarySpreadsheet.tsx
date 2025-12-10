@@ -174,7 +174,17 @@ export default function TickerSummarySpreadsheet({
   const renderCellContent = (colId: string, summary: TickerSummary) => {
     switch (colId) {
       case 'ticker':
-        return <span className="font-bold text-blue-600 text-base">{summary.ticker}</span>;
+        return (
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(summary.ticker);
+            }}
+            className="font-bold text-blue-600 text-base cursor-pointer hover:underline"
+          >
+            {summary.ticker}
+          </span>
+        );
 
       case 'lastPrice': {
         const regularPrice = regularPrices.get(summary.ticker);
@@ -530,10 +540,9 @@ export default function TickerSummarySpreadsheet({
             sortedSummaries.map((summary, idx) => (
               <tr
                 key={summary.ticker}
-                className={`border-b border-slate-200 hover:bg-blue-50 transition-colors cursor-pointer ${
+                className={`border-b border-slate-200 transition-colors ${
                   idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
                 }`}
-                onClick={() => onViewDetails(summary.ticker)}
               >
                 {visibleColumns.map(col => (
                   <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''}`}>
