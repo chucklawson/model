@@ -18,7 +18,7 @@ export default function TickerSettingsModal({
   const [tickerSettings, setTickerSettings] = useState({
     companyName: tickerData?.companyName ?? '',
     baseYield: tickerData?.baseYield ?? 0,
-    expectedFiveYearReturn: tickerData?.expectedFiveYearReturn ?? 0,
+    expectedFiveYearGrowth: tickerData?.expectedFiveYearGrowth ?? 0,
   });
 
   const [saving, setSaving] = useState(false);
@@ -28,7 +28,7 @@ export default function TickerSettingsModal({
     setTickerSettings({
       companyName: tickerData?.companyName ?? '',
       baseYield: tickerData?.baseYield ?? 0,
-      expectedFiveYearReturn: tickerData?.expectedFiveYearReturn ?? 0,
+      expectedFiveYearGrowth: tickerData?.expectedFiveYearGrowth ?? 0,
     });
   }, [tickerData]);
 
@@ -40,7 +40,7 @@ export default function TickerSettingsModal({
         symbol: ticker,
         companyName: tickerSettings.companyName,
         baseYield: tickerSettings.baseYield,
-        expectedFiveYearReturn: tickerSettings.expectedFiveYearReturn,
+        expectedFiveYearGrowth: tickerSettings.expectedFiveYearGrowth,
       };
 
       await onSave(updatedTicker);
@@ -121,17 +121,17 @@ export default function TickerSettingsModal({
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                Expected 5-Year Return
+                Expected 5-Year Growth
               </label>
               <div className="relative">
                 <input
                   type="number"
                   min="0"
                   step="0.01"
-                  value={tickerSettings.expectedFiveYearReturn}
+                  value={tickerSettings.expectedFiveYearGrowth}
                   onChange={(e) => setTickerSettings({
                     ...tickerSettings,
-                    expectedFiveYearReturn: parseFloat(e.target.value) || 0
+                    expectedFiveYearGrowth: parseFloat(e.target.value) || 0
                   })}
                   className="w-full pr-8 pl-4 py-3 border-2 border-slate-300 rounded-lg focus:border-orange-500 focus:outline-none"
                   placeholder="8.50"

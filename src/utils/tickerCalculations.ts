@@ -27,7 +27,7 @@ export function calculateTickerSummaries(lots: TickerLot[], tickers: Ticker[] = 
       ticker,
       companyName: tickerData?.companyName ?? '',
       baseYield: tickerData?.baseYield ?? 0,
-      expectedFiveYearReturn: tickerData?.expectedFiveYearReturn ?? 0,
+      expectedFiveYearGrowth: tickerData?.expectedFiveYearGrowth ?? 0,
       totalShares,
       totalCost,
       averageCostPerShare: totalCost / totalShares,

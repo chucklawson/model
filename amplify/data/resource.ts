@@ -19,7 +19,7 @@ const schema = a.schema({
       symbol: a.string().required(),
       companyName: a.string(),
       baseYield: a.float(),
-      expectedFiveYearReturn: a.float(),
+      expectedFiveYearGrowth: a.float(),
     })
     .authorization((allow) => [allow.owner()]),
 

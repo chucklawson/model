@@ -52,7 +52,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'lastPrice', label: 'Last Price', icon: DollarSign, visible: true },
   { id: 'companyName', label: 'Company', icon: Building2, visible: true },
   { id: 'baseYield', label: 'Yield %', icon: Percent, visible: true },
-  { id: 'expectedFiveYearReturn', label: '5-Yr Return %', icon: TrendingUp, visible: true },
+  { id: 'expectedFiveYearGrowth', label: '5-YR GROWTH', icon: TrendingUp, visible: true },
   { id: 'portfolios', label: 'Portfolios', icon: Briefcase, visible: true },
   { id: 'totalShares', label: 'Total Shares', icon: Package, visible: true },
   { id: 'totalCost', label: 'Total Cost', icon: DollarSign, visible: true },
@@ -82,7 +82,7 @@ export default function TickerSummarySpreadsheet({
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [editingCell, setEditingCell] = useState<{
     ticker: string;
-    field: 'companyName' | 'baseYield' | 'expectedFiveYearReturn';
+    field: 'companyName' | 'baseYield' | 'expectedFiveYearGrowth';
   } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
@@ -158,7 +158,7 @@ export default function TickerSummarySpreadsheet({
     setDropdownOpen(null);
   };
 
-  const handleSaveEdit = async (ticker: string, field: 'companyName' | 'baseYield' | 'expectedFiveYearReturn') => {
+  const handleSaveEdit = async (ticker: string, field: 'companyName' | 'baseYield' | 'expectedFiveYearGrowth') => {
     try {
       const summary = summaries.find(s => s.ticker === ticker);
       if (!summary) return;
@@ -168,7 +168,7 @@ export default function TickerSummarySpreadsheet({
         symbol: ticker,
         companyName: field === 'companyName' ? editValue : summary.companyName ?? '',
         baseYield: field === 'baseYield' ? parseFloat(editValue) || 0 : summary.baseYield,
-        expectedFiveYearReturn: field === 'expectedFiveYearReturn' ? parseFloat(editValue) || 0 : summary.expectedFiveYearReturn,
+        expectedFiveYearGrowth: field === 'expectedFiveYearGrowth' ? parseFloat(editValue) || 0 : summary.expectedFiveYearGrowth,
       };
 
       await onUpdateTicker(updatedTicker);
@@ -357,11 +357,11 @@ export default function TickerSummarySpreadsheet({
         );
       }
 
-      case 'expectedFiveYearReturn': {
-        const isEditingReturn = editingCell?.ticker === summary.ticker &&
-                                editingCell?.field === 'expectedFiveYearReturn';
+      case 'expectedFiveYearGrowth': {
+        const isEditingGrowth = editingCell?.ticker === summary.ticker &&
+                                editingCell?.field === 'expectedFiveYearGrowth';
 
-        if (isEditingReturn) {
+        if (isEditingGrowth) {
           return (
             <div className="relative">
               <input
@@ -369,9 +369,9 @@ export default function TickerSummarySpreadsheet({
                 step="0.01"
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                onBlur={() => handleSaveEdit(summary.ticker, 'expectedFiveYearReturn')}
+                onBlur={() => handleSaveEdit(summary.ticker, 'expectedFiveYearGrowth')}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSaveEdit(summary.ticker, 'expectedFiveYearReturn');
+                  if (e.key === 'Enter') handleSaveEdit(summary.ticker, 'expectedFiveYearGrowth');
                   if (e.key === 'Escape') setEditingCell(null);
                 }}
                 autoFocus
@@ -387,13 +387,13 @@ export default function TickerSummarySpreadsheet({
           <div
             onClick={(e) => {
               e.stopPropagation();
-              setEditingCell({ ticker: summary.ticker, field: 'expectedFiveYearReturn' });
-              setEditValue(summary.expectedFiveYearReturn.toString());
+              setEditingCell({ ticker: summary.ticker, field: 'expectedFiveYearGrowth' });
+              setEditValue(summary.expectedFiveYearGrowth.toString());
             }}
             className="cursor-text hover:bg-blue-50 px-2 py-1 rounded font-mono transition-colors"
-            title="Click to edit expected 5-year return"
+            title="Click to edit expected 5-year growth"
           >
-            {summary.expectedFiveYearReturn.toFixed(2)}%
+            {summary.expectedFiveYearGrowth.toFixed(2)}%
           </div>
         );
       }

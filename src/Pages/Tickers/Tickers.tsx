@@ -128,7 +128,7 @@ interface LegacyLot {
             symbol: item.symbol,
             companyName: item.companyName ?? '',
             baseYield: item.baseYield ?? 0,
-            expectedFiveYearReturn: item.expectedFiveYearReturn ?? 0,
+            expectedFiveYearGrowth: item.expectedFiveYearGrowth ?? 0,
             createdAt: item.createdAt ?? undefined,
             updatedAt: item.updatedAt ?? undefined,
             owner: item.owner ?? undefined,
@@ -268,7 +268,7 @@ interface LegacyLot {
           symbol: item.symbol,
           companyName: item.companyName ?? '',
           baseYield: item.baseYield ?? 0,
-          expectedFiveYearReturn: item.expectedFiveYearReturn ?? 0,
+          expectedFiveYearGrowth: item.expectedFiveYearGrowth ?? 0,
           createdAt: item.createdAt ?? undefined,
           updatedAt: item.updatedAt ?? undefined,
           owner: item.owner ?? undefined,
@@ -404,7 +404,7 @@ interface LegacyLot {
           id: existing[0].id,
           companyName: ticker.companyName,
           baseYield: ticker.baseYield,
-          expectedFiveYearReturn: ticker.expectedFiveYearReturn,
+          expectedFiveYearGrowth: ticker.expectedFiveYearGrowth,
         });
       } else {
         // Create new ticker
@@ -412,7 +412,7 @@ interface LegacyLot {
           symbol: ticker.symbol,
           companyName: ticker.companyName ?? '',
           baseYield: ticker.baseYield ?? 0,
-          expectedFiveYearReturn: ticker.expectedFiveYearReturn ?? 0,
+          expectedFiveYearGrowth: ticker.expectedFiveYearGrowth ?? 0,
         });
       }
 
