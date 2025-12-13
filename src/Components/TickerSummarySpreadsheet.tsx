@@ -167,6 +167,7 @@ export default function TickerSummarySpreadsheet({
         symbol: ticker,
         companyName: field === 'companyName' ? editValue : summary.companyName ?? '',
         baseYield: field === 'baseYield' ? parseFloat(editValue) || 0 : summary.baseYield,
+        expectedFiveYearReturn: summary.expectedFiveYearReturn,
       };
 
       await onUpdateTicker(updatedTicker);
