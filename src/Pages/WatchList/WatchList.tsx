@@ -95,6 +95,7 @@ function WatchList() {
             symbol: item.symbol,
             companyName: item.companyName ?? '',
             baseYield: item.baseYield ?? 0,
+            expectedFiveYearReturn: item.expectedFiveYearReturn ?? 0,
             createdAt: item.createdAt ?? undefined,
             updatedAt: item.updatedAt ?? undefined,
             owner: item.owner ?? undefined,

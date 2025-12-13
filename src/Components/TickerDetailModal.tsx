@@ -17,6 +17,7 @@ import {
 import type { TickerLot, LotFormData, Portfolio, Ticker } from '../types';
 import { getLotsForTicker } from '../utils/tickerCalculations';
 import TickerLotSpreadsheet from './TickerLotSpreadsheet';
+import TickerSettingsModal from './TickerSettingsModal';
 
 interface Props {
   ticker: string;
@@ -59,11 +60,8 @@ export default function TickerDetailModal({
   const [bulkPortfolios, setBulkPortfolios] = useState<string[]>([]);
   const [isApplyingPortfolios, setIsApplyingPortfolios] = useState(false);
 
-  // Ticker-level settings (applied to all lots of this ticker)
-  const [tickerSettings, setTickerSettings] = useState({
-    companyName: '',
-    baseYield: 0,
-  });
+  // Ticker Settings Modal
+  const [showTickerSettingsModal, setShowTickerSettingsModal] = useState(false);
 
   useEffect(() => {
     const tickerLots = getLotsForTicker(allLots, ticker);
@@ -75,21 +73,7 @@ export default function TickerDetailModal({
       const filtered = new Set(Array.from(prev).filter(id => validIds.has(id)));
       return filtered;
     });
-
-    // Initialize ticker settings from Ticker model
-    const tickerData = tickers.find(t => t.symbol === ticker);
-    if (tickerData) {
-      setTickerSettings({
-        companyName: tickerData.companyName ?? '',
-        baseYield: tickerData.baseYield ?? 0,
-      });
-    } else {
-      setTickerSettings({
-        companyName: '',
-        baseYield: 0,
-      });
-    }
-  }, [allLots, ticker, tickers]);
+  }, [allLots, ticker]);
 
   const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0);
   const totalCost = lots.reduce((sum, lot) => sum + lot.totalCost, 0);
@@ -137,24 +121,6 @@ export default function TickerDetailModal({
     await onSaveLot(formData, editingLot?.id);
     setIsFormVisible(false);
     setEditingLot(null);
-  };
-
-  const handleUpdateTickerSettings = async () => {
-    try {
-      const updatedTicker: Ticker = {
-        id: '', // Will be set by handleUpdateTicker
-        symbol: ticker,
-        companyName: tickerSettings.companyName,
-        baseYield: tickerSettings.baseYield,
-      };
-
-      await onUpdateTicker(updatedTicker);
-
-      alert(`Updated ticker settings for ${ticker}`);
-    } catch (err) {
-      console.error('Error updating ticker settings:', err);
-      alert('Failed to update ticker settings');
-    }
   };
 
   const handleToggleRow = (id: string) => {
@@ -303,67 +269,6 @@ export default function TickerDetailModal({
           </div>
         </div>
 
-        {/* Ticker Settings */}
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 border-b border-orange-200">
-          <div className="flex items-center gap-3 mb-4">
-            <Settings className="text-orange-600" size={24} />
-            <h3 className="text-lg font-bold text-slate-800">Ticker Settings</h3>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
-                Company Name
-              </label>
-              <input
-                type="text"
-                value={tickerSettings.companyName}
-                onChange={(e) => setTickerSettings({
-                  ...tickerSettings,
-                  companyName: e.target.value
-                })}
-                className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                placeholder="Apple Inc."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
-                Base Yield
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={tickerSettings.baseYield}
-                  onChange={(e) => setTickerSettings({
-                    ...tickerSettings,
-                    baseYield: parseFloat(e.target.value) || 0
-                  })}
-                  className="w-full pr-8 pl-4 py-3 border-2 border-slate-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                  placeholder="5.25"
-                />
-                <span className="absolute right-4 top-3 text-slate-500 text-lg font-bold">%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <button
-              onClick={handleUpdateTickerSettings}
-              className="w-full px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-lg hover:from-orange-700 hover:to-amber-700 transition-all font-semibold flex items-center justify-center gap-2 shadow-lg"
-            >
-              <Save size={20} />
-              Save Ticker Settings
-            </button>
-          </div>
-
-          <p className="text-xs text-slate-600 mt-3">
-            These settings apply to {ticker} across all portfolios and lots.
-          </p>
-        </div>
-
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-6">
           {/* Action Bar */}
@@ -375,6 +280,14 @@ export default function TickerDetailModal({
               >
                 <Plus size={20} />
                 Add New Lot
+              </button>
+
+              <button
+                onClick={() => setShowTickerSettingsModal(true)}
+                className="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-amber-700 transition-all flex items-center gap-2 shadow-lg"
+              >
+                <Settings size={20} />
+                Configure Ticker Settings
               </button>
 
               {selectedRows.size > 0 && (
@@ -659,6 +572,16 @@ export default function TickerDetailModal({
           />
         </div>
       </div>
+
+      {/* Ticker Settings Modal */}
+      {showTickerSettingsModal && (
+        <TickerSettingsModal
+          ticker={ticker}
+          tickerData={tickers.find(t => t.symbol === ticker)}
+          onClose={() => setShowTickerSettingsModal(false)}
+          onSave={onUpdateTicker}
+        />
+      )}
     </div>
   );
 }

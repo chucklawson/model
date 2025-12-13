@@ -12,6 +12,7 @@ import HistoricalDividends from "./Pages/HistoricalDividends/HistoricalDividends
 import Tickers from "./Pages/Tickers/Tickers";
 import Research from "./Pages/Research/Research";
 import KeyMetrics from "./Pages/KeyMetrics/KeyMetrics";
+import Calculators from "./Pages/Calculators/Calculators";
 //import SummarySpreadSheet from "./Pages/SummarySpreadSheet/SummarySpreadSheet";
 
 
@@ -34,6 +35,7 @@ function App() {
               {path: '/watchlist', element: <WatchList/>},
               {path: '/research', element: <Research/>},
               {path: '/keymetrics', element: <KeyMetrics/>},
+              {path: '/calculators', element: <Calculators/>},
               {path: '/historicaldividendentries', element: <HistoricalDividends/>},
               {/*}
               {path: '/summaryentries', element: <SummarySpreadSheet/>},

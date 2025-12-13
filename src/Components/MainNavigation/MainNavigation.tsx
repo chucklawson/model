@@ -2,7 +2,7 @@ import Tab from '../Tab/Tab'
 import home from '../../Images/home.png'
 import statistics from '../../Images/statistics.png'
 import clipboard from '../../Images/clipboard.png'
-//import math from '../../Images/math.ico'
+import math from '../../Images/math.ico'
 import banks from '../../Images/bank.png'
 import robot from '../../Images/robot.png'
 import budget from '../../Images/budget.png'
@@ -28,6 +28,7 @@ function MainNavigation({ signOut }: MainNavigationProps){
               <Tab pagePath='/watchlist' tabImage = {budget} tabText='Watchlist' tabWidth='185px'/>
               <Tab pagePath='/research' tabImage = {clipboard} tabText='News' tabWidth='165px'/>
               <Tab pagePath='/keymetrics' tabImage={statistics} tabText='Key Metrics' tabWidth='190px'/>
+              <Tab pagePath='/calculators' tabImage={math} tabText='Calculators' tabWidth='185px'/>
               <Tab pagePath='/historicaldividendentries' tabImage = {budget} tabText='Dividends' tabWidth='185px'/>
               {/*
               <Tab pagePath='/summaryentries' tabImage = {robot} tabText='Summary' tabWidth='185px'/>

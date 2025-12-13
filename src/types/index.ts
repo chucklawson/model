@@ -15,6 +15,7 @@ export interface Ticker {
   symbol: string;
   companyName?: string;
   baseYield: number;
+  expectedFiveYearReturn: number;
   createdAt?: string;
   updatedAt?: string;
   owner?: string;
@@ -40,6 +41,7 @@ export interface TickerSummary {
   ticker: string;
   companyName?: string;
   baseYield: number;
+  expectedFiveYearReturn: number;
   totalShares: number;
   totalCost: number;
   averageCostPerShare: number;
@@ -64,6 +66,7 @@ export interface ParsedCSVRow {
   ticker: string;
   companyName?: string;
   baseYield?: number;
+  expectedFiveYearReturn?: number;
   shares: number;
   costPerShare: number;
   purchaseDate: string;
