@@ -404,6 +404,7 @@ interface LegacyLot {
           id: existing[0].id,
           companyName: ticker.companyName,
           baseYield: ticker.baseYield,
+          expectedFiveYearReturn: ticker.expectedFiveYearReturn,
         });
       } else {
         // Create new ticker
@@ -411,6 +412,7 @@ interface LegacyLot {
           symbol: ticker.symbol,
           companyName: ticker.companyName ?? '',
           baseYield: ticker.baseYield ?? 0,
+          expectedFiveYearReturn: ticker.expectedFiveYearReturn ?? 0,
         });
       }
 

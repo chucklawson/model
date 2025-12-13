@@ -52,6 +52,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'lastPrice', label: 'Last Price', icon: DollarSign, visible: true },
   { id: 'companyName', label: 'Company', icon: Building2, visible: true },
   { id: 'baseYield', label: 'Yield %', icon: Percent, visible: true },
+  { id: 'expectedFiveYearReturn', label: '5-Yr Return %', icon: TrendingUp, visible: true },
   { id: 'portfolios', label: 'Portfolios', icon: Briefcase, visible: true },
   { id: 'totalShares', label: 'Total Shares', icon: Package, visible: true },
   { id: 'totalCost', label: 'Total Cost', icon: DollarSign, visible: true },
@@ -81,7 +82,7 @@ export default function TickerSummarySpreadsheet({
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [editingCell, setEditingCell] = useState<{
     ticker: string;
-    field: 'companyName' | 'baseYield';
+    field: 'companyName' | 'baseYield' | 'expectedFiveYearReturn';
   } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
@@ -157,7 +158,7 @@ export default function TickerSummarySpreadsheet({
     setDropdownOpen(null);
   };
 
-  const handleSaveEdit = async (ticker: string, field: 'companyName' | 'baseYield') => {
+  const handleSaveEdit = async (ticker: string, field: 'companyName' | 'baseYield' | 'expectedFiveYearReturn') => {
     try {
       const summary = summaries.find(s => s.ticker === ticker);
       if (!summary) return;
@@ -167,7 +168,7 @@ export default function TickerSummarySpreadsheet({
         symbol: ticker,
         companyName: field === 'companyName' ? editValue : summary.companyName ?? '',
         baseYield: field === 'baseYield' ? parseFloat(editValue) || 0 : summary.baseYield,
-        expectedFiveYearReturn: summary.expectedFiveYearReturn,
+        expectedFiveYearReturn: field === 'expectedFiveYearReturn' ? parseFloat(editValue) || 0 : summary.expectedFiveYearReturn,
       };
 
       await onUpdateTicker(updatedTicker);
@@ -356,6 +357,47 @@ export default function TickerSummarySpreadsheet({
         );
       }
 
+      case 'expectedFiveYearReturn': {
+        const isEditingReturn = editingCell?.ticker === summary.ticker &&
+                                editingCell?.field === 'expectedFiveYearReturn';
+
+        if (isEditingReturn) {
+          return (
+            <div className="relative">
+              <input
+                type="number"
+                step="0.01"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={() => handleSaveEdit(summary.ticker, 'expectedFiveYearReturn')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSaveEdit(summary.ticker, 'expectedFiveYearReturn');
+                  if (e.key === 'Escape') setEditingCell(null);
+                }}
+                autoFocus
+                className="w-20 px-2 py-1 border-2 border-blue-500 rounded focus:outline-none pr-6"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <span className="absolute right-2 top-1 text-slate-500">%</span>
+            </div>
+          );
+        }
+
+        return (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingCell({ ticker: summary.ticker, field: 'expectedFiveYearReturn' });
+              setEditValue(summary.expectedFiveYearReturn.toString());
+            }}
+            className="cursor-text hover:bg-blue-50 px-2 py-1 rounded font-mono transition-colors"
+            title="Click to edit expected 5-year return"
+          >
+            {summary.expectedFiveYearReturn.toFixed(2)}%
+          </div>
+        );
+      }
+
       case 'portfolios': {
         const portfolioCount = summary.portfolios.length;
         const portfolioList = summary.portfolios.join(', ');
@@ -488,7 +530,7 @@ export default function TickerSummarySpreadsheet({
                   key={col.id}
                   className={`p-1 font-bold text-slate-700 uppercase text-xs tracking-wide ${
                     col.id === 'actions' ? 'text-right' : 'text-left'
-                  } ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''}`}
+                  } ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''} ${col.id === 'companyName' ? 'max-w-[140px]' : ''}`}
                 >
                   <div className="flex items-center gap-2 relative">
                     {Icon && <Icon size={16} />}
@@ -542,7 +584,7 @@ export default function TickerSummarySpreadsheet({
                 }`}
               >
                 {visibleColumns.map(col => (
-                  <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''}`}>
+                  <td key={col.id} className={`p-1 ${col.id === 'actions' ? 'text-right' : ''} ${col.id === 'lastPrice' ? 'min-w-[180px]' : ''} ${col.id === 'companyName' ? 'max-w-[140px]' : ''}`}>
                     {renderCellContent(col.id, summary)}
                   </td>
                 ))}
