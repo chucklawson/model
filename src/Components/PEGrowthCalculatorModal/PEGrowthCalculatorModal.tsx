@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Calculator, X, TrendingUp, DollarSign, Calendar } from 'lucide-react';
 import type Quote_V3 from '../../Lib/Quote_V3';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../../amplify/data/resource';
 
 interface CalculatorFormData {
   ticker: string;
@@ -24,6 +26,8 @@ interface CalculationResults {
 }
 
 export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => void }) {
+  const client = generateClient<Schema>();
+
   const [formData, setFormData] = useState<CalculatorFormData>({
     ticker: '',
     mode: 'futureRatio',
@@ -37,6 +41,8 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [fetchingQuote, setFetchingQuote] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [availableTickers, setAvailableTickers] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Fetch P/E data from API
   const fetchPEData = async (ticker: string) => {
@@ -61,6 +67,30 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
           setFormData(prev => ({ ...prev, futurePEInput: quote.pe }));
         }
 
+        // Fetch ticker data from database to get expectedFiveYearGrowth
+        try {
+          const { data: tickerData } = await client.models.Ticker.list({
+            filter: { symbol: { eq: ticker.toUpperCase() } }
+          });
+
+          if (tickerData && tickerData.length > 0) {
+            // Check for expectedFiveYearGrowth (new field name) or expectedFiveYearReturn (old field name for backwards compatibility)
+            const expectedGrowth = (tickerData[0] as any).expectedFiveYearGrowth || (tickerData[0] as any).expectedFiveYearReturn;
+            if (expectedGrowth && expectedGrowth > 0) {
+              setFormData(prev => ({ ...prev, earningsGrowthRate: expectedGrowth }));
+            } else {
+              // Reset to default if no growth rate is set
+              setFormData(prev => ({ ...prev, earningsGrowthRate: 10 }));
+            }
+          } else {
+            // Reset to default if ticker not found in database
+            setFormData(prev => ({ ...prev, earningsGrowthRate: 10 }));
+          }
+        } catch (tickerErr) {
+          console.log('Could not fetch ticker growth rate:', tickerErr);
+          // Don't show error to user, just use default growth rate
+        }
+
         if (!quote.pe || quote.pe <= 0) {
           setError('This stock has no P/E ratio (negative or zero earnings)');
         }
@@ -78,6 +108,24 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
       setFetchingQuote(false);
     }
   };
+
+  // Fetch all tickers with lots on component mount
+  useEffect(() => {
+    const fetchAvailableTickers = async () => {
+      try {
+        const { data: lots } = await client.models.TickerLot.list();
+        if (lots) {
+          // Extract unique ticker symbols and sort them
+          const uniqueTickers = Array.from(new Set(lots.map(lot => lot.ticker))).sort();
+          setAvailableTickers(uniqueTickers);
+        }
+      } catch (err) {
+        console.error('Error fetching available tickers:', err);
+      }
+    };
+
+    fetchAvailableTickers();
+  }, []);
 
   // Auto-fetch when ticker changes (with debounce)
   useEffect(() => {
@@ -293,18 +341,42 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
               <label className="block text-sm font-bold text-slate-700 mb-2">
                 Ticker Symbol *
               </label>
-              <input
-                type="text"
-                value={formData.ticker}
-                onChange={(e) => {
-                  setFormData({ ...formData, ticker: e.target.value.toUpperCase() });
-                  setResults(null);
-                }}
-                className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg
-                           focus:border-purple-500 focus:outline-none text-lg font-bold uppercase"
-                placeholder="AAPL"
-                autoFocus
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={formData.ticker}
+                  onChange={(e) => {
+                    setFormData({ ...formData, ticker: e.target.value.toUpperCase() });
+                    setResults(null);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg
+                             focus:border-purple-500 focus:outline-none text-lg font-bold uppercase"
+                  placeholder="AAPL"
+                  autoFocus
+                />
+                {showDropdown && availableTickers.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border-2 border-purple-500 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    {availableTickers
+                      .filter(ticker => ticker.includes(formData.ticker))
+                      .map(ticker => (
+                        <div
+                          key={ticker}
+                          onClick={() => {
+                            setFormData({ ...formData, ticker });
+                            setResults(null);
+                            setShowDropdown(false);
+                          }}
+                          className="px-4 py-2 hover:bg-purple-100 cursor-pointer text-lg font-bold"
+                        >
+                          {ticker}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
               {fetchingQuote && (
                 <p className="text-sm text-blue-600 mt-2">Fetching data...</p>
               )}
