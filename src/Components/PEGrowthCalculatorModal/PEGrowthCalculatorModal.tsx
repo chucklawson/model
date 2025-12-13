@@ -388,10 +388,15 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                 <h3 className="font-bold text-slate-700 mb-3">Current Stock Data</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-xs text-slate-600">Current P/E</p>
+                    <p className="text-xs text-slate-600">Current P/E (API)</p>
                     <p className="text-lg font-bold text-blue-600">
                       {quoteData.pe ? quoteData.pe.toFixed(2) : 'N/A'}
                     </p>
+                    {quoteData.price && quoteData.eps && quoteData.eps > 0 && (
+                      <p className="text-xs text-slate-500">
+                        Calc: {(quoteData.price / quoteData.eps).toFixed(2)}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <p className="text-xs text-slate-600">EPS (TTM)</p>
