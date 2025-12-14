@@ -6,16 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:notify": "npm run build && node scripts/send-sms.js \"Build completed successfully\" \"Build\" || node scripts/send-sms.js \"Build failed - check logs\" \"Error\"",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "notify": "node scripts/send-sms.js"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.13.0",
     "@aws-amplify/ui-react-storage": "^3.13.0",
+    "@aws-sdk/client-sns": "^3.948.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
     "@tailwindcss/vite": "^4.1.16",
     "aws-amplify": "^6.15.7",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.555.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -30,7 +34,7 @@
     "@aws-amplify/backend": "^1.16.1",
     "@aws-amplify/backend-cli": "^1.8.0",
     "@eslint/js": "^9.36.0",
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.10.4",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@types/three": "^0.181.0",

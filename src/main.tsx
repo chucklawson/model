@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
+import './utils/devTools';
 
 Amplify.configure(outputs);
 

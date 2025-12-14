@@ -13,6 +13,7 @@ import Tickers from "./Pages/Tickers/Tickers";
 import Research from "./Pages/Research/Research";
 import KeyMetrics from "./Pages/KeyMetrics/KeyMetrics";
 import Calculators from "./Pages/Calculators/Calculators";
+import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 //import SummarySpreadSheet from "./Pages/SummarySpreadSheet/SummarySpreadSheet";
 
 
@@ -45,9 +46,11 @@ function App() {
         ]);
 
         return (
-          <div className="App">
-            <RouterProvider router={router}/>
-          </div>
+          <ErrorBoundary>
+            <div className="App">
+              <RouterProvider router={router}/>
+            </div>
+          </ErrorBoundary>
         );
       }}
     </Authenticator>

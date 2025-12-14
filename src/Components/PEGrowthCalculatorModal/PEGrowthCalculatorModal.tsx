@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Calculator, X, TrendingUp, DollarSign, Calendar } from 'lucide-react';
 import type Quote_V3 from '../../Lib/Quote_V3';
+import type AnalystEstimate_V3 from '../../Lib/AnalystEstimate_V3';
+import type AnnualProjection from '../../Lib/AnnualProjection';
+import AnnualProjectionTable from '../AnnualProjectionTable/AnnualProjectionTable';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 
@@ -23,6 +26,10 @@ interface CalculationResults {
   projectedPrice: number;
   priceAppreciation: number;
   totalReturn: number;
+  analystEstimatesUsed?: boolean;
+  estimatedYears?: number;
+  impliedGrowthRate?: number;
+  annualProjections?: AnnualProjection[];
 }
 
 export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => void }) {
@@ -43,6 +50,16 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
   const [error, setError] = useState<string | null>(null);
   const [availableTickers, setAvailableTickers] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  // Analyst estimates state
+  const [useAnalystEstimates, setUseAnalystEstimates] = useState(false);
+  const [analystData, setAnalystData] = useState<AnalystEstimate_V3[]>([]);
+  const [fetchingEstimates, setFetchingEstimates] = useState(false);
+  const [estimatesError, setEstimatesError] = useState<string | null>(null);
+
+  // EPS override state
+  const [epsOverride, setEpsOverride] = useState<string>('');
+  const [useEpsOverride, setUseEpsOverride] = useState(false);
 
   // Fetch P/E data from API
   const fetchPEData = async (ticker: string) => {
@@ -109,6 +126,131 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     }
   };
 
+  // Fetch analyst estimates from API
+  const fetchAnalystEstimates = async (ticker: string) => {
+    if (!ticker || ticker.length < 1) return;
+
+    setFetchingEstimates(true);
+    setEstimatesError(null);
+
+    try {
+      const apiKey = import.meta.env.VITE_FMP_API_KEY;
+      const estimatesUrl = `https://financialmodelingprep.com/stable/analyst-estimates?symbol=${ticker}&period=annual&page=0&limit=10&apikey=${apiKey}`;
+
+      const response = await fetch(estimatesUrl);
+      const data = await response.json();
+
+      if (data && Array.isArray(data) && data.length > 0) {
+        // Filter for future estimates only (date > today)
+        const today = new Date();
+        const futureEstimates = data.filter((est: AnalystEstimate_V3) => {
+          return new Date(est.date) > today;
+        });
+
+        if (futureEstimates.length > 0) {
+          // Sort by date ascending (earliest year first)
+          const sortedEstimates = futureEstimates.sort((a, b) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+          });
+
+          setAnalystData(sortedEstimates);
+
+          // Auto-set years based on furthest estimate
+          const years = sortedEstimates.length;
+          setFormData(prev => ({ ...prev, years }));
+        } else {
+          setEstimatesError('No future analyst estimates available');
+          setAnalystData([]);
+        }
+      } else {
+        setEstimatesError('No analyst estimates available for this ticker');
+        setAnalystData([]);
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to fetch analyst estimates';
+      setEstimatesError(errorMsg);
+      setAnalystData([]);
+    } finally {
+      setFetchingEstimates(false);
+    }
+  };
+
+  // Calculate implied annual growth rate from analyst estimates
+  const calculateImpliedGrowth = (currentEPS: number, estimates: AnalystEstimate_V3[]): number => {
+    if (estimates.length === 0 || currentEPS <= 0) return 0;
+
+    const finalEPS = estimates[estimates.length - 1]?.epsAvg;
+    if (!finalEPS || finalEPS <= 0) return 0;
+
+    const years = estimates.length;
+
+    // CAGR formula: (finalValue / initialValue)^(1/years) - 1
+    const growthRate = Math.pow(finalEPS / currentEPS, 1 / years) - 1;
+    return growthRate * 100; // Convert to percentage
+  };
+
+  // Calculate P/E ratio for a specific year using linear interpolation
+  const calculateInterpolatedPE = (
+    currentPE: number,
+    targetPE: number,
+    currentYear: number,
+    totalYears: number
+  ): number => {
+    if (totalYears === 0) return targetPE;
+    const progression = currentYear / totalYears;
+    return currentPE + (targetPE - currentPE) * progression;
+  };
+
+  // Generate annual projection data
+  const generateAnnualProjections = (
+    currentPrice: number,
+    currentEPS: number,
+    currentPE: number,
+    targetPE: number,
+    years: number,
+    growthRate: number,
+    useAnalystEstimates: boolean,
+    analystData: AnalystEstimate_V3[]
+  ): AnnualProjection[] => {
+    const projections: AnnualProjection[] = [];
+    const currentYear = new Date().getFullYear();
+
+    for (let year = 1; year <= years; year++) {
+      // Calculate EPS for this year
+      let eps: number;
+      if (useAnalystEstimates && analystData.length >= year) {
+        eps = analystData[year - 1].epsAvg;
+      } else {
+        eps = currentEPS * Math.pow(1 + growthRate, year);
+      }
+
+      // Calculate interpolated P/E
+      const peRatio = calculateInterpolatedPE(currentPE, targetPE, year, years);
+
+      // Calculate stock price
+      const stockPrice = eps * peRatio;
+
+      // Calculate annual growth (year-over-year)
+      const previousPrice = year === 1 ? currentPrice : projections[year - 2].stockPrice;
+      const annualGrowth = ((stockPrice - previousPrice) / previousPrice) * 100;
+
+      // Calculate cumulative return
+      const cumulativeReturn = ((stockPrice - currentPrice) / currentPrice) * 100;
+
+      projections.push({
+        year,
+        calendarYear: currentYear + year,
+        eps,
+        peRatio,
+        stockPrice,
+        annualGrowth,
+        cumulativeReturn
+      });
+    }
+
+    return projections;
+  };
+
   // Fetch all tickers with lots on component mount
   useEffect(() => {
     const fetchAvailableTickers = async () => {
@@ -141,6 +283,13 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     }
   }, [formData.ticker]);
 
+  // Fetch analyst estimates when toggle is enabled
+  useEffect(() => {
+    if (useAnalystEstimates && formData.ticker.length >= 1) {
+      fetchAnalystEstimates(formData.ticker.toUpperCase());
+    }
+  }, [useAnalystEstimates, formData.ticker]);
+
   // Calculate years to reach target P/E
   const calculateYearsToTarget = (
     currentPE: number,
@@ -169,42 +318,46 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     return years;
   };
 
-  // Calculate future P/E and price after X years
-  const calculateFuturePEAndPrice = (
-    currentEPS: number,
-    years: number,
-    growthRate: number,
-    futurePE: number
-  ): { futureEPS: number; futurePE: number; futurePrice: number } => {
-    if (currentEPS <= 0 || years < 0 || growthRate <= -1 || futurePE <= 0) {
-      throw new Error('Invalid input values');
+
+  // Get effective EPS (override or API value)
+  const getEffectiveEPS = (): number | null => {
+    if (useEpsOverride && epsOverride) {
+      const override = parseFloat(epsOverride);
+      return override > 0 ? override : null;
     }
+    return quoteData?.eps || null;
+  };
 
-    // Calculate future EPS
-    const futureEPS = currentEPS * Math.pow(1 + growthRate, years);
-
-    // Use the user-specified future P/E
-    const futurePrice = futureEPS * futurePE;
-
-    return { futureEPS, futurePE, futurePrice };
+  // Get effective P/E (calculated from override or API value)
+  const getEffectivePE = (): number | null => {
+    if (!quoteData?.price) return null;
+    const eps = getEffectiveEPS();
+    if (!eps || eps <= 0) return null;
+    return quoteData.price / eps;
   };
 
   // Calculate and set results
   const handleCalculate = () => {
-    if (!quoteData || !quoteData.pe || !quoteData.eps || !quoteData.price) {
+    if (!quoteData || !quoteData.price) {
       setError('Missing required data. Please enter a valid ticker.');
       return;
     }
 
-    if (quoteData.pe <= 0 || quoteData.eps <= 0) {
-      setError('Cannot calculate with negative or zero P/E or EPS');
+    const currentEPS = getEffectiveEPS();
+    const currentPE = getEffectivePE();
+
+    if (!currentEPS || currentEPS <= 0) {
+      setError('Cannot calculate with negative or zero EPS');
+      return;
+    }
+
+    if (!currentPE || currentPE <= 0) {
+      setError('Cannot calculate with negative or zero P/E');
       return;
     }
 
     try {
       const growthRate = formData.earningsGrowthRate / 100;
-      const currentPE = quoteData.pe;
-      const currentEPS = quoteData.eps;
       const currentPrice = quoteData.price;
 
       if (formData.mode === 'yearsToTarget') {
@@ -242,28 +395,58 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
           return;
         }
 
-        const { futureEPS, futurePE, futurePrice } = calculateFuturePEAndPrice(
-          currentEPS,
-          formData.years,
-          growthRate,
-          formData.futurePEInput
-        );
+        let futureEPS: number;
+        let impliedGrowth: number | undefined;
 
+        if (useAnalystEstimates && analystData.length > 0) {
+          // Use analyst estimate for target year
+          const targetYear = Math.min(formData.years, analystData.length);
+          const estimatedEPS = analystData[targetYear - 1]?.epsAvg;
+
+          if (!estimatedEPS || estimatedEPS <= 0) {
+            setError('Invalid analyst estimate data. Please use manual growth rate.');
+            return;
+          }
+
+          futureEPS = estimatedEPS;
+          impliedGrowth = calculateImpliedGrowth(currentEPS, analystData.slice(0, targetYear));
+        } else {
+          // Use manual growth rate (existing logic)
+          futureEPS = currentEPS * Math.pow(1 + growthRate, formData.years);
+        }
+
+        const futurePrice = futureEPS * formData.futurePEInput;
         const priceAppreciation = ((futurePrice - currentPrice) / currentPrice) * 100;
 
         if (priceAppreciation > 1000) {
           setError('Warning: This projection seems very optimistic (>1000% return)');
         }
 
+        // Generate annual projections
+        const projections = generateAnnualProjections(
+          currentPrice,
+          currentEPS,
+          currentPE,
+          formData.futurePEInput,
+          formData.years,
+          growthRate,
+          useAnalystEstimates,
+          analystData
+        );
+
         setResults({
           currentPE,
           currentEPS,
           currentPrice,
           futureEPS,
-          futurePE,
+          futurePE: formData.futurePEInput,
           projectedPrice: futurePrice,
           priceAppreciation,
           totalReturn: priceAppreciation,
+          analystEstimatesUsed: useAnalystEstimates,
+          estimatedYears: formData.years,
+          impliedGrowthRate: impliedGrowth,
+          annualProjections: projections
         });
         setError(null);
       }
@@ -335,6 +518,50 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
             </div>
           </div>
 
+          {/* Data Source Toggle - Only show in futureRatio mode */}
+          {formData.mode === 'futureRatio' && (
+            <div className="bg-slate-100 p-4 rounded-lg">
+              <label className="block text-sm font-bold text-slate-700 mb-3">
+                EPS Growth Data Source
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => {
+                    setUseAnalystEstimates(false);
+                    setResults(null);
+                  }}
+                  className={`p-3 rounded-lg font-semibold transition-all ${
+                    !useAnalystEstimates
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-white text-slate-700 hover:bg-blue-100'
+                  }`}
+                >
+                  Manual Growth Rate
+                </button>
+                <button
+                  onClick={() => {
+                    setUseAnalystEstimates(true);
+                    setResults(null);
+                    if (formData.ticker.length >= 1) {
+                      fetchAnalystEstimates(formData.ticker.toUpperCase());
+                    }
+                  }}
+                  disabled={!quoteData}
+                  className={`p-3 rounded-lg font-semibold transition-all ${
+                    useAnalystEstimates
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-white text-slate-700 hover:bg-blue-100'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  Use Analyst Estimates
+                </button>
+              </div>
+              {fetchingEstimates && (
+                <p className="text-sm text-blue-600 mt-2">Loading analyst estimates...</p>
+              )}
+            </div>
+          )}
+
           {/* Input Section */}
           <div className={`grid ${formData.mode === 'futureRatio' ? 'grid-cols-3' : 'grid-cols-2'} gap-6`}>
             <div className={formData.mode === 'futureRatio' ? 'col-span-3' : 'col-span-2'}>
@@ -386,31 +613,119 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
             {quoteData && (
               <div className={`${formData.mode === 'futureRatio' ? 'col-span-3' : 'col-span-2'} bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border-2 border-blue-300`}>
                 <h3 className="font-bold text-slate-700 mb-3">Current Stock Data</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-xs text-slate-600">Current P/E (API)</p>
-                    <p className="text-lg font-bold text-blue-600">
-                      {quoteData.pe ? quoteData.pe.toFixed(2) : 'N/A'}
-                    </p>
-                    {quoteData.price && quoteData.eps && quoteData.eps > 0 && (
-                      <p className="text-xs text-slate-500">
-                        Calc: {(quoteData.price / quoteData.eps).toFixed(2)}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-600">EPS (TTM)</p>
-                    <p className="text-lg font-bold text-blue-600">
-                      ${quoteData.eps ? quoteData.eps.toFixed(2) : 'N/A'}
-                    </p>
-                  </div>
+                <div className="grid grid-cols-4 gap-4">
                   <div>
                     <p className="text-xs text-slate-600">Current Price</p>
                     <p className="text-lg font-bold text-blue-600">
                       ${quoteData.price ? quoteData.price.toFixed(2) : 'N/A'}
                     </p>
                   </div>
+                  <div>
+                    <p className="text-xs text-slate-600">EPS (TTM) {useEpsOverride && <span className="text-orange-600">Override</span>}</p>
+                    <p className={`text-lg font-bold ${useEpsOverride ? 'text-orange-600' : 'text-blue-600'}`}>
+                      ${getEffectiveEPS()?.toFixed(2) || 'N/A'}
+                    </p>
+                    {useEpsOverride && quoteData.eps && (
+                      <p className="text-xs text-slate-500">
+                        API: ${quoteData.eps.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-600">Current P/E {useEpsOverride && <span className="text-orange-600">Calc</span>}</p>
+                    <p className={`text-lg font-bold ${useEpsOverride ? 'text-orange-600' : 'text-blue-600'}`}>
+                      {getEffectivePE()?.toFixed(2) || 'N/A'}
+                    </p>
+                    {useEpsOverride && quoteData.pe && (
+                      <p className="text-xs text-slate-500">
+                        API: {quoteData.pe.toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-600 mb-1">Override EPS</p>
+                    <div className="flex gap-1">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={epsOverride}
+                        onChange={(e) => {
+                          setEpsOverride(e.target.value);
+                          setUseEpsOverride(e.target.value.length > 0);
+                          setResults(null);
+                        }}
+                        placeholder={quoteData.eps?.toFixed(2) || '0.00'}
+                        className="w-full px-2 py-1 text-sm border-2 border-slate-300 rounded focus:border-orange-500 focus:outline-none"
+                      />
+                      {useEpsOverride && (
+                        <button
+                          onClick={() => {
+                            setEpsOverride('');
+                            setUseEpsOverride(false);
+                            setResults(null);
+                          }}
+                          className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+                          title="Clear override"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {/* Analyst Estimates Display */}
+            {useAnalystEstimates && analystData.length > 0 && (
+              <div className="col-span-3 bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-300">
+                <h3 className="font-bold text-slate-700 mb-3">Analyst EPS Estimates (Annual)</h3>
+                <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto">
+                  {analystData.map((estimate, index) => (
+                    <div key={estimate.date} className="bg-white p-3 rounded-lg grid grid-cols-4 gap-2 items-center">
+                      <div>
+                        <p className="text-xs text-slate-600">Year {index + 1}</p>
+                        <p className="text-sm font-bold text-slate-800">
+                          {new Date(estimate.date).getFullYear()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600">EPS Range</p>
+                        <p className="text-sm font-bold text-blue-600">
+                          ${estimate.epsLow?.toFixed(2) || 'N/A'} - ${estimate.epsHigh?.toFixed(2) || 'N/A'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600">EPS Avg</p>
+                        <p className="text-sm font-bold text-green-600">
+                          ${estimate.epsAvg?.toFixed(2) || 'N/A'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600">Analysts</p>
+                        <p className="text-sm font-bold text-slate-700">
+                          {estimate.numAnalystsEps || 0}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {quoteData && getEffectiveEPS() && (
+                  <p className="text-xs text-slate-500 mt-2">
+                    Implied Annual Growth: {calculateImpliedGrowth(getEffectiveEPS()!, analystData).toFixed(2)}%
+                    {useEpsOverride && <span className="text-orange-600 ml-1">(using override EPS)</span>}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Analyst Estimates Error Display */}
+            {useAnalystEstimates && estimatesError && (
+              <div className="col-span-3 bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                <p className="text-yellow-700 font-semibold">{estimatesError}</p>
+                <p className="text-xs text-yellow-600 mt-1">
+                  Switch to "Manual Growth Rate" to enter estimates manually
+                </p>
               </div>
             )}
 
@@ -418,18 +733,30 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
                 Annual Earnings Growth Rate (%)
+                {useAnalystEstimates && analystData.length > 0 && (
+                  <span className="text-xs text-green-600 ml-2">(Calculated from Estimates)</span>
+                )}
               </label>
               <input
                 type="number"
                 min="-50"
                 max="100"
                 step="0.1"
-                value={formData.earningsGrowthRate}
+                value={
+                  useAnalystEstimates && analystData.length > 0 && getEffectiveEPS()
+                    ? calculateImpliedGrowth(getEffectiveEPS()!, analystData).toFixed(2)
+                    : formData.earningsGrowthRate
+                }
                 onChange={(e) => {
-                  setFormData({ ...formData, earningsGrowthRate: parseFloat(e.target.value) || 0 });
-                  setResults(null);
+                  if (!useAnalystEstimates) {
+                    setFormData({ ...formData, earningsGrowthRate: parseFloat(e.target.value) || 0 });
+                    setResults(null);
+                  }
                 }}
-                className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                disabled={useAnalystEstimates && analystData.length > 0}
+                className={`w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none ${
+                  useAnalystEstimates && analystData.length > 0 ? 'bg-slate-100 cursor-not-allowed' : ''
+                }`}
                 placeholder="10"
               />
             </div>
@@ -459,20 +786,30 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">
                     Number of Years
+                    {useAnalystEstimates && analystData.length > 0 && (
+                      <span className="text-xs text-green-600 ml-2">(Max: {analystData.length})</span>
+                    )}
                   </label>
                   <input
                     type="number"
                     min="1"
-                    max="30"
+                    max={useAnalystEstimates && analystData.length > 0 ? analystData.length : 30}
                     step="1"
                     value={formData.years}
                     onChange={(e) => {
-                      setFormData({ ...formData, years: parseInt(e.target.value) || 1 });
+                      const years = parseInt(e.target.value) || 1;
+                      const maxYears = useAnalystEstimates && analystData.length > 0 ? analystData.length : 30;
+                      setFormData({ ...formData, years: Math.min(years, maxYears) });
                       setResults(null);
                     }}
                     className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none"
                     placeholder="5"
                   />
+                  {useAnalystEstimates && analystData.length > 0 && (
+                    <p className="text-xs text-slate-500 mt-1">
+                      Limited to {analystData.length} years (available estimates)
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">
@@ -521,11 +858,12 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
 
           {/* Results Display */}
           {results && (
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-300 space-y-4">
-              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <TrendingUp size={24} className="text-green-600" />
-                Calculation Results
-              </h3>
+            <div className="space-y-4">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-300 space-y-4">
+                <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <TrendingUp size={24} className="text-green-600" />
+                  Calculation Results
+                </h3>
 
               <div className="grid grid-cols-2 gap-4">
                 {formData.mode === 'yearsToTarget' ? (
@@ -591,12 +929,30 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
               <div className="text-xs text-slate-500 mt-4 bg-white p-3 rounded">
                 <p><strong>Assumptions:</strong></p>
                 <ul className="list-disc ml-5 mt-1">
-                  <li>Earnings grow at constant annual rate of {formData.earningsGrowthRate}%</li>
+                  {results.analystEstimatesUsed ? (
+                    <>
+                      <li>EPS projections based on analyst estimates (average of {
+                        analystData[0]?.numAnalystsEps || 'N/A'
+                      } analysts)</li>
+                      <li>Implied annual growth rate: {results.impliedGrowthRate?.toFixed(2)}%</li>
+                    </>
+                  ) : (
+                    <li>Earnings grow at constant annual rate of {formData.earningsGrowthRate}%</li>
+                  )}
                   <li>P/E ratio {formData.mode === 'yearsToTarget' ? `reaches ${formData.targetPE}` : `becomes ${formData.futurePEInput.toFixed(2)}`}</li>
                   <li>No dividends or special events considered</li>
                   <li>Current EPS: ${results.currentEPS.toFixed(2)} | Current P/E: {results.currentPE.toFixed(2)}</li>
                 </ul>
               </div>
+            </div>
+
+            {/* Annual Projection Table - Only in futureRatio mode */}
+            {formData.mode === 'futureRatio' && results.annualProjections && (
+              <AnnualProjectionTable
+                projections={results.annualProjections}
+                currentPrice={results.currentPrice}
+              />
+            )}
             </div>
           )}
 
