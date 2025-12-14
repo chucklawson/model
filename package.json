@@ -9,7 +9,8 @@
     "build:notify": "npm run build && node scripts/send-sms.js \"Build completed successfully\" \"Build\" || node scripts/send-sms.js \"Build failed - check logs\" \"Error\"",
     "lint": "eslint .",
     "preview": "vite preview",
-    "notify": "node scripts/send-sms.js"
+    "notify": "node scripts/send-sms.js",
+    "setup-email": "node scripts/setup-email-notifications.js"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.13.0",

@@ -22,4 +22,4 @@ backend.sendNotification.resources.lambda.addToRolePolicy(
 );
 
 // Add environment variables to Lambda
-backend.sendNotification.addEnvironment('SMS_NOTIFICATION_PHONE', process.env.SMS_NOTIFICATION_PHONE || '');
+backend.sendNotification.addEnvironment('SNS_TOPIC_ARN', process.env.SNS_TOPIC_ARN || '');

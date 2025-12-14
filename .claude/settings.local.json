@@ -28,7 +28,17 @@
       "Bash(git log:*)",
       "Bash(grep:*)",
       "Bash(npx eslint:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(node scripts/test-aws-exports.js:*)",
+      "Bash(node -e:*)",
+      "Bash(npm run setup-sns:*)",
+      "Bash(timeout 3 npm run setup-sns:*)",
+      "Bash(aws sns get-sms-sandbox-account-status:*)",
+      "Bash(aws sns get-sms-attributes:*)",
+      "Bash(aws sns list-origination-numbers:*)",
+      "Bash(aws sns set-sms-attributes:*)",
+      "Bash(npm run setup-email:*)",
+      "Bash(npm run notify:*)"
     ],
     "deny": [],
     "ask": []

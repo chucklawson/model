@@ -14,15 +14,24 @@ export const handler: Handler = async (event) => {
       };
     }
 
-    const phoneNumber = process.env.SMS_NOTIFICATION_PHONE;
+    const topicArn = process.env.SNS_TOPIC_ARN;
 
-    if (!phoneNumber) {
-      throw new Error('SMS_NOTIFICATION_PHONE not configured');
+    if (!topicArn) {
+      throw new Error('SNS_TOPIC_ARN not configured');
     }
 
+    const emailSubject = subject
+      ? `[Model App] ${subject}`
+      : '[Model App] Notification';
+
+    const emailMessage = subject
+      ? `${subject}\n\n${message}\n\n---\nSent from Model App`
+      : `${message}\n\n---\nSent from Model App`;
+
     const command = new PublishCommand({
-      PhoneNumber: phoneNumber,
-      Message: `[Model App] ${subject ? subject + ': ' : ''}${message}`,
+      TopicArn: topicArn,
+      Subject: emailSubject,
+      Message: emailMessage,
     });
 
     await snsClient.send(command);
