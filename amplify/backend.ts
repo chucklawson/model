@@ -23,4 +23,3 @@ backend.sendNotification.resources.lambda.addToRolePolicy(
 
 // Add environment variables to Lambda
 backend.sendNotification.addEnvironment('SMS_NOTIFICATION_PHONE', process.env.SMS_NOTIFICATION_PHONE || '');
-backend.sendNotification.addEnvironment('AWS_REGION', process.env.AWS_REGION || 'us-east-2');
