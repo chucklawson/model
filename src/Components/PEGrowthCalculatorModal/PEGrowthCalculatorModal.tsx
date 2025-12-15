@@ -32,6 +32,19 @@ interface CalculationResults {
   annualProjections?: AnnualProjection[];
 }
 
+interface CompanyProfile {
+  symbol: string;
+  sector: string;
+  industry: string;
+}
+
+interface SectorPESnapshot {
+  date: string;
+  sector: string;
+  exchange: string;
+  pe: number;
+}
+
 export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => void }) {
   const client = generateClient<Schema>();
 
@@ -60,6 +73,11 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
   // EPS override state
   const [epsOverride, setEpsOverride] = useState<string>('');
   const [useEpsOverride, setUseEpsOverride] = useState(false);
+
+  // Company profile and sector P/E state
+  const [profileData, setProfileData] = useState<CompanyProfile | null>(null);
+  const [sectorPEData, setSectorPEData] = useState<SectorPESnapshot[]>([]);
+  const [fetchingProfile, setFetchingProfile] = useState(false);
 
   // Fetch P/E data from API
   const fetchPEData = async (ticker: string) => {
@@ -123,6 +141,64 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
       setQuoteData(null);
     } finally {
       setFetchingQuote(false);
+    }
+  };
+
+  // Fetch company profile data
+  const fetchCompanyProfile = async (ticker: string) => {
+    if (!ticker || ticker.length < 1) return;
+
+    setFetchingProfile(true);
+
+    try {
+      const apiKey = import.meta.env.VITE_FMP_API_KEY;
+      const profileUrl = `https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`;
+
+      const response = await fetch(profileUrl);
+      const data = await response.json();
+
+      if (data && data.length > 0 && data[0].sector && data[0].industry) {
+        const profile: CompanyProfile = {
+          symbol: data[0].symbol,
+          sector: data[0].sector,
+          industry: data[0].industry
+        };
+        setProfileData(profile);
+
+        // Immediately fetch sector P/E data using the sector
+        fetchSectorPE(data[0].sector);
+      } else {
+        setProfileData(null);
+      }
+    } catch (err) {
+      console.error('Failed to fetch company profile:', err);
+      setProfileData(null);
+    } finally {
+      setFetchingProfile(false);
+    }
+  };
+
+  // Fetch sector P/E snapshot data
+  const fetchSectorPE = async (sector: string) => {
+    if (!sector || sector.trim() === '') return;
+
+    try {
+      const apiKey = import.meta.env.VITE_FMP_API_KEY;
+      // Use current date in YYYY-MM-DD format
+      const currentDate = new Date().toISOString().split('T')[0];
+      const sectorPEUrl = `https://financialmodelingprep.com/stable/sector-pe-snapshot?date=${currentDate}&apikey=${apiKey}`;
+
+      const response = await fetch(sectorPEUrl);
+      const data = await response.json();
+
+      if (data && Array.isArray(data)) {
+        setSectorPEData(data);
+      } else {
+        setSectorPEData([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch sector P/E data:', err);
+      setSectorPEData([]);
     }
   };
 
@@ -273,13 +349,17 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
   useEffect(() => {
     if (formData.ticker.length >= 1) {
       const timer = setTimeout(() => {
-        fetchPEData(formData.ticker.toUpperCase());
+        const upperTicker = formData.ticker.toUpperCase();
+        fetchPEData(upperTicker);
+        fetchCompanyProfile(upperTicker);
       }, 800);
 
       return () => clearTimeout(timer);
     } else {
       setQuoteData(null);
       setError(null);
+      setProfileData(null);
+      setSectorPEData([]);
     }
   }, [formData.ticker]);
 
@@ -334,6 +414,18 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     const eps = getEffectiveEPS();
     if (!eps || eps <= 0) return null;
     return quoteData.price / eps;
+  };
+
+  // Get sector P/E ratio for the company's sector
+  const getSectorPE = (): number | null => {
+    if (!profileData?.sector || sectorPEData.length === 0) return null;
+
+    // Find matching sector in the PE data (case-insensitive)
+    const matchingSector = sectorPEData.find(
+      item => item.sector.toLowerCase() === profileData.sector.toLowerCase()
+    );
+
+    return matchingSector?.pe || null;
   };
 
   // Calculate and set results
@@ -613,7 +705,9 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
             {quoteData && (
               <div className={`${formData.mode === 'futureRatio' ? 'col-span-3' : 'col-span-2'} bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border-2 border-blue-300`}>
                 <h3 className="font-bold text-slate-700 mb-3">Current Stock Data</h3>
-                <div className="grid grid-cols-4 gap-4">
+
+                {/* First Row: Existing 4 columns */}
+                <div className="grid grid-cols-4 gap-4 mb-4">
                   <div>
                     <p className="text-xs text-slate-600">Current Price</p>
                     <p className="text-lg font-bold text-blue-600">
@@ -673,6 +767,37 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     </div>
                   </div>
                 </div>
+
+                {/* Second Row: New Industry/Sector Data - 3 columns */}
+                {profileData && (
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t-2 border-blue-200">
+                    <div>
+                      <p className="text-xs text-slate-600">Industry</p>
+                      <p className="text-lg font-bold text-purple-600">
+                        {profileData.industry || 'N/A'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-600">Sector</p>
+                      <p className="text-lg font-bold text-purple-600">
+                        {profileData.sector || 'N/A'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-600">Sector P/E</p>
+                      <p className="text-lg font-bold text-purple-600">
+                        {getSectorPE()?.toFixed(2) || 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Loading state for profile */}
+                {fetchingProfile && !profileData && (
+                  <div className="pt-4 border-t-2 border-blue-200">
+                    <p className="text-sm text-blue-600">Loading industry data...</p>
+                  </div>
+                )}
               </div>
             )}
 
