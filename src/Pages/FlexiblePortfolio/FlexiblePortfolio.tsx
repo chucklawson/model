@@ -191,25 +191,25 @@ function FlexiblePortfolio() {
   return (
     <div className="text-center overflow-x-auto w-full">
 
-    <header className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg shadow-md p-4 mb-3">
+    <header className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg shadow-md p-2 mb-2">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-amber-700">
+        <h1 className="text-lg font-bold text-amber-700">
           {headerValue}
         </h1>
-        <div className="bg-white rounded-md shadow-sm p-3">
-          <div className="flex items-center gap-2">
+        <div className="bg-white rounded-md shadow-sm p-1.5">
+          <div className="flex items-center gap-1.5">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
               Today's Change:
             </span>
-            <span className={`text-lg font-bold ${
+            <span className={`text-sm font-bold ${
               isTodaysChangePositive ? 'text-green-600' : 'text-red-600'
             }`}>
               {isTodaysChangePositive ? '+' : ''}{todaysPercentageChange}%
             </span>
             {slope >= 0.0 ? (
-              <img className="w-5 h-5" src={upGreenRight} alt="Upward trend" />
+              <img className="w-4 h-4" src={upGreenRight} alt="Upward trend" />
             ) : (
-              <img className="w-5 h-5" src={downRedRight} alt="Downward trend" />
+              <img className="w-4 h-4" src={downRedRight} alt="Downward trend" />
             )}
           </div>
         </div>
