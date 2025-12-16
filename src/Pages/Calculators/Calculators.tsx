@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Calculator } from 'lucide-react';
+import { Calculator, Sparkles } from 'lucide-react';
 import PEGrowthCalculatorModal from '../../Components/PEGrowthCalculatorModal/PEGrowthCalculatorModal';
+import RuleOf72CalculatorModal from '../../Components/RuleOf72CalculatorModal/RuleOf72CalculatorModal';
 
 function Calculators() {
   const [showPEGrowthModal, setShowPEGrowthModal] = useState(false);
+  const [showRuleOf72Modal, setShowRuleOf72Modal] = useState(false);
 
   useEffect(() => {
     document.title = "Calculators";
@@ -60,6 +62,41 @@ function Calculators() {
           </button>
         </div>
 
+        {/* Rule of 72 Calculator Card */}
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border-2 border-transparent hover:border-green-500">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-green-100 p-3 rounded-lg">
+              <Sparkles className="text-green-600" size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800">Rule of 72 Calculator</h3>
+              <span className="text-xs text-green-600 font-semibold">LEARNING TOOL</span>
+            </div>
+          </div>
+
+          <p className="text-slate-600 mb-4 text-sm leading-relaxed">
+            Learn how fast your money can double! Discover the magic of compound interest
+            with fun, interactive calculations and colorful charts.
+          </p>
+
+          <ul className="text-xs text-slate-500 mb-6 space-y-1">
+            <li>• Calculate years to double your money</li>
+            <li>• Find the interest rate you need</li>
+            <li>• Compare different scenarios</li>
+            <li>• Watch your investment grow over time</li>
+          </ul>
+
+          <button
+            onClick={() => setShowRuleOf72Modal(true)}
+            className="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white
+                       rounded-lg font-bold hover:from-green-700 hover:to-emerald-700
+                       transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <Sparkles size={20} />
+            Start Learning!
+          </button>
+        </div>
+
         {/* Placeholder for Future Calculators */}
         <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl shadow-lg p-6
                         border-2 border-dashed border-slate-400 flex items-center justify-center">
@@ -72,9 +109,13 @@ function Calculators() {
 
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       {showPEGrowthModal && (
         <PEGrowthCalculatorModal onClose={() => setShowPEGrowthModal(false)} />
+      )}
+
+      {showRuleOf72Modal && (
+        <RuleOf72CalculatorModal onClose={() => setShowRuleOf72Modal(false)} />
       )}
     </div>
   );
