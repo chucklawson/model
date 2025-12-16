@@ -8,6 +8,7 @@
 export const STORAGE_KEYS = {
   TICKER_COLUMNS: 'tickers.columns',
   TICKER_PORTFOLIO_FILTER: 'tickers.portfolioFilter',
+  FLEXIBLE_PORTFOLIO_FILTER: 'flexiblePortfolio.portfolioFilter',
 } as const;
 
 /**
@@ -16,6 +17,7 @@ export const STORAGE_KEYS = {
 export const STORAGE_VERSIONS = {
   TICKER_COLUMNS: 2, // Incremented to add "Last Price" column
   TICKER_PORTFOLIO_FILTER: 1,
+  FLEXIBLE_PORTFOLIO_FILTER: 1,
 } as const;
 
 /**
