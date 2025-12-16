@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type Quote_V3 from '../Lib/Quote_V3';
 import type HistoricalDividendData from '../Lib/DividendData/HistoricalDividendData';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 interface UseDividendDataParams {
   stockSymbol: string;
@@ -27,25 +28,15 @@ export function useDividendData({
       return;
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-
-    // Build API URLs
-    const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${stockSymbol}?apikey=${apiKey}`;
-    const dividendUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/stock_dividend/${stockSymbol}?apikey=${apiKey}`;
-
     const fetchDividendData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const responses = await Promise.all([
-          fetch(quoteUrl),
-          fetch(dividendUrl)
+        const data = await Promise.all([
+          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi({ endpoint: `/api/v3/historical-price-full/stock_dividend/${stockSymbol}` })
         ]);
-
-        const data = await Promise.all(
-          responses.map(response => response.json())
-        );
 
         // Validate we got data
         if (data[0][0]?.symbol !== undefined) {

@@ -38,7 +38,13 @@
       "Bash(aws sns list-origination-numbers:*)",
       "Bash(aws sns set-sms-attributes:*)",
       "Bash(npm run setup-email:*)",
-      "Bash(npm run notify:*)"
+      "Bash(npm run notify:*)",
+      "Bash(aws lambda list-functions:*)",
+      "Bash(aws lambda get-function-url-config:*)",
+      "Bash(node test-fmp-proxy.js:*)",
+      "Bash(aws lambda get-function-configuration:*)",
+      "Bash(aws lambda update-function-configuration:*)",
+      "Bash(del:*)"
     ],
     "deny": [],
     "ask": []

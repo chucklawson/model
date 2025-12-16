@@ -15,6 +15,7 @@ import FlexiblePortfolio from "./Pages/FlexiblePortfolio/FlexiblePortfolio";
 import Research from "./Pages/Research/Research";
 import KeyMetrics from "./Pages/KeyMetrics/KeyMetrics";
 import Calculators from "./Pages/Calculators/Calculators";
+import SettingsPage from "./Pages/Settings/Settings";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 //import SummarySpreadSheet from "./Pages/SummarySpreadSheet/SummarySpreadSheet";
 
@@ -42,6 +43,7 @@ function App() {
               {path: '/keymetrics', element: <KeyMetrics/>},
               {path: '/calculators', element: <Calculators/>},
               {path: '/historicaldividendentries', element: <HistoricalDividends/>},
+              {path: '/settings', element: <SettingsPage/>},
               {/*}
               {path: '/summaryentries', element: <SummarySpreadSheet/>},
               */}

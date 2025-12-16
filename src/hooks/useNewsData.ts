@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { NewsArticle, UseNewsDataParams, UseNewsDataResult } from '../types/news';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 export function useNewsData({
   symbol,
@@ -17,28 +18,15 @@ export function useNewsData({
       return;
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-
-    if (!apiKey) {
-      setError(new Error('API key not configured'));
-      return;
-    }
-
-    // Build API URL
-    const newsUrl = `https://financialmodelingprep.com/stable/news/stock?symbols=${symbol}&apikey=${apiKey}`;
-
     const fetchNewsData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(newsUrl);
-
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await callFmpApi({
+          endpoint: '/stable/news/stock',
+          queryParams: { symbols: symbol }
+        });
 
         // Filter articles by date range
         const filteredArticles = (data as NewsArticle[]).filter(article => {

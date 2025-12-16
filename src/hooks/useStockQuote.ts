@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type Quote_V3 from '../Lib/Quote_V3';
 import type HistoricalPriceFull_V3 from '../Lib/HistoricalPriceFull_V3';
 import type AnalysisKeyMetricsItem_V3 from '../Lib/AnalysisKeyMetricsItem_V3';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 interface UseStockQuoteParams {
   stockSymbol: string;
@@ -40,29 +41,26 @@ export function useStockQuote({
       return;
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-
-    // Build API URLs
-    const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${stockSymbol}?apikey=${apiKey}`;
-    const timeSeriesUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${stockSymbol}?from=${latestStartDate}&to=${latestEndDate}&apikey=${apiKey}`;
-    const adjustedTimeSeriesUrl = `https://financialmodelingprep.com/api/v3/historical-price-full/${stockSymbol}?from=${adjustedStartDate}&to=${latestEndDate}&apikey=${apiKey}`;
-    const keyMetricsUrl = `https://financialmodelingprep.com/api/v3/key-metrics/${stockSymbol}?period=quarter&apikey=${apiKey}`;
-
     const fetchStockData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const responses = await Promise.all([
-          fetch(quoteUrl),
-          fetch(timeSeriesUrl),
-          fetch(adjustedTimeSeriesUrl),
-          fetch(keyMetricsUrl)
+        const data = await Promise.all([
+          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi({
+            endpoint: `/api/v3/historical-price-full/${stockSymbol}`,
+            queryParams: { from: latestStartDate, to: latestEndDate }
+          }),
+          callFmpApi({
+            endpoint: `/api/v3/historical-price-full/${stockSymbol}`,
+            queryParams: { from: adjustedStartDate, to: latestEndDate }
+          }),
+          callFmpApi({
+            endpoint: `/api/v3/key-metrics/${stockSymbol}`,
+            queryParams: { period: 'quarter' }
+          }),
         ]);
-
-        const data = await Promise.all(
-          responses.map(response => response.json())
-        );
 
         // Validate we got data
         if (data[0][0]?.symbol !== undefined) {

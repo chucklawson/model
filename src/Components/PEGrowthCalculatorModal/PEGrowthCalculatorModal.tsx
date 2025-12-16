@@ -6,6 +6,7 @@ import type AnnualProjection from '../../Lib/AnnualProjection';
 import AnnualProjectionTable from '../AnnualProjectionTable/AnnualProjectionTable';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
+import { callFmpApi } from '../../utils/fmpApiClient';
 
 interface CalculatorFormData {
   ticker: string;
@@ -87,11 +88,9 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setError(null);
 
     try {
-      const apiKey = import.meta.env.VITE_FMP_API_KEY;
-      const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${ticker}?apikey=${apiKey}`;
-
-      const response = await fetch(quoteUrl);
-      const data = await response.json();
+      const data = await callFmpApi({
+        endpoint: `/api/v3/quote/${ticker}`
+      });
 
       if (data && data[0] && data[0].symbol) {
         const quote: Quote_V3 = data[0];
@@ -151,11 +150,9 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setFetchingProfile(true);
 
     try {
-      const apiKey = import.meta.env.VITE_FMP_API_KEY;
-      const profileUrl = `https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`;
-
-      const response = await fetch(profileUrl);
-      const data = await response.json();
+      const data = await callFmpApi({
+        endpoint: `/api/v3/profile/${ticker}`
+      });
 
       if (data && data.length > 0 && data[0].sector && data[0].industry) {
         const profile: CompanyProfile = {
@@ -183,13 +180,12 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     if (!sector || sector.trim() === '') return;
 
     try {
-      const apiKey = import.meta.env.VITE_FMP_API_KEY;
       // Use current date in YYYY-MM-DD format
       const currentDate = new Date().toISOString().split('T')[0];
-      const sectorPEUrl = `https://financialmodelingprep.com/stable/sector-pe-snapshot?date=${currentDate}&apikey=${apiKey}`;
-
-      const response = await fetch(sectorPEUrl);
-      const data = await response.json();
+      const data = await callFmpApi({
+        endpoint: '/stable/sector-pe-snapshot',
+        queryParams: { date: currentDate }
+      });
 
       if (data && Array.isArray(data)) {
         setSectorPEData(data);
@@ -210,11 +206,15 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setEstimatesError(null);
 
     try {
-      const apiKey = import.meta.env.VITE_FMP_API_KEY;
-      const estimatesUrl = `https://financialmodelingprep.com/stable/analyst-estimates?symbol=${ticker}&period=annual&page=0&limit=10&apikey=${apiKey}`;
-
-      const response = await fetch(estimatesUrl);
-      const data = await response.json();
+      const data = await callFmpApi({
+        endpoint: '/stable/analyst-estimates',
+        queryParams: {
+          symbol: ticker,
+          period: 'annual',
+          page: '0',
+          limit: '10'
+        }
+      });
 
       if (data && Array.isArray(data) && data.length > 0) {
         // Filter for future estimates only (date > today)

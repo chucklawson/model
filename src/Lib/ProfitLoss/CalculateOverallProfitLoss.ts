@@ -3,6 +3,7 @@
 
 import type {TickersToEvaluate} from "../TickersToEvaluate/TickersToEvaluate"
 import type Quote_V3 from "../Quote_V3.ts";
+import { callFmpApi } from "../../utils/fmpApiClient";
 
 interface CostEntry{ticker: string;
                     cost: number;
@@ -73,31 +74,19 @@ function calculateCost(tickerEntriesToSum:CostEntry[])
 
 async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]): Promise<string>
 {
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-    const currentInfo= `https://financialmodelingprep.com/api/v3/quote/${tickersToObtain}?apikey=${apiKey}`;
     let currentQuote:Quote_V3[]=[];
-    //console.log("tickersToObtain: "+ tickersToObtain)
 
-    //console.log("tickersToEvaluate: " + tickersToObtain)
-        await Promise.all([
-            fetch(currentInfo)
-          ]).then(function (responses) {
-            // Get a JSON object from each of the responses
-            return Promise.all(responses.map(function (response) {
-              return response.json();
-            }));
-          }).then(function (data) {
-            if(data[0][0].symbol !== undefined){
-              //currentQuote=data[0]
+    try {
+        const data = await callFmpApi({
+            endpoint: `/api/v3/quote/${tickersToObtain}`
+        });
 
-              //const parsedQuoteData: Quote_V3[] = JSON.parse(JSON.stringify(data[0]));
-              //currentQuote = parsedQuoteData;
-              currentQuote = JSON.parse(JSON.stringify(data[0]));
-            } 
-          }).catch(function (error) {
-            // if there's an error, log it
-            console.log(error);
-          })
+        if(data[0]?.symbol !== undefined){
+            currentQuote = JSON.parse(JSON.stringify(data));
+        }
+    } catch (error) {
+        console.log(error);
+    }
 /*
   console.log("currentQuote.length: ", currentQuote.length);
   for(let i=0;i<currentQuote.length;++i)

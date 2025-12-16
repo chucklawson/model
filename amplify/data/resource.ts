@@ -36,6 +36,15 @@ const schema = a.schema({
       totalCost: a.float(),
     })
     .authorization((allow) => [allow.owner()]),
+
+  FmpApiKey: a
+    .model({
+      apiKey: a.string().required(),
+      isActive: a.boolean().default(true),
+      createdAt: a.datetime(),
+      updatedAt: a.datetime(),
+    })
+    .authorization((allow) => [allow.owner()]),
 });
 
 

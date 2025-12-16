@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 interface CompanyProfile {
   symbol: string;
@@ -41,16 +42,9 @@ export function useCompanyProfile(symbol: string): UseCompanyProfileResult {
       setError(null);
 
       try {
-        const apiKey = import.meta.env.VITE_FMP_API_KEY;
-        const url = `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${apiKey}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch company profile: ${response.statusText}`);
-        }
-
-        const data = await response.json();
+        const data = await callFmpApi({
+          endpoint: `/api/v3/profile/${symbol}`
+        });
 
         if (data && data.length > 0) {
           setProfile(data[0]);

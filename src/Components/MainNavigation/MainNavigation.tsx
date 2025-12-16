@@ -33,6 +33,7 @@ function MainNavigation({ signOut }: MainNavigationProps){
               <Tab pagePath='/keymetrics' tabImage={statistics} tabText='Key Metrics' tabWidth='190px'/>
               <Tab pagePath='/calculators' tabImage={math} tabText='Calculators' tabWidth='185px'/>
               <Tab pagePath='/historicaldividendentries' tabImage = {budget} tabText='Dividends' tabWidth='185px'/>
+              <Tab pagePath='/settings' tabImage={clipboard} tabText='Settings' tabWidth='160px'/>
               {/*
               <Tab pagePath='/summaryentries' tabImage = {robot} tabText='Summary' tabWidth='185px'/>
               */}

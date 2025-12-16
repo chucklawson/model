@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { NewsArticle } from '../types/news';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 export interface UseGeneralStockNewsDataParams {
   limit: number;
@@ -26,28 +27,15 @@ export function useGeneralStockNewsData({
       return;
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-
-    if (!apiKey) {
-      setError(new Error('API key not configured'));
-      return;
-    }
-
-    // Build API URL for general stock news
-    const newsUrl = `https://financialmodelingprep.com/stable/news/stock-latest?page=0&limit=${limit}&apikey=${apiKey}`;
-
     const fetchGeneralStockNews = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(newsUrl);
-
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await callFmpApi({
+          endpoint: '/stable/news/stock-latest',
+          queryParams: { page: '0', limit: limit.toString() }
+        });
 
         // Set articles directly
         setArticles(data as NewsArticle[]);

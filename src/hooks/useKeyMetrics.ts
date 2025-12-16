@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type Quote_V3 from '../Lib/Quote_V3';
 import type StatementAnalysisKeyMetricsData from '../Lib/StatementsData/StatementAnalysisKeyMetricsData';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 interface UseKeyMetricsParams {
   stockSymbol: string;
@@ -29,25 +30,18 @@ export function useKeyMetrics({
       return;
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
-
-    // Build API URLs
-    const quoteUrl = `https://financialmodelingprep.com/api/v3/quote/${stockSymbol}?apikey=${apiKey}`;
-    const keyMetricsUrl = `https://financialmodelingprep.com/api/v3/key-metrics/${stockSymbol}?period=${period}&apikey=${apiKey}`;
-
     const fetchKeyMetrics = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const responses = await Promise.all([
-          fetch(quoteUrl),
-          fetch(keyMetricsUrl)
+        const data = await Promise.all([
+          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi({
+            endpoint: `/api/v3/key-metrics/${stockSymbol}`,
+            queryParams: { period }
+          })
         ]);
-
-        const data = await Promise.all(
-          responses.map(response => response.json())
-        );
 
         // Validate we got data
         if (data[0][0]?.symbol !== undefined) {

@@ -5,6 +5,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type AfterHoursQuote_V3 from '../Lib/AfterHoursQuote_V3';
 import { shouldShowAfterHoursPricing } from '../utils/marketHours';
+import { callFmpApi } from '../utils/fmpApiClient';
 
 interface UseAfterHoursDataParams {
   tickers: string[];
@@ -90,7 +91,6 @@ export function useAfterHoursData({
       setError(null);
     }
 
-    const apiKey = import.meta.env.VITE_FMP_API_KEY;
     const newData = new Map<string, AfterHoursQuote_V3>();
     const newRegularPrices = new Map<string, number>();
     const newRegularQuotes = new Map<string, RegularQuote>();
@@ -100,17 +100,11 @@ export function useAfterHoursData({
       for (let i = 0; i < tickers.length; i += 10) {
         const batch = tickers.slice(i, i + 10);
 
-        // Batch API call for regular quotes - single request for all tickers in batch
-        const batchQuoteUrl = `https://financialmodelingprep.com/api/v3/quote/${batch.join(',')}?apikey=${apiKey}`;
-
         try {
-          const quoteResponse = await fetch(batchQuoteUrl);
-
-          if (!quoteResponse.ok) {
-            throw new Error(`HTTP error fetching batch quotes`);
-          }
-
-          const quotesArray = await quoteResponse.json();
+          // Batch API call for regular quotes - single request for all tickers in batch
+          const quotesArray = await callFmpApi({
+            endpoint: `/api/v3/quote/${batch.join(',')}`
+          });
 
           // Create a map of ticker -> quote data for quick lookup
           const quotesMap = new Map<string, QuoteData>();
@@ -128,13 +122,12 @@ export function useAfterHoursData({
           if (afterHours) {
             // After-hours API may not support batch, so fetch individually in parallel
             const aftermarketPromises = batch.map(async (ticker) => {
-              const aftermarketUrl = `https://financialmodelingprep.com/stable/aftermarket-trade?symbol=${ticker}&apikey=${apiKey}`;
               try {
-                const response = await fetch(aftermarketUrl);
-                if (response.ok) {
-                  const data = await response.json();
-                  return { ticker, data };
-                }
+                const data = await callFmpApi({
+                  endpoint: '/stable/aftermarket-trade',
+                  queryParams: { symbol: ticker }
+                });
+                return { ticker, data };
               } catch {
                 // Silently fail for individual after-hours data
               }
