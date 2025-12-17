@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
     LineChart,
     Line,
@@ -7,9 +7,12 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    ReferenceLine
+    ReferenceLine,
+    ReferenceDot
   } from "recharts";
 import StochasticChartData from "../Lib/ChartData/StochasticChartData.ts";
+import type { GroupedPurchase } from '../utils/purchaseIndicators';
+import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
 
 {/*
 
@@ -45,9 +48,20 @@ margin:Margin;
 lineWidth: number;
 overBought: number;
 overSold: number;
+purchaseData?: GroupedPurchase[];
+showPurchases?: boolean;
 }
 
   const StochasitcOscillatorChart =(props:StochasitcOscillatorChartProps)=>{
+    // Match purchases with chart data
+    const purchaseIndicators = useMemo(() => {
+        if (!props.purchaseData || !props.showPurchases) return [];
+        return matchPurchasesWithChartData(
+            props.purchaseData,
+            props.data,
+            'fastSstochasticValue'
+        );
+    }, [props.purchaseData, props.data, props.showPurchases]);
 
     return (
 
@@ -64,13 +78,49 @@ overSold: number;
           <YAxis type="number" domain={[0,100]} />
           <Tooltip />
           <Legend />
-           
-                <ReferenceLine y={props.overBought} label="Over Bought" stroke="red" /> 
+
+                <ReferenceLine y={props.overBought} label="Over Bought" stroke="red" />
                 <Line type="monotone" dataKey="fastSstochasticValue" strokeWidth={props.lineWidth} stroke="#356624"/>
                 <Line type="monotone" dataKey="slowStochasticValue" strokeWidth={props.lineWidth} stroke="#2b16c7" dot={false} />
 
-                
-                <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />    
+
+                <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />
+
+                {/* Purchase indicators */}
+                {props.showPurchases && purchaseIndicators.map((indicator, index) => (
+                    <React.Fragment key={`purchase-stoch-${indicator.date}-${index}`}>
+                        {/* Vertical line to highlight purchase date */}
+                        <ReferenceLine
+                            x={indicator.date}
+                            stroke="#a855f7"
+                            strokeWidth={2}
+                            strokeDasharray="3 3"
+                            label={{
+                                value: '↓',
+                                position: 'top',
+                                fill: '#a855f7',
+                                fontSize: 16,
+                            }}
+                        />
+
+                        {/* Dot at Stochastic value */}
+                        <ReferenceDot
+                            x={indicator.date}
+                            y={indicator.yValue}
+                            r={6}
+                            fill="#a855f7"
+                            stroke="#fff"
+                            strokeWidth={2}
+                            label={{
+                                value: '$',
+                                position: 'center',
+                                fill: '#fff',
+                                fontSize: 10,
+                                fontWeight: 'bold',
+                            }}
+                        />
+                    </React.Fragment>
+                ))}
         </LineChart>
       </div>
       

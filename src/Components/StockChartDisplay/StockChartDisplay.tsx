@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import InvestmentComposedChar from '../../InvestmentCharts/InvestmentComposedChart';
 import RelativeStrengthIndexChart from '../../InvestmentCharts/RelativeStrengthIndexChart';
 import StochasitcOscillatorChart from '../../InvestmentCharts/StochasticOscillatorChart';
@@ -7,6 +7,8 @@ import type Quote_V3 from '../../Lib/Quote_V3';
 import type StandardCharData from '../../Lib/ChartData/StandardChartData';
 import type RSIChartData from '../../Lib/ChartData/RSIChartData';
 import type StochasticChartData from '../../Lib/ChartData/StochasticChartData';
+import type { TickerLot } from '../../types';
+import { groupLotsByDate } from '../../utils/purchaseIndicators';
 
 interface StockChartDisplayProps {
   currentQuote: Quote_V3;
@@ -27,9 +29,17 @@ interface StockChartDisplayProps {
   todaysPercentageGain: number;
   gainIsPositive: boolean;
   slope: number;
+  lots?: TickerLot[];
+  buysChecked: boolean;
 }
 
 const StockChartDisplay = (props: StockChartDisplayProps) => {
+  // Group lots by date (memoized)
+  const groupedPurchases = useMemo(() => {
+    if (!props.lots) return [];
+    return groupLotsByDate(props.lots);
+  }, [props.lots]);
+
   return (
     <div className='justify-self-auto'>
       <div className="text-1xl text-green-600 font-bold underline h-5">
@@ -45,6 +55,8 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
           lineWidth={props.widthOfStroke}
           showBollingerbands={props.bollingerChecked}
           showMean={props.bollingerChecked}
+          purchaseData={groupedPurchases}
+          showPurchases={props.buysChecked}
         />
       </div>
 
@@ -61,6 +73,8 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             lineWidth={props.widthOfStroke}
             overBought={70}
             overSold={30}
+            purchaseData={groupedPurchases}
+            showPurchases={props.buysChecked}
           />
         </div>
       ) : <React.Fragment />}
@@ -78,6 +92,8 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             lineWidth={props.widthOfStroke}
             overBought={80}
             overSold={20}
+            purchaseData={groupedPurchases}
+            showPurchases={props.buysChecked}
           />
         </div>
       ) : <React.Fragment />}

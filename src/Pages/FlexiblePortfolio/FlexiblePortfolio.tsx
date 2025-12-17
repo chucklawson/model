@@ -238,6 +238,7 @@ function FlexiblePortfolio() {
         tickerEntries={currentHoldings}
         backgroundLeft='bg-amber-100'
         buttonBackgroundColor='bg-amber-400'
+        lots={filteredLots}
       />
     )}
 

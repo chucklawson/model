@@ -5,10 +5,12 @@ interface ChartControlsProps {
   rsiChecked: boolean;
   stochasticChecked: boolean;
   priceEquityChecked: boolean;
+  buysChecked: boolean;
   onBollingerChange: () => void;
   onRsiChange: () => void;
   onStochasticChange: () => void;
   onPriceEquityChange: () => void;
+  onBuysChange: () => void;
 }
 
 const ChartControls = (props: ChartControlsProps) => {
@@ -48,6 +50,15 @@ const ChartControls = (props: ChartControlsProps) => {
           onChange={props.onPriceEquityChange}
         />
         Price to Earnings
+      </label>
+
+      <label className='pl-2 pr-2'>
+        <input
+          type="checkbox"
+          checked={props.buysChecked}
+          onChange={props.onBuysChange}
+        />
+        Purchase Indicators
       </label>
     </div>
   );

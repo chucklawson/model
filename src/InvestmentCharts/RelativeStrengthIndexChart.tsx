@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
     LineChart,
     Line,
@@ -7,9 +7,12 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    ReferenceLine
+    ReferenceLine,
+    ReferenceDot
   } from "recharts";
 import RSIChartData from "../Lib/ChartData/RSIChartData.ts";
+import type { GroupedPurchase } from '../utils/purchaseIndicators';
+import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
 
 {/*
  <RelativeStrengthIndexChart
@@ -45,9 +48,20 @@ interface RelativeStrengthIndexChartProps{
   lineWidth: number;
   overBought: number;
   overSold: number;
+  purchaseData?: GroupedPurchase[];
+  showPurchases?: boolean;
 }
 
   const RelativeStrengthIndexChart =(props:RelativeStrengthIndexChartProps)=>{
+    // Match purchases with chart data
+    const purchaseIndicators = useMemo(() => {
+        if (!props.purchaseData || !props.showPurchases) return [];
+        return matchPurchasesWithChartData(
+            props.purchaseData,
+            props.data,
+            'rsiValue'
+        );
+    }, [props.purchaseData, props.data, props.showPurchases]);
 
     return (
 
@@ -64,10 +78,46 @@ interface RelativeStrengthIndexChartProps{
           <YAxis type="number" domain={[0,100]} />
           <Tooltip />
           
-          <Legend />                
-                <ReferenceLine y={props.overBought} label="Over Bought" stroke="red" /> 
+          <Legend />
+                <ReferenceLine y={props.overBought} label="Over Bought" stroke="red" />
                 <Line type="monotone" dataKey="rsiValue" strokeWidth={props.lineWidth} stroke="#45848f" />
-                <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />    
+                <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />
+
+                {/* Purchase indicators */}
+                {props.showPurchases && purchaseIndicators.map((indicator, index) => (
+                    <React.Fragment key={`purchase-rsi-${indicator.date}-${index}`}>
+                        {/* Vertical line to highlight purchase date */}
+                        <ReferenceLine
+                            x={indicator.date}
+                            stroke="#3b82f6"
+                            strokeWidth={2}
+                            strokeDasharray="3 3"
+                            label={{
+                                value: '↓',
+                                position: 'top',
+                                fill: '#3b82f6',
+                                fontSize: 16,
+                            }}
+                        />
+
+                        {/* Dot at RSI value */}
+                        <ReferenceDot
+                            x={indicator.date}
+                            y={indicator.yValue}
+                            r={6}
+                            fill="#3b82f6"
+                            stroke="#fff"
+                            strokeWidth={2}
+                            label={{
+                                value: '$',
+                                position: 'center',
+                                fill: '#fff',
+                                fontSize: 10,
+                                fontWeight: 'bold',
+                            }}
+                        />
+                    </React.Fragment>
+                ))}
         </LineChart>
       </div>
       

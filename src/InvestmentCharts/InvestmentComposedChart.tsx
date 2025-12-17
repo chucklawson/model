@@ -1,5 +1,5 @@
 
-import { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
     ComposedChart,
     Line,
@@ -8,9 +8,13 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend
+    Legend,
+    ReferenceDot,
+    ReferenceLine
   } from 'recharts';
 import StandardChartData from "../Lib/ChartData/StandardChartData.ts";
+import type { GroupedPurchase } from '../utils/purchaseIndicators';
+import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
 
 
 {/*
@@ -47,8 +51,19 @@ interface InvestmentComposedChartProps{
   lineWidth: number,
   showBollingerbands: boolean,
   showMean: boolean,
+  purchaseData?: GroupedPurchase[],
+  showPurchases?: boolean,
 }
 const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
+    // Match purchases with chart data
+    const purchaseIndicators = useMemo(() => {
+        if (!props.purchaseData || !props.showPurchases) return [];
+        return matchPurchasesWithChartData(
+            props.purchaseData,
+            props.data,
+            'dailyClosingPrice'
+        );
+    }, [props.purchaseData, props.data, props.showPurchases]);
 
     return (
         <div>
@@ -86,7 +101,43 @@ const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
 
                 {props.showBollingerbands && <Line type="monotone" dataKey="upperBollingerValue" strokeWidth={props.lineWidth} stroke="#99ADFF" dot={false} /> }
                 {props.showMean && <Line type="monotone" dataKey="mean" strokeWidth={props.lineWidth} stroke="#f007d1" dot={false} /> }
-                {props.showBollingerbands && <Line type="monotone"  dataKey="lowerBollingerValue" strokeWidth={props.lineWidth} stroke="#99ADFF" dot={false} />}    
+                {props.showBollingerbands && <Line type="monotone"  dataKey="lowerBollingerValue" strokeWidth={props.lineWidth} stroke="#99ADFF" dot={false} />}
+
+                {/* Purchase indicators */}
+                {props.showPurchases && purchaseIndicators.map((indicator, index) => (
+                    <React.Fragment key={`purchase-${indicator.date}-${index}`}>
+                        {/* Vertical line to highlight purchase date */}
+                        <ReferenceLine
+                            x={indicator.date}
+                            stroke="#10b981"
+                            strokeWidth={2}
+                            strokeDasharray="3 3"
+                            label={{
+                                value: '↓',
+                                position: 'top',
+                                fill: '#10b981',
+                                fontSize: 16,
+                            }}
+                        />
+
+                        {/* Dot at purchase price */}
+                        <ReferenceDot
+                            x={indicator.date}
+                            y={indicator.yValue}
+                            r={6}
+                            fill="#10b981"
+                            stroke="#fff"
+                            strokeWidth={2}
+                            label={{
+                                value: '$',
+                                position: 'center',
+                                fill: '#fff',
+                                fontSize: 10,
+                                fontWeight: 'bold',
+                            }}
+                        />
+                    </React.Fragment>
+                ))}
           </ComposedChart>
         </div>
       );

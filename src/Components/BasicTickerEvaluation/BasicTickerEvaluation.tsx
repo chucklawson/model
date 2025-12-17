@@ -4,6 +4,8 @@ import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvalu
 import type Quote_V3 from "../../Lib/Quote_V3"
 import type AnalysisKeyMetricsItem_V3 from "../../Lib/AnalysisKeyMetricsItem_V3";
 import type HistoricalPriceFull_V3 from '../../Lib/HistoricalPriceFull_V3';
+import type { TickerLot } from '../../types';
+import { getLotsForTicker } from '../../utils/tickerCalculations';
 import TickerInput from '../TickerInput/TickerInput.jsx';
 import SimpleButton from '../SimpleButton/SimpleButton'
 import {GetValuesBasedOnDate} from '../../Lib/GetValuesBasedOnDate'
@@ -36,6 +38,7 @@ interface  BasicTickerEvaluationProps{
   tickerEntries:TickersToEvaluate[];
   backgroundLeft:string;
   buttonBackgroundColor:string;
+  lots?: TickerLot[];
 }
 
 
@@ -539,6 +542,25 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setPriceEquityChecked(!priceEquityChecked);
     }, [priceEquityChecked]);
 
+    const [buysChecked, setBuysChecked] = React.useState(false);
+    const buysChangeHandler = useCallback(() => {
+        setBuysChecked(!buysChecked);
+    }, [buysChecked]);
+
+    // Filter lots for current ticker and date range
+    const filteredLots = useMemo(() => {
+        if (!tickerToGet || !startDate || !endDate || !props.lots) return [];
+
+        const tickerLots = getLotsForTicker(props.lots, tickerToGet);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        return tickerLots.filter(lot => {
+            const purchaseDate = new Date(lot.purchaseDate);
+            return purchaseDate >= start && purchaseDate <= end;
+        });
+    }, [props.lots, tickerToGet, startDate, endDate]);
+
     // Use technical indicators hook
     const { graphData, rsiData, stochasticData, priceEarningsData, slope } = useTechnicalIndicators({
         timeSeries,
@@ -594,10 +616,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             rsiChecked={rsiChecked}
             stochasticChecked={stochasticChecked}
             priceEquityChecked={priceEquityChecked}
+            buysChecked={buysChecked}
             onBollingerChange={bollingerChangeHandler}
             onRsiChange={rsiChangeHandler}
             onStochasticChange={stochasticChangeHandler}
             onPriceEquityChange={priceEquityChangeHandler}
+            onBuysChange={buysChangeHandler}
         />
 
         <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
@@ -657,6 +681,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 todaysPercentageGain={todaysPercentageGain}
                 gainIsPositive={gainIsPositive}
                 slope={slope}
+                lots={filteredLots}
+                buysChecked={buysChecked}
             /> :
                 <div className="text-center text-gray-500 text-xl mt-10">
                     {showChart && dataFetched && graphData.length === 0 ? 'No data available for the selected date range' : ''}
