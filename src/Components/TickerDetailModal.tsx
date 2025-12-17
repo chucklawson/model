@@ -53,6 +53,7 @@ export default function TickerDetailModal({
     purchaseDate: new Date().toISOString().split('T')[0],
     portfolios: portfolios.length > 0 ? [portfolios[0].name] : [],
     calculateAccumulatedProfitLoss: true,
+    isDividend: false,
     notes: '',
   });
 
@@ -88,6 +89,7 @@ export default function TickerDetailModal({
       purchaseDate: lot.purchaseDate,
       portfolios: lot.portfolios,
       calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
+      isDividend: lot.isDividend ?? false,
       notes: lot.notes || '',
     });
     setIsFormVisible(true);
@@ -102,6 +104,7 @@ export default function TickerDetailModal({
       purchaseDate: new Date().toISOString().split('T')[0],
       portfolios: portfolios.length > 0 ? [portfolios[0].name] : [],
       calculateAccumulatedProfitLoss: true,
+      isDividend: false,
       notes: '',
     });
     setIsFormVisible(true);
@@ -180,6 +183,7 @@ export default function TickerDetailModal({
             purchaseDate: lot.purchaseDate,
             portfolios: mergedPortfolios,
             calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss,
+            isDividend: lot.isDividend ?? false,
             notes: lot.notes ?? '',
           };
           await onSaveLot(lotData, lot.id);
@@ -516,6 +520,24 @@ export default function TickerDetailModal({
                     <span className="text-slate-700 font-semibold">No</span>
                   </label>
                 </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  Dividend Reinvestment
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.isDividend}
+                    onChange={(e) => setFormData({ ...formData, isDividend: e.target.checked })}
+                    className="w-5 h-5 text-blue-600 rounded"
+                  />
+                  <span className="text-slate-700">This is a dividend reinvestment lot</span>
+                </label>
+                <p className="text-xs text-slate-500 mt-1">
+                  Dividend lots will not appear as purchase indicators on charts
+                </p>
               </div>
 
               <div className="mb-4">

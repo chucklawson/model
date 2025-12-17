@@ -86,6 +86,7 @@ function FlexiblePortfolio() {
             purchaseDate: item.purchaseDate,
             portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+            isDividend: item.isDividend ?? false,
             baseYield: item.baseYield ?? 0,
             notes: item.notes ?? '',
             totalCost: item.totalCost ?? item.shares * item.costPerShare,

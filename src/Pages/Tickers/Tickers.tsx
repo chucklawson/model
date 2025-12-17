@@ -86,6 +86,7 @@ interface LegacyLot {
             purchaseDate: item.purchaseDate,
             portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+            isDividend: item.isDividend ?? false,
             baseYield: item.baseYield ?? 0,
             notes: item.notes ?? '',
             totalCost: item.totalCost ?? item.shares * item.costPerShare,
@@ -314,6 +315,7 @@ interface LegacyLot {
           purchaseDate: item.purchaseDate,
           portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
           calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
+          isDividend: item.isDividend ?? false,
           baseYield: item.baseYield ?? 0,
           notes: item.notes ?? '',
           totalCost: item.totalCost ?? item.shares * item.costPerShare,
@@ -343,6 +345,7 @@ interface LegacyLot {
           purchaseDate: lotData.purchaseDate,
           portfolios: lotData.portfolios,
           calculateAccumulatedProfitLoss: lotData.calculateAccumulatedProfitLoss,
+          isDividend: lotData.isDividend,
           notes: lotData.notes,
           totalCost,
         });
@@ -354,6 +357,7 @@ interface LegacyLot {
           purchaseDate: lotData.purchaseDate,
           portfolios: lotData.portfolios,
           calculateAccumulatedProfitLoss: lotData.calculateAccumulatedProfitLoss,
+          isDividend: lotData.isDividend,
           notes: lotData.notes,
           totalCost,
         });

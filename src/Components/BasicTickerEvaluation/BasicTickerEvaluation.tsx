@@ -557,7 +557,9 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
         return tickerLots.filter(lot => {
             const purchaseDate = new Date(lot.purchaseDate);
-            return purchaseDate >= start && purchaseDate <= end;
+            const isInDateRange = purchaseDate >= start && purchaseDate <= end;
+            const isNotDividend = !lot.isDividend;
+            return isInDateRange && isNotDividend;
         });
     }, [props.lots, tickerToGet, startDate, endDate]);
 

@@ -141,6 +141,7 @@ export async function importCSVData(
           purchaseDate: row.purchaseDate,
           portfolios: row.portfolios,
           calculateAccumulatedProfitLoss: row.calculatePL ?? true,
+          isDividend: row.isDividend ?? false,
           notes: row.notes ?? '',
           totalCost,
         });

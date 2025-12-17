@@ -29,6 +29,7 @@ export interface TickerLot {
   purchaseDate: string;
   portfolios: string[];
   calculateAccumulatedProfitLoss: boolean;
+  isDividend: boolean;
   baseYield: number;
   notes?: string;
   totalCost: number;
@@ -58,6 +59,7 @@ export interface LotFormData {
   purchaseDate: string;
   portfolios: string[];
   calculateAccumulatedProfitLoss: boolean;
+  isDividend: boolean;
   notes: string;
 }
 
@@ -72,6 +74,7 @@ export interface ParsedCSVRow {
   purchaseDate: string;
   portfolios: string[];
   calculatePL?: boolean;
+  isDividend?: boolean;
   notes?: string;
   rowIndex: number;
   originalRow: string;
