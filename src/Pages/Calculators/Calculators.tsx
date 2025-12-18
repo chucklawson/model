@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Calculator, Sparkles } from 'lucide-react';
+import { Calculator, Sparkles, Home } from 'lucide-react';
 import PEGrowthCalculatorModal from '../../Components/PEGrowthCalculatorModal/PEGrowthCalculatorModal';
 import RuleOf72CalculatorModal from '../../Components/RuleOf72CalculatorModal/RuleOf72CalculatorModal';
+import MortgageCalculatorModal from '../../Components/MortgageCalculatorModal/MortgageCalculatorModal';
 
 function Calculators() {
   const [showPEGrowthModal, setShowPEGrowthModal] = useState(false);
   const [showRuleOf72Modal, setShowRuleOf72Modal] = useState(false);
+  const [showMortgageModal, setShowMortgageModal] = useState(false);
 
   useEffect(() => {
     document.title = "Calculators";
@@ -97,14 +99,39 @@ function Calculators() {
           </button>
         </div>
 
-        {/* Placeholder for Future Calculators */}
-        <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl shadow-lg p-6
-                        border-2 border-dashed border-slate-400 flex items-center justify-center">
-          <div className="text-center text-slate-500">
-            <Calculator size={48} className="mx-auto mb-3 opacity-40" />
-            <p className="font-semibold">More calculators coming soon!</p>
-            <p className="text-xs mt-1">Dividend yield, ROI, compound growth, etc.</p>
+        {/* Mortgage Calculator Card */}
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border-2 border-transparent hover:border-blue-500">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-blue-100 p-3 rounded-lg">
+              <Home className="text-blue-600" size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800">Mortgage Calculator</h3>
+              <span className="text-xs text-blue-600 font-semibold">FINANCIAL TOOL</span>
+            </div>
           </div>
+
+          <p className="text-slate-600 mb-4 text-sm leading-relaxed">
+            Calculate mortgage payments with PMI, property tax, and insurance.
+            Compare loan terms and visualize principal vs interest over time.
+          </p>
+
+          <ul className="text-xs text-slate-500 mb-6 space-y-1">
+            <li>• PMI calculations (down payment &lt; 20%)</li>
+            <li>• Extra payment scenarios</li>
+            <li>• Compare 15yr vs 30yr loans</li>
+            <li>• 4 interactive charts</li>
+          </ul>
+
+          <button
+            onClick={() => setShowMortgageModal(true)}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white
+                       rounded-lg font-bold hover:from-blue-700 hover:to-cyan-700
+                       transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <Home size={20} />
+            Launch Calculator
+          </button>
         </div>
 
       </div>
@@ -116,6 +143,10 @@ function Calculators() {
 
       {showRuleOf72Modal && (
         <RuleOf72CalculatorModal onClose={() => setShowRuleOf72Modal(false)} />
+      )}
+
+      {showMortgageModal && (
+        <MortgageCalculatorModal onClose={() => setShowMortgageModal(false)} />
       )}
     </div>
   );
