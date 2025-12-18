@@ -52,8 +52,18 @@ backend.fmpProxy.addEnvironment(
   process.env.FMP_API_KEY || ''
 );
 
-// Enable Function URL for direct HTTPS access
+// Enable Function URL for FMP Proxy
 const fmpProxyUrl = backend.fmpProxy.resources.lambda.addFunctionUrl({
+  authType: FunctionUrlAuthType.NONE,
+  cors: {
+    allowedOrigins: ['*'],
+    allowedMethods: [HttpMethod.POST],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  },
+});
+
+// Enable Function URL for Send Notification Lambda
+const sendNotificationUrl = backend.sendNotification.resources.lambda.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
   cors: {
     allowedOrigins: ['*'],

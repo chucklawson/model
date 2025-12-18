@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Search, Newspaper, TrendingUp, BarChart3 } from 'lucide-react';
+import { Search, Newspaper, TrendingUp, BarChart3, LineChart } from 'lucide-react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 import { useGeneralNewsData } from '../../hooks/useGeneralNewsData';
 import { useGeneralStockNewsData } from '../../hooks/useGeneralStockNewsData';
 import NotebookArticleDisplay from '../../Components/NotebookArticleDisplay/NotebookArticleDisplay';
 import TickerNewsModal from '../../Components/TickerNewsModal/TickerNewsModal';
+import TreasuryYieldsModal from '../../Components/TreasuryYieldsModal/TreasuryYieldsModal';
 import type { NewsArticle } from '../../types/news';
 
 function Research() {
   const [tickerList, setTickerList] = useState<string[]>([]);
   const [showTickerModal, setShowTickerModal] = useState(false);
+  const [showTreasuryModal, setShowTreasuryModal] = useState(false);
   const [generalStockLimit, setGeneralStockLimit] = useState(15);
   const [fetchGeneralStock, setFetchGeneralStock] = useState(false);
   const [generalNewsLimit, setGeneralNewsLimit] = useState(15);
@@ -108,8 +110,8 @@ function Research() {
         <p className="text-slate-300">Choose your news source below</p>
       </div>
 
-      {/* Three Cards: Stock-Specific, General Stock News, and General Market News */}
-      <div className="max-w-6xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Four Cards: Stock-Specific, General Stock News, General Market News, and Treasury Yields */}
+      <div className="max-w-7xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {/* Card 1: Stock-Specific News */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 border-2 border-slate-200">
@@ -170,7 +172,7 @@ function Research() {
         <div className="bg-white rounded-2xl shadow-2xl p-6 border-2 border-slate-200">
           <div className="mb-4">
             <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2">
-              <Newspaper size={28} className="text-purple-600" />
+              <Newspaper size={28} className="text-amber-600" />
               General Market News
             </h2>
             <p className="text-slate-600 text-sm">Get the latest market news across all sectors</p>
@@ -187,19 +189,38 @@ function Research() {
                 max="20"
                 value={generalNewsLimit}
                 onChange={(e) => setGeneralNewsLimit(parseInt(e.target.value) || 15)}
-                className="w-full px-3 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-purple-500 text-lg"
+                className="w-full px-3 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 text-lg"
               />
             </div>
 
             <button
               onClick={handleFetchGeneralNews}
               disabled={generalLoading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-bold hover:from-amber-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Newspaper size={24} />
               {generalLoading ? 'Fetching News...' : 'Get Latest News'}
             </button>
           </div>
+        </div>
+
+        {/* Card 4: Treasury Yields */}
+        <div className="bg-white rounded-2xl shadow-2xl p-6 border-2 border-slate-200">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+              <LineChart size={28} className="text-purple-600" />
+              Treasury Yields
+            </h2>
+            <p className="text-slate-600 text-sm">Compare treasury yield curves across different time periods</p>
+          </div>
+
+          <button
+            onClick={() => setShowTreasuryModal(true)}
+            className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+          >
+            <LineChart size={24} />
+            View Treasury Yields
+          </button>
         </div>
       </div>
 
@@ -216,6 +237,13 @@ function Research() {
           onClose={() => setShowTickerModal(false)}
           onFetchComplete={handleTickerNewsComplete}
           tickerList={tickerList}
+        />
+      )}
+
+      {/* Treasury Yields Modal */}
+      {showTreasuryModal && (
+        <TreasuryYieldsModal
+          onClose={() => setShowTreasuryModal(false)}
         />
       )}
     </div>
