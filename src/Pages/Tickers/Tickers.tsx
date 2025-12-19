@@ -13,10 +13,11 @@ import {
   Plus,
   Settings,
   Upload,
-  Download
+  Download,
+  Percent
 } from 'lucide-react';
 import type { TickerLot, TickerSummary, LotFormData, Portfolio, Ticker } from '../../types';
-import { calculateTickerSummaries } from '../../utils/tickerCalculations';
+import { calculateTickerSummaries, calculateDividendMetrics } from '../../utils/tickerCalculations';
 import { exportAllTickers } from '../../utils/tickerExporter';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../utils/localStorage';
@@ -502,6 +503,16 @@ interface LegacyLot {
     }, 0);
   }, [summaries, regularPrices]);
 
+  // Calculate dividend metrics when only Dividend portfolio is selected
+  const isDividendPortfolioSelected = useMemo(() => {
+    return selectedPortfolios.length === 1 && selectedPortfolios[0] === 'Dividend';
+  }, [selectedPortfolios]);
+
+  const dividendMetrics = useMemo(() => {
+    if (!isDividendPortfolioSelected) return null;
+    return calculateDividendMetrics(summaries);
+  }, [isDividendPortfolioSelected, summaries]);
+
   return (
     <div className="h-screen-safe overflow-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="h-full w-full max-w-7xl mx-auto flex flex-col min-w-0">
@@ -618,6 +629,39 @@ interface LegacyLot {
                 </div>
               </div>
             </div>
+
+            {/* Dividend Portfolio Metrics - Only shown when Dividend portfolio is selected */}
+            {isDividendPortfolioSelected && dividendMetrics && (
+              <>
+                <div className="bg-white p-2 rounded-lg shadow border border-amber-200 flex-shrink-0 min-w-[200px]">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-amber-100 p-1 rounded">
+                      <Percent className="text-amber-600" size={16} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-600 font-semibold uppercase">Weighted Yield</p>
+                      <p className="text-base font-bold text-amber-600">
+                        {dividendMetrics.weightedYieldPercentage.toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-2 rounded-lg shadow border border-emerald-200 flex-shrink-0 min-w-[200px]">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-emerald-100 p-1 rounded">
+                      <DollarSign className="text-emerald-600" size={16} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-600 font-semibold uppercase">Annual Income</p>
+                      <p className="text-base font-bold text-emerald-600">
+                        ${dividendMetrics.annualDividendIncome.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Main Content */}

@@ -55,3 +55,33 @@ export function getLotsForTicker(lots: TickerLot[], ticker: string): TickerLot[]
       return b.costPerShare - a.costPerShare;
     });
 }
+
+/**
+ * Calculate cumulative dividend metrics for dividend portfolio
+ * @param summaries - Ticker summaries to calculate from
+ * @returns Object with weighted yield percentage and annual dividend income
+ */
+export function calculateDividendMetrics(summaries: TickerSummary[]): {
+  weightedYieldPercentage: number;
+  annualDividendIncome: number;
+} {
+  let totalInvestment = 0;
+  let totalProjectedReturn = 0;
+
+  summaries.forEach(summary => {
+    const investment = summary.totalCost;
+    const projectedReturn = (summary.baseYield / 100) * investment;
+
+    totalInvestment += investment;
+    totalProjectedReturn += projectedReturn;
+  });
+
+  const weightedYieldPercentage = totalInvestment > 0
+    ? (totalProjectedReturn / totalInvestment) * 100
+    : 0;
+
+  return {
+    weightedYieldPercentage,
+    annualDividendIncome: totalProjectedReturn
+  };
+}
