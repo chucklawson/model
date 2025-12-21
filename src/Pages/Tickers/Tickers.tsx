@@ -26,6 +26,7 @@ import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
+import PerformanceModal from '../../Components/PerformanceModal/PerformanceModal';
 import { useAfterHoursData } from '../../hooks/useAfterHoursData';
 
 // Type for old data schema with single portfolio field
@@ -48,6 +49,7 @@ interface LegacyLot {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [showPortfolioManager, setShowPortfolioManager] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
 
   // Portfolio filter state (persists to localStorage)
   const [selectedPortfolios, setSelectedPortfolios] = useLocalStorage<string[]>(
@@ -513,6 +515,15 @@ interface LegacyLot {
     return calculateDividendMetrics(summaries);
   }, [isDividendPortfolioSelected, summaries]);
 
+  // Convert regularPrices Map to object for YTD modal
+  const currentPricesObject = useMemo(() => {
+    const obj: { [ticker: string]: number } = {};
+    regularPrices.forEach((price, ticker) => {
+      obj[ticker] = price;
+    });
+    return obj;
+  }, [regularPrices]);
+
   return (
     <div className="h-screen-safe overflow-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="h-full w-full max-w-7xl mx-auto flex flex-col min-w-0">
@@ -540,6 +551,13 @@ interface LegacyLot {
                 >
                   <Download size={16} />
                   Export Tickers
+                </button>
+                <button
+                  onClick={() => setShowPerformanceModal(true)}
+                  className="bg-white bg-opacity-20 text-yellow-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
+                >
+                  <TrendingUp size={16} />
+                  Performance
                 </button>
                 <button
                   onClick={() => {
@@ -734,6 +752,17 @@ interface LegacyLot {
             await loadPortfolios();
             setShowImportModal(false);
           }}
+        />
+      )}
+
+      {/* Performance Modal */}
+      {showPerformanceModal && (
+        <PerformanceModal
+          lots={filteredLots}
+          selectedPortfolios={selectedPortfolios}
+          currentPrices={currentPricesObject}
+          onClose={() => setShowPerformanceModal(false)}
+          onTickerClick={(ticker) => setSelectedTicker(ticker)}
         />
       )}
     </div>

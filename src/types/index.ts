@@ -122,3 +122,6 @@ export interface ImportResult {
     reason?: string;
   }[];
 }
+
+// YTD Performance Types
+export type { YTDTickerPerformance, YTDPortfolioPerformance, HistoricalPrice } from './ytd';
