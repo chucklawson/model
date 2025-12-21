@@ -11,6 +11,7 @@ import Research from "./Pages/Research/Research";
 import KeyMetrics from "./Pages/KeyMetrics/KeyMetrics";
 import Calculators from "./Pages/Calculators/Calculators";
 import SettingsPage from "./Pages/Settings/Settings";
+import Help from "./Pages/Help/Help";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
               {path: '/keymetrics', element: <KeyMetrics/>},
               {path: '/calculators', element: <Calculators/>},
               {path: '/historicaldividendentries', element: <HistoricalDividends/>},
+              {path: '/help', element: <Help/>},
               {path: '/settings', element: <SettingsPage/>},
             ]
           },

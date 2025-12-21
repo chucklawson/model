@@ -1,6 +1,37 @@
+# Investment Portfolio Manager - Sample CSV Import File
+#
+# This file demonstrates the correct format for importing your portfolio positions.
+#
+# REQUIRED COLUMNS (must be present with exact names):
+# - Ticker: Stock symbol (e.g., AAPL, MSFT, GOOGL)
+# - Date: Purchase date in M/D/YYYY format (e.g., 1/15/2024 or 01/15/2024)
+# - Quantity: Number of shares (can include decimals for fractional shares)
+# - Cost: Cost PER SHARE, not total cost (e.g., 150.25)
+# - Portfolio: Portfolio name (portfolios are created automatically if they don't exist)
+#
+# IMPORTANT NOTES:
+# - Date format MUST be M/D/YYYY (month/day/year)
+# - Cost is price per share, NOT total cost (Total = Quantity × Cost)
+# - Portfolio names are case-sensitive ("Default" ≠ "default")
+# - Tickers are automatically converted to uppercase
+# - Multiple lots of the same ticker are allowed (separate purchases)
+# - Delete these comment lines (starting with #) before importing
+#
+# For detailed documentation, see docs/guides/csv-import.md or visit the Help page in the app.
+#
 Ticker,Date,Quantity,Cost,Portfolio
 AAPL,1/15/2024,100,150.25,Default
+AAPL,3/20/2024,50,145.00,Default
 MSFT,2/20/2024,50,380.00,Retirement
 GOOGL,3/10/2024,75,140.50,Trading
 TSLA,4/5/2024,25,245.75,Default
 NVDA,5/12/2024,40,890.00,Tech Portfolio
+VTI,6/1/2024,200,220.00,Retirement
+SCHD,7/15/2024,100,75.50,Dividend Income
+KO,8/1/2024,150,58.25,Dividend Income
+PG,8/15/2024,80,145.00,Dividend Income
+AMZN,9/1/2024,30,175.30,Growth Stocks
+BRK.B,9/15/2024,25,450.25,Value Stocks
+VOO,10/1/2024,50,420.50,Index Funds
+QQQ,10/15/2024,60,385.75,Tech Portfolio
+DIS,11/1/2024,100,95.50,Entertainment
