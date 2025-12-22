@@ -211,6 +211,24 @@ export default function YTDPerformanceModal({
           {ytdData && !loading && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Current Portfolio Value */}
+                <div className="bg-emerald-50 border-2 border-emerald-500 p-4 rounded-lg">
+                  <p className="text-sm font-semibold text-slate-600">Current Portfolio Value</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Market value today</p>
+                  <p className="text-2xl font-bold text-emerald-600 mt-1">
+                    {formatCurrency(ytdData.totalCurrentValue)}
+                  </p>
+                </div>
+
+                {/* YTD Baseline Value */}
+                <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
+                  <p className="text-sm font-semibold text-slate-600">YTD Baseline Value</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Jan 1 value + new purchases</p>
+                  <p className="text-2xl font-bold text-blue-700 mt-1">
+                    {formatCurrency(ytdData.totalBaselineValue)}
+                  </p>
+                </div>
+
                 {/* Total YTD Gain ($) */}
                 <div className={`p-4 rounded-lg border-2 ${
                   ytdData.totalYTDGainDollar >= 0
@@ -218,6 +236,7 @@ export default function YTDPerformanceModal({
                     : 'bg-red-50 border-red-500'
                 }`}>
                   <p className="text-sm font-semibold text-slate-600">Total YTD Gain</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Dollar change from baseline</p>
                   <p className={`text-2xl font-bold mt-1 ${
                     ytdData.totalYTDGainDollar >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
@@ -232,26 +251,11 @@ export default function YTDPerformanceModal({
                     : 'bg-red-50 border-red-500'
                 }`}>
                   <p className="text-sm font-semibold text-slate-600">YTD Return</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Percentage gain from baseline</p>
                   <p className={`text-2xl font-bold mt-1 ${
                     ytdData.totalYTDGainPercent >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {formatPercent(ytdData.totalYTDGainPercent)}
-                  </p>
-                </div>
-
-                {/* Current Portfolio Value */}
-                <div className="bg-emerald-50 border-2 border-emerald-500 p-4 rounded-lg">
-                  <p className="text-sm font-semibold text-slate-600">Current Value</p>
-                  <p className="text-2xl font-bold text-emerald-600 mt-1">
-                    {formatCurrency(ytdData.totalCurrentValue)}
-                  </p>
-                </div>
-
-                {/* Jan 1 Starting Value */}
-                <div className="bg-slate-100 border-2 border-slate-300 p-4 rounded-lg">
-                  <p className="text-sm font-semibold text-slate-600">Jan 1 Value</p>
-                  <p className="text-2xl font-bold text-slate-700 mt-1">
-                    {formatCurrency(ytdData.totalBaselineValue)}
                   </p>
                 </div>
               </div>
