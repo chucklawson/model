@@ -3,8 +3,12 @@ import { OrbitControls, Stars } from '@react-three/drei'
 import Globe3D from './Globe3D'
 import Clouds3D from './Clouds3D'
 import DollarRain from './DollarRain'
+import SantaSleigh from './SantaSleigh'
+import { isHolidaySeason } from '../../utils/holidayCheck'
 
 export default function GlobeScene() {
+  const showSanta = isHolidaySeason()
+
   return (
     <div className="w-full h-screen bg-gradient-to-b from-blue-900 to-black">
       <Canvas
@@ -29,6 +33,9 @@ export default function GlobeScene() {
         <Globe3D />
         <Clouds3D />
         <DollarRain count={150} />
+
+        {/* Holiday feature: Santa orbiting the globe */}
+        {showSanta && <SantaSleigh />}
 
         {/* Camera controls */}
         <OrbitControls

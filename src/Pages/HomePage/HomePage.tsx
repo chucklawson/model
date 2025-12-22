@@ -26,6 +26,9 @@ export default function HomePage() {
         >
           Welcome to Your Portfolio
         </h1>
+        <p className="text-lg text-white/90 text-center drop-shadow-md mt-2 italic">
+          Discipline beats conviction
+        </p>
       </header>
 
       {/* 3D Scene */}
