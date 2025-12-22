@@ -29,11 +29,11 @@ export default function YTDBarChart({ ytdData, onTickerClick }: YTDBarChartProps
       (a, b) => b.ytdGainPercent - a.ytdGainPercent
     );
 
-    // If more than 20 tickers, show top 10 and bottom 10
-    if (sorted.length > 20) {
-      const top10 = sorted.slice(0, 10);
-      const bottom10 = sorted.slice(-10);
-      return [...top10, ...bottom10];
+    // If more than 30 tickers, show top 15 and bottom 15
+    if (sorted.length > 30) {
+      const top15 = sorted.slice(0, 15);
+      const bottom15 = sorted.slice(-15);
+      return [...top15, ...bottom15];
     }
 
     return sorted;

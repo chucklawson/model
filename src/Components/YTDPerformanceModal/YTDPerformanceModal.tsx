@@ -210,13 +210,22 @@ export default function YTDPerformanceModal({
           {/* Stats Cards */}
           {ytdData && !loading && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Current Portfolio Value */}
                 <div className="bg-emerald-50 border-2 border-emerald-500 p-4 rounded-lg">
                   <p className="text-sm font-semibold text-slate-600">Current Portfolio Value</p>
                   <p className="text-xs text-slate-500 mt-0.5">Market value today</p>
                   <p className="text-2xl font-bold text-emerald-600 mt-1">
                     {formatCurrency(ytdData.totalCurrentValue)}
+                  </p>
+                </div>
+
+                {/* Cost Basis */}
+                <div className="bg-slate-100 border-2 border-slate-400 p-4 rounded-lg">
+                  <p className="text-sm font-semibold text-slate-600">Cost Basis</p>
+                  <p className="text-xs text-slate-500 mt-0.5">What you originally paid</p>
+                  <p className="text-2xl font-bold text-slate-700 mt-1">
+                    {formatCurrency(ytdData.totalCostBasis)}
                   </p>
                 </div>
 
@@ -229,35 +238,47 @@ export default function YTDPerformanceModal({
                   </p>
                 </div>
 
+                {/* All-Time Gain ($) */}
+                <div className={`p-4 rounded-lg border-2 ${
+                  ytdData.totalAllTimeGainDollar >= 0
+                    ? 'bg-purple-50 border-purple-500'
+                    : 'bg-red-50 border-red-500'
+                }`}>
+                  <p className="text-sm font-semibold text-slate-600">All-Time Gain</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Total gain from cost basis</p>
+                  <p className={`text-2xl font-bold mt-1 ${
+                    ytdData.totalAllTimeGainDollar >= 0 ? 'text-purple-600' : 'text-red-600'
+                  }`}>
+                    {formatCurrency(ytdData.totalAllTimeGainDollar)}
+                  </p>
+                  <p className={`text-sm font-semibold mt-1 ${
+                    ytdData.totalAllTimeGainPercent >= 0 ? 'text-purple-600' : 'text-red-600'
+                  }`}>
+                    {formatPercent(ytdData.totalAllTimeGainPercent)}
+                  </p>
+                </div>
+
                 {/* Total YTD Gain ($) */}
                 <div className={`p-4 rounded-lg border-2 ${
                   ytdData.totalYTDGainDollar >= 0
                     ? 'bg-green-50 border-green-500'
                     : 'bg-red-50 border-red-500'
                 }`}>
-                  <p className="text-sm font-semibold text-slate-600">Total YTD Gain</p>
+                  <p className="text-sm font-semibold text-slate-600">YTD Gain</p>
                   <p className="text-xs text-slate-500 mt-0.5">Dollar change from baseline</p>
                   <p className={`text-2xl font-bold mt-1 ${
                     ytdData.totalYTDGainDollar >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {formatCurrency(ytdData.totalYTDGainDollar)}
                   </p>
-                </div>
-
-                {/* Total YTD Gain (%) */}
-                <div className={`p-4 rounded-lg border-2 ${
-                  ytdData.totalYTDGainPercent >= 0
-                    ? 'bg-green-50 border-green-500'
-                    : 'bg-red-50 border-red-500'
-                }`}>
-                  <p className="text-sm font-semibold text-slate-600">YTD Return</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Percentage gain from baseline</p>
-                  <p className={`text-2xl font-bold mt-1 ${
+                  <p className={`text-sm font-semibold mt-1 ${
                     ytdData.totalYTDGainPercent >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {formatPercent(ytdData.totalYTDGainPercent)}
                   </p>
                 </div>
+
+                {/* YTD Return (%) - Removed as standalone, now combined with YTD Gain */}
               </div>
 
               {/* Chart Tabs */}

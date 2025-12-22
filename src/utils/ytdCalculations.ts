@@ -191,8 +191,11 @@ export async function calculateYTDPerformance(
     return {
       totalCurrentValue: 0,
       totalBaselineValue: 0,
+      totalCostBasis: 0,
       totalYTDGainDollar: 0,
       totalYTDGainPercent: 0,
+      totalAllTimeGainDollar: 0,
+      totalAllTimeGainPercent: 0,
       tickers: [],
       dailyPortfolioValues: [],
       startDate: startOfYear,
@@ -241,6 +244,16 @@ export async function calculateYTDPerformance(
     ? (totalYTDGainDollar / totalBaselineValue) * 100
     : 0;
 
+  // Calculate total cost basis (what was originally paid for all shares)
+  const totalCostBasis = nonDividendLots.reduce(
+    (sum, lot) => sum + (lot.shares * lot.costPerShare),
+    0
+  );
+  const totalAllTimeGainDollar = totalCurrentValue - totalCostBasis;
+  const totalAllTimeGainPercent = totalCostBasis > 0
+    ? (totalAllTimeGainDollar / totalCostBasis) * 100
+    : 0;
+
   // Calculate allocation percentages
   for (const ticker of tickerPerformances) {
     ticker.allocationPercent = totalCurrentValue > 0
@@ -259,8 +272,11 @@ export async function calculateYTDPerformance(
   return {
     totalCurrentValue,
     totalBaselineValue,
+    totalCostBasis,
     totalYTDGainDollar,
     totalYTDGainPercent,
+    totalAllTimeGainDollar,
+    totalAllTimeGainPercent,
     tickers: tickerPerformances,
     dailyPortfolioValues,
     startDate: startOfYear,

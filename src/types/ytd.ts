@@ -35,8 +35,11 @@ export interface YTDPortfolioPerformance {
   // Totals
   totalCurrentValue: number;
   totalBaselineValue: number;
+  totalCostBasis: number;
   totalYTDGainDollar: number;
   totalYTDGainPercent: number;
+  totalAllTimeGainDollar: number;
+  totalAllTimeGainPercent: number;
 
   // Ticker breakdown
   tickers: YTDTickerPerformance[];
