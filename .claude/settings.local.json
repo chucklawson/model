@@ -45,7 +45,13 @@
       "Bash(aws lambda get-function-configuration:*)",
       "Bash(aws lambda update-function-configuration:*)",
       "Bash(del:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(timeout 10 sleep:*)",
+      "Bash(exit 0)",
+      "Bash(if [ -f \"D:\\\\awsGitRepos\\\\model\\\\nul\" ])",
+      "Bash(then rm \"D:\\\\awsGitRepos\\\\model\\\\nul\")",
+      "Bash(else echo \"No nul file found\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []

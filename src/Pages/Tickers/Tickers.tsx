@@ -26,7 +26,7 @@ import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
-import PerformanceModal from '../../Components/PerformanceModal/PerformanceModal';
+import CustomRangePerformanceModal from '../../Components/CustomRangePerformanceModal/CustomRangePerformanceModal';
 import { useAfterHoursData } from '../../hooks/useAfterHoursData';
 
 // Type for old data schema with single portfolio field
@@ -755,9 +755,9 @@ interface LegacyLot {
         />
       )}
 
-      {/* Performance Modal */}
+      {/* Performance Analytics Modal */}
       {showPerformanceModal && (
-        <PerformanceModal
+        <CustomRangePerformanceModal
           lots={filteredLots}
           selectedPortfolios={selectedPortfolios}
           currentPrices={currentPricesObject}
