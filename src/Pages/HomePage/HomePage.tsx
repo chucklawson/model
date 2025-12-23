@@ -27,7 +27,7 @@ export default function HomePage() {
           Welcome to Your Portfolio
         </h1>
         <p className="text-lg text-white/90 text-center drop-shadow-md mt-2 italic">
-          Discipline beats conviction
+          Discipline tops Conviction
         </p>
       </header>
 
