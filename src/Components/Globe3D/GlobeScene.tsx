@@ -15,10 +15,9 @@ export default function GlobeScene() {
         camera={{ position: [0, 0, 8], fov: 45 }}
         className="w-full h-full"
       >
-        {/* Lighting */}
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={1.5} />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} />
+        {/* Lighting - Sun as the main light source */}
+        <ambientLight intensity={0.05} />
+        <directionalLight position={[10, 10, 10]} intensity={2.0} />
 
         {/* Background stars */}
         <Stars
