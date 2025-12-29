@@ -773,30 +773,32 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                         let investmentSchedule = null;
                         if (activeChart === 'investment') {
                           const monthlyPayment = results.monthlyPrincipalAndInterest;
-                          const investmentInputs = investmentComparisonMode === 'lump-sum'
-                            ? {
-                                initialInvestment: inputs.loanAmount,
-                                monthlyContribution: 0,
-                                annualReturnRate: investmentReturnRate,
-                                investmentTermYears: inputs.loanTermYears
-                              }
-                            : investmentComparisonMode === 'monthly-payment'
-                            ? {
-                                initialInvestment: 0,
-                                monthlyContribution: monthlyPayment,
-                                annualReturnRate: investmentReturnRate,
-                                investmentTermYears: inputs.loanTermYears
-                              }
-                            : {
-                                // draw-down mode
-                                initialInvestment: inputs.loanAmount,
-                                monthlyWithdrawal: monthlyPayment,
-                                annualReturnRate: investmentReturnRate,
-                                investmentTermYears: inputs.loanTermYears
-                              };
-                          const investmentResults = investmentComparisonMode === 'draw-down'
-                            ? calculateDrawDownInvestment(investmentInputs as DrawDownInvestmentInputs)
-                            : calculateInvestmentGrowth(investmentInputs);
+
+                          let investmentResults;
+                          if (investmentComparisonMode === 'draw-down') {
+                            const drawDownInputs: DrawDownInvestmentInputs = {
+                              initialInvestment: inputs.loanAmount,
+                              monthlyWithdrawal: monthlyPayment,
+                              annualReturnRate: investmentReturnRate,
+                              investmentTermYears: inputs.loanTermYears
+                            };
+                            investmentResults = calculateDrawDownInvestment(drawDownInputs);
+                          } else {
+                            const standardInputs = investmentComparisonMode === 'lump-sum'
+                              ? {
+                                  initialInvestment: inputs.loanAmount,
+                                  monthlyContribution: 0,
+                                  annualReturnRate: investmentReturnRate,
+                                  investmentTermYears: inputs.loanTermYears
+                                }
+                              : {
+                                  initialInvestment: 0,
+                                  monthlyContribution: monthlyPayment,
+                                  annualReturnRate: investmentReturnRate,
+                                  investmentTermYears: inputs.loanTermYears
+                                };
+                            investmentResults = calculateInvestmentGrowth(standardInputs);
+                          }
                           investmentSchedule = investmentResults.monthlyGrowthSchedule;
                         }
 

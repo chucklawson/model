@@ -46,37 +46,35 @@ export default function InvestmentComparisonChart({
     mortgageInputs.loanTermYears
   );
 
-  const investmentInputs = comparisonMode === 'lump-sum'
-    ? {
-        initialInvestment: mortgageInputs.loanAmount,
-        monthlyContribution: 0,
-        annualReturnRate: investmentReturnRate,
-        investmentTermYears: mortgageInputs.loanTermYears
-      }
-    : comparisonMode === 'monthly-payment'
-    ? {
-        initialInvestment: 0,
-        monthlyContribution: monthlyPayment,
-        annualReturnRate: investmentReturnRate,
-        investmentTermYears: mortgageInputs.loanTermYears
-      }
-    : {
-        // draw-down mode
-        initialInvestment: mortgageInputs.loanAmount,
-        monthlyWithdrawal: monthlyPayment,
-        annualReturnRate: investmentReturnRate,
-        investmentTermYears: mortgageInputs.loanTermYears
-      };
+  // Calculate investment growth based on mode
+  let investmentResults;
+  let validation = { isValid: true, errors: [], warnings: [] };
 
-  // Validate inputs (only for lump-sum and monthly-payment modes)
-  const validation = comparisonMode === 'draw-down'
-    ? { isValid: true, errors: [], warnings: [] }
-    : validateInvestmentInputs(investmentInputs);
-
-  // Calculate investment growth
-  const investmentResults = comparisonMode === 'draw-down'
-    ? calculateDrawDownInvestment(investmentInputs as DrawDownInvestmentInputs)
-    : calculateInvestmentGrowth(investmentInputs);
+  if (comparisonMode === 'draw-down') {
+    const drawDownInputs: DrawDownInvestmentInputs = {
+      initialInvestment: mortgageInputs.loanAmount,
+      monthlyWithdrawal: monthlyPayment,
+      annualReturnRate: investmentReturnRate,
+      investmentTermYears: mortgageInputs.loanTermYears
+    };
+    investmentResults = calculateDrawDownInvestment(drawDownInputs);
+  } else {
+    const standardInputs = comparisonMode === 'lump-sum'
+      ? {
+          initialInvestment: mortgageInputs.loanAmount,
+          monthlyContribution: 0,
+          annualReturnRate: investmentReturnRate,
+          investmentTermYears: mortgageInputs.loanTermYears
+        }
+      : {
+          initialInvestment: 0,
+          monthlyContribution: monthlyPayment,
+          annualReturnRate: investmentReturnRate,
+          investmentTermYears: mortgageInputs.loanTermYears
+        };
+    validation = validateInvestmentInputs(standardInputs);
+    investmentResults = calculateInvestmentGrowth(standardInputs);
+  }
 
   // Sample data for chart (reduce points for long schedules)
   const sampledMortgageSchedule = sampleScheduleForChart(mortgageSchedule, 120);
