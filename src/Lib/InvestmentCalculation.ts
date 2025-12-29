@@ -240,6 +240,53 @@ export function calculateDrawDownInvestment(
   };
 }
 
+/**
+ * Calculate the breakeven interest rate for draw-down investment
+ * where the final investment value equals the total mortgage cost
+ */
+export function calculateBreakevenRate(
+  initialInvestment: number,
+  monthlyPayment: number,
+  totalMortgageCost: number,
+  termYears: number
+): number {
+  // Use binary search to find the rate where final investment value = total mortgage cost
+  let lowRate = 0;
+  let highRate = 30; // 30% max search range
+  let breakevenRate = 0;
+  const tolerance = 0.001; // 0.001% precision
+
+  for (let iteration = 0; iteration < 100; iteration++) {
+    const testRate = (lowRate + highRate) / 2;
+
+    const result = calculateDrawDownInvestment({
+      initialInvestment,
+      monthlyWithdrawal: monthlyPayment,
+      annualReturnRate: testRate,
+      investmentTermYears: termYears
+    });
+
+    const difference = result.finalValue - totalMortgageCost;
+
+    if (Math.abs(difference) < tolerance) {
+      breakevenRate = testRate;
+      break;
+    }
+
+    if (difference > 0) {
+      // Investment value too high, need lower rate
+      highRate = testRate;
+    } else {
+      // Investment value too low, need higher rate
+      lowRate = testRate;
+    }
+
+    breakevenRate = testRate;
+  }
+
+  return breakevenRate;
+}
+
 export function validateInvestmentInputs(inputs: InvestmentInputs): {
   isValid: boolean;
   errors: string[];

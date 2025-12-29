@@ -13,7 +13,7 @@ import { AlertCircle } from 'lucide-react';
 import type { MonthlyPayment, MortgageInputs } from '../../Lib/MortgageCalculation';
 import { calculateMonthlyPayment } from '../../Lib/MortgageCalculation';
 import { formatMonthLabel, sampleScheduleForChart } from '../../Lib/AmortizationSchedule';
-import { calculateInvestmentGrowth, calculateDrawDownInvestment, validateInvestmentInputs } from '../../Lib/InvestmentCalculation';
+import { calculateInvestmentGrowth, calculateDrawDownInvestment, validateInvestmentInputs, calculateBreakevenRate } from '../../Lib/InvestmentCalculation';
 import type { DrawDownInvestmentInputs } from '../../Lib/InvestmentCalculation';
 
 interface InvestmentComparisonChartProps {
@@ -121,6 +121,16 @@ export default function InvestmentComparisonChart({
   const netDifference = finalInvestmentValue - finalMortgageCost;
   const percentageDifference = ((netDifference / finalMortgageCost) * 100).toFixed(1);
 
+  // Calculate breakeven rate for draw-down mode
+  const breakevenRate = comparisonMode === 'draw-down'
+    ? calculateBreakevenRate(
+        mortgageInputs.loanAmount,
+        monthlyPayment,
+        finalMortgageCost,
+        mortgageInputs.loanTermYears
+      )
+    : null;
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length >= 2) {
@@ -174,6 +184,28 @@ export default function InvestmentComparisonChart({
             {validation.warnings.map((warning, idx) => (
               <p key={idx}>{warning}</p>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Breakeven Rate Info (Draw-Down Mode Only) */}
+      {comparisonMode === 'draw-down' && breakevenRate !== null && (
+        <div className="mb-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg flex items-start gap-2">
+          <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-blue-800">
+            <p className="font-semibold mb-1">Breakeven Rate Analysis</p>
+            <p>
+              <strong>Breakeven Rate: {breakevenRate.toFixed(3)}%</strong>
+            </p>
+            <p className="text-xs mt-1">
+              At this return rate, your investment value would exactly equal the total mortgage cost
+              ({formatCurrency(finalMortgageCost)}) at the end of {mortgageInputs.loanTermYears} years.
+              {investmentReturnRate > breakevenRate
+                ? ` Your current rate (${investmentReturnRate.toFixed(2)}%) is above breakeven, so you profit.`
+                : investmentReturnRate < breakevenRate
+                ? ` Your current rate (${investmentReturnRate.toFixed(2)}%) is below breakeven, so you'd be better off paying cash.`
+                : ` Your current rate (${investmentReturnRate.toFixed(2)}%) matches the breakeven rate.`}
+            </p>
           </div>
         </div>
       )}
