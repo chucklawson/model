@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Home,
   X,
@@ -26,12 +26,14 @@ import {
 } from '../../Lib/MortgageCalculation';
 import { MORTGAGE_PRESETS, COMMON_INTEREST_RATES, LOAN_TERMS } from '../../Lib/MortgageScenario';
 import { formatMonthLabel } from '../../Lib/AmortizationSchedule';
+import { calculateInvestmentGrowth } from '../../Lib/InvestmentCalculation';
 import PrincipalVsInterestChart from '../MortgageCharts/PrincipalVsInterestChart';
 import RemainingBalanceChart from '../MortgageCharts/RemainingBalanceChart';
 import TotalInterestComparisonChart from '../MortgageCharts/TotalInterestComparisonChart';
 import CumulativePaymentsChart from '../MortgageCharts/CumulativePaymentsChart';
+import InvestmentComparisonChart from '../MortgageCharts/InvestmentComparisonChart';
 
-type ChartTab = 'principal-interest' | 'balance' | 'comparison' | 'cumulative';
+type ChartTab = 'principal-interest' | 'balance' | 'comparison' | 'cumulative' | 'investment';
 
 export default function MortgageCalculatorModal({ onClose }: { onClose: () => void }) {
   // State management
@@ -51,6 +53,13 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
   const [activeChart, setActiveChart] = useState<ChartTab>('principal-interest');
   const [showExtraPayments, setShowExtraPayments] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [investmentReturnRate, setInvestmentReturnRate] = useState<number>(inputs.interestRate);
+  const [investmentComparisonMode, setInvestmentComparisonMode] = useState<'lump-sum' | 'monthly-payment'>('lump-sum');
+
+  // Sync investment rate with mortgage rate when it changes
+  useEffect(() => {
+    setInvestmentReturnRate(inputs.interestRate);
+  }, [inputs.interestRate]);
 
   // Format currency
   const formatCurrency = (value: number): string => {
@@ -144,7 +153,8 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
     { id: 'principal-interest', label: 'Principal vs Interest', icon: PieChart },
     { id: 'balance', label: 'Remaining Balance', icon: TrendingDown },
     { id: 'comparison', label: 'Loan Term Comparison', icon: BarChart3 },
-    { id: 'cumulative', label: 'Total Cost Breakdown', icon: Layers }
+    { id: 'cumulative', label: 'Total Cost Breakdown', icon: Layers },
+    { id: 'investment', label: 'Investment Comparison', icon: TrendingUp }
   ];
 
   return (
@@ -205,12 +215,17 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="number"
+                    type="text"
                     value={inputs.loanAmount}
-                    onChange={e => updateInput('loanAmount', parseFloat(e.target.value) || 0)}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9.]/g, '');
+                      const num = parseFloat(val);
+                      if (!isNaN(num) || val === '' || val === '.') {
+                        updateInput('loanAmount', isNaN(num) ? 0 : num);
+                      }
+                    }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
                                focus:border-blue-500 focus:outline-none"
-                    step="1000"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -229,26 +244,34 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <input
-                        type="number"
+                        type="text"
                         value={inputs.downPayment.toFixed(1)}
-                        onChange={e => updateDownPaymentPercent(parseFloat(e.target.value) || 0)}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9.]/g, '');
+                          const num = parseFloat(val);
+                          if (!isNaN(num) || val === '' || val === '.') {
+                            updateDownPaymentPercent(isNaN(num) ? 0 : num);
+                          }
+                        }}
                         className="w-full pr-8 pl-4 py-2 border-2 border-slate-300 rounded-lg
                                    focus:border-blue-500 focus:outline-none"
-                        step="0.5"
-                        min="0"
-                        max="99"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
                     </div>
                     <div className="relative flex-1">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                       <input
-                        type="number"
+                        type="text"
                         value={downPaymentAmount.toFixed(0)}
-                        onChange={e => updateDownPaymentDollar(parseFloat(e.target.value) || 0)}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9.]/g, '');
+                          const num = parseFloat(val);
+                          if (!isNaN(num) || val === '' || val === '.') {
+                            updateDownPaymentDollar(isNaN(num) ? 0 : num);
+                          }
+                        }}
                         className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
                                    focus:border-blue-500 focus:outline-none"
-                        step="1000"
                       />
                     </div>
                   </div>
@@ -272,14 +295,17 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="space-y-2">
                   <div className="relative">
                     <input
-                      type="number"
+                      type="text"
                       value={inputs.interestRate}
-                      onChange={e => updateInput('interestRate', parseFloat(e.target.value) || 0)}
+                      onChange={e => {
+                        const val = e.target.value.replace(/[^0-9.]/g, '');
+                        const num = parseFloat(val);
+                        if (!isNaN(num) || val === '' || val === '.') {
+                          updateInput('interestRate', isNaN(num) ? 0 : num);
+                        }
+                      }}
                       className="w-full pr-8 pl-4 py-2 border-2 border-slate-300 rounded-lg
                                  focus:border-blue-500 focus:outline-none"
-                      step="0.1"
-                      min="0"
-                      max="20"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
                   </div>
@@ -322,14 +348,18 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                   ))}
                 </div>
                 <input
-                  type="number"
+                  type="text"
                   value={inputs.loanTermYears}
-                  onChange={e => updateInput('loanTermYears', parseFloat(e.target.value) || 30)}
+                  onChange={e => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    const num = parseInt(val);
+                    if (!isNaN(num) || val === '') {
+                      updateInput('loanTermYears', isNaN(num) ? 30 : num);
+                    }
+                  }}
                   placeholder="Custom years"
                   className="mt-2 w-full px-4 py-2 border-2 border-slate-300 rounded-lg
                              focus:border-blue-500 focus:outline-none"
-                  min="1"
-                  max="50"
                 />
               </div>
             </div>
@@ -348,12 +378,17 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="number"
+                    type="text"
                     value={inputs.propertyTax}
-                    onChange={e => updateInput('propertyTax', parseFloat(e.target.value) || 0)}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9.]/g, '');
+                      const num = parseFloat(val);
+                      if (!isNaN(num) || val === '' || val === '.') {
+                        updateInput('propertyTax', isNaN(num) ? 0 : num);
+                      }
+                    }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
                                focus:border-blue-500 focus:outline-none"
-                    step="100"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -369,12 +404,17 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="number"
+                    type="text"
                     value={inputs.homeInsurance}
-                    onChange={e => updateInput('homeInsurance', parseFloat(e.target.value) || 0)}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9.]/g, '');
+                      const num = parseFloat(val);
+                      if (!isNaN(num) || val === '' || val === '.') {
+                        updateInput('homeInsurance', isNaN(num) ? 0 : num);
+                      }
+                    }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
                                focus:border-blue-500 focus:outline-none"
-                    step="100"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -390,12 +430,17 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="number"
+                    type="text"
                     value={inputs.hoaFees}
-                    onChange={e => updateInput('hoaFees', parseFloat(e.target.value) || 0)}
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9.]/g, '');
+                      const num = parseFloat(val);
+                      if (!isNaN(num) || val === '' || val === '.') {
+                        updateInput('hoaFees', isNaN(num) ? 0 : num);
+                      }
+                    }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
                                focus:border-blue-500 focus:outline-none"
-                    step="10"
                   />
                 </div>
               </div>
@@ -447,9 +492,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                       <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm">$</span>
                         <input
-                          type="number"
+                          type="text"
                           value={payment.amount}
-                          onChange={e => updateExtraPayment(payment.id, 'amount', parseFloat(e.target.value) || 0)}
+                          onChange={e => {
+                            const val = e.target.value.replace(/[^0-9.]/g, '');
+                            const num = parseFloat(val);
+                            if (!isNaN(num) || val === '' || val === '.') {
+                              updateExtraPayment(payment.id, 'amount', isNaN(num) ? 0 : num);
+                            }
+                          }}
                           className="w-full pl-6 pr-2 py-2 border-2 border-slate-300 rounded-lg
                                      focus:border-blue-500 focus:outline-none"
                           placeholder="Amount"
@@ -457,13 +508,18 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                       </div>
 
                       <input
-                        type="number"
+                        type="text"
                         value={payment.startMonth}
-                        onChange={e => updateExtraPayment(payment.id, 'startMonth', parseInt(e.target.value) || 1)}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          const num = parseInt(val);
+                          if (!isNaN(num) || val === '') {
+                            updateExtraPayment(payment.id, 'startMonth', isNaN(num) ? 1 : num);
+                          }
+                        }}
                         className="px-3 py-2 border-2 border-slate-300 rounded-lg
                                    focus:border-blue-500 focus:outline-none"
                         placeholder="Start month"
-                        min="1"
                       />
 
                       <div className="text-xs text-slate-600 flex items-center">
@@ -491,6 +547,63 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Investment Comparison Settings */}
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200">
+            <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+              <TrendingUp size={20} className="text-green-600" />
+              Investment Comparison Settings
+            </h3>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                  Expected Return Rate:
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={investmentReturnRate}
+                    onChange={e => {
+                      const val = e.target.value;
+                      const num = parseFloat(val);
+                      if (!isNaN(num) || val === '' || val === '.') {
+                        setInvestmentReturnRate(isNaN(num) ? 0 : num);
+                      }
+                    }}
+                    className="w-20 pr-6 pl-3 py-2 border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none text-center"
+                  />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setInvestmentReturnRate(inputs.interestRate)}
+                  className="text-xs px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors whitespace-nowrap"
+                >
+                  Match Mortgage ({inputs.interestRate.toFixed(2)}%)
+                </button>
+                <button
+                  onClick={() => setInvestmentReturnRate(4)}
+                  className="text-xs px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
+                >
+                  Conservative (4%)
+                </button>
+                <button
+                  onClick={() => setInvestmentReturnRate(7)}
+                  className="text-xs px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
+                >
+                  S&P 500 Avg (7%)
+                </button>
+                <button
+                  onClick={() => setInvestmentReturnRate(10)}
+                  className="text-xs px-3 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
+                >
+                  Aggressive (10%)
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Calculate Button */}
@@ -618,43 +731,124 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                   {activeChart === 'cumulative' && (
                     <CumulativePaymentsChart schedule={results.amortizationSchedule} inputs={inputs} />
                   )}
+                  {activeChart === 'investment' && (
+                    <>
+                      <div className="mb-4 flex gap-3 items-center justify-center">
+                        <label className="text-sm font-semibold text-slate-700">Comparison Mode:</label>
+                        <select
+                          value={investmentComparisonMode}
+                          onChange={e => setInvestmentComparisonMode(e.target.value as any)}
+                          className="px-3 py-2 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none text-sm bg-white"
+                        >
+                          <option value="lump-sum">Lump Sum Investment</option>
+                          <option value="monthly-payment">Monthly Payment Investment</option>
+                        </select>
+                      </div>
+                      <InvestmentComparisonChart
+                        mortgageSchedule={results.amortizationSchedule}
+                        mortgageInputs={inputs}
+                        investmentReturnRate={investmentReturnRate}
+                        comparisonMode={investmentComparisonMode}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
 
               {/* Amortization Schedule Table */}
               <div className="bg-white p-6 rounded-xl border-2 border-slate-200">
-                <h3 className="text-lg font-bold text-slate-800 mb-4">Amortization Schedule</h3>
-                <div className="overflow-x-auto max-h-96 overflow-y-auto">
-                  <table className="w-full text-sm">
+                <h3 className="text-lg font-bold text-slate-800 mb-4">
+                  Amortization Schedule
+                  {activeChart === 'investment' && (
+                    <span className="ml-2 text-sm font-normal text-green-600">with Investment Comparison</span>
+                  )}
+                </h3>
+                <div className="overflow-x-auto overflow-y-auto max-h-96" style={{ overflowX: 'scroll' }}>
+                  <table className="w-full text-sm" style={{ minWidth: activeChart === 'investment' ? '1200px' : '800px' }}>
                     <thead className="sticky top-0 bg-slate-100">
                       <tr className="border-b-2 border-slate-300">
-                        <th className="text-left p-2">Month</th>
-                        <th className="text-left p-2">Date</th>
-                        <th className="text-right p-2">Principal</th>
-                        <th className="text-right p-2">Interest</th>
-                        <th className="text-right p-2">Extra</th>
-                        <th className="text-right p-2">Balance</th>
+                        <th className="text-left p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '50px' } : {}}>Month</th>
+                        <th className="text-left p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '70px' } : {}}>Date</th>
+                        <th className="text-right p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '100px' } : {}}>Principal</th>
+                        <th className="text-right p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '80px' } : {}}>Interest</th>
+                        {activeChart === 'investment' && <th className="text-right p-2 whitespace-nowrap text-red-700" style={{ width: '95px' }}>Accum. Interest</th>}
+                        {activeChart !== 'investment' && <th className="text-right p-2 whitespace-nowrap">Extra</th>}
+                        <th className="text-right p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '100px' } : {}}>Balance</th>
+                        {activeChart === 'investment' && (
+                          <>
+                            <th className="text-right p-2 whitespace-nowrap text-green-700" style={{ width: '90px' }}>Monthly Return</th>
+                            <th className="text-right p-2 whitespace-nowrap text-green-700" style={{ width: '90px' }}>Accum. Return</th>
+                            <th className="text-right p-2 whitespace-nowrap text-green-700" style={{ width: '100px' }}>Investment Value</th>
+                          </>
+                        )}
                       </tr>
                     </thead>
                     <tbody>
-                      {results.amortizationSchedule.map(payment => (
-                        <tr key={payment.month} className="border-b border-slate-200 hover:bg-slate-50">
-                          <td className="p-2">{payment.month}</td>
-                          <td className="p-2">{formatMonthLabel(payment)}</td>
-                          <td className="text-right p-2 text-blue-600 font-semibold">
-                            {formatCurrency(payment.principalPaid)}
-                          </td>
-                          <td className="text-right p-2 text-red-600">
-                            {formatCurrency(payment.interestPaid)}
-                          </td>
-                          <td className="text-right p-2 text-green-600">
-                            {payment.extraPrincipalPaid > 0 ? formatCurrency(payment.extraPrincipalPaid) : '-'}
-                          </td>
-                          <td className="text-right p-2 font-semibold">
-                            {formatCurrency(payment.remainingBalance)}
-                          </td>
-                        </tr>
-                      ))}
+                      {(() => {
+                        // Calculate investment data once if on investment tab
+                        let investmentSchedule = null;
+                        if (activeChart === 'investment') {
+                          const monthlyPayment = results.monthlyPrincipalAndInterest;
+                          const investmentInputs = investmentComparisonMode === 'lump-sum'
+                            ? {
+                                initialInvestment: inputs.loanAmount,
+                                monthlyContribution: 0,
+                                annualReturnRate: investmentReturnRate,
+                                investmentTermYears: inputs.loanTermYears
+                              }
+                            : {
+                                initialInvestment: 0,
+                                monthlyContribution: monthlyPayment,
+                                annualReturnRate: investmentReturnRate,
+                                investmentTermYears: inputs.loanTermYears
+                              };
+                          const investmentResults = calculateInvestmentGrowth(investmentInputs);
+                          investmentSchedule = investmentResults.monthlyGrowthSchedule;
+                        }
+
+                        return results.amortizationSchedule.map((payment, idx) => {
+                          const investmentData = investmentSchedule ? investmentSchedule[idx] : null;
+
+                        return (
+                          <tr key={payment.month} className="border-b border-slate-200 hover:bg-slate-50">
+                            <td className="p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '50px' } : {}}>{payment.month}</td>
+                            <td className="p-2 whitespace-nowrap" style={activeChart === 'investment' ? { width: '70px' } : {}}>{formatMonthLabel(payment)}</td>
+                            <td className="text-right p-2 text-blue-600 font-semibold whitespace-nowrap" style={activeChart === 'investment' ? { width: '100px' } : {}}>
+                              {formatCurrency(payment.principalPaid)}
+                            </td>
+                            <td className="text-right p-2 text-red-600 whitespace-nowrap" style={activeChart === 'investment' ? { width: '80px' } : {}}>
+                              {formatCurrency(payment.interestPaid)}
+                            </td>
+                            {activeChart === 'investment' && (
+                              <td className="text-right p-2 text-red-700 font-semibold whitespace-nowrap" style={{ width: '95px' }}>
+                                {formatCurrency(payment.cumulativeInterest)}
+                              </td>
+                            )}
+                            {activeChart !== 'investment' && (
+                              <td className="text-right p-2 text-green-600 whitespace-nowrap">
+                                {payment.extraPrincipalPaid > 0 ? formatCurrency(payment.extraPrincipalPaid) : '-'}
+                              </td>
+                            )}
+                            <td className="text-right p-2 font-semibold whitespace-nowrap" style={activeChart === 'investment' ? { width: '100px' } : {}}>
+                              {formatCurrency(payment.remainingBalance)}
+                            </td>
+                            {activeChart === 'investment' && investmentData && (
+                              <>
+                                <td className="text-right p-2 text-green-600 font-semibold whitespace-nowrap" style={{ width: '90px' }}>
+                                  {formatCurrency(investmentData.interestEarned)}
+                                </td>
+                                <td className="text-right p-2 text-green-700 font-bold whitespace-nowrap" style={{ width: '90px' }}>
+                                  {formatCurrency(investmentData.cumulativeInterest)}
+                                </td>
+                                <td className="text-right p-2 text-green-700 font-bold whitespace-nowrap" style={{ width: '100px' }}>
+                                  {formatCurrency(investmentData.totalValue)}
+                                </td>
+                              </>
+                            )}
+                          </tr>
+                        );
+                        });
+                      })()}
                     </tbody>
                   </table>
                 </div>
