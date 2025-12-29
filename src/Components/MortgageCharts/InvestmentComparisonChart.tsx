@@ -48,7 +48,11 @@ export default function InvestmentComparisonChart({
 
   // Calculate investment growth based on mode
   let investmentResults;
-  let validation = { isValid: true, errors: [], warnings: [] };
+  let validation: { isValid: boolean; errors: string[]; warnings: string[] } = {
+    isValid: true,
+    errors: [],
+    warnings: []
+  };
 
   if (comparisonMode === 'draw-down') {
     const drawDownInputs: DrawDownInvestmentInputs = {
