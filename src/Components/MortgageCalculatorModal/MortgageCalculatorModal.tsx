@@ -216,17 +216,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="text"
-                    value={inputs.loanAmount}
+                    type="number"
+                    step="any"
+                    value={inputs.loanAmount || ''}
                     onChange={e => {
-                      const val = e.target.value.replace(/[^0-9.]/g, '');
-                      const num = parseFloat(val);
-                      if (!isNaN(num) || val === '' || val === '.') {
-                        updateInput('loanAmount', isNaN(num) ? 0 : num);
-                      }
+                      const num = parseFloat(e.target.value);
+                      updateInput('loanAmount', isNaN(num) ? 0 : num);
                     }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
-                               focus:border-blue-500 focus:outline-none"
+                               focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -245,34 +243,30 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <input
-                        type="text"
-                        value={inputs.downPayment.toFixed(1)}
+                        type="number"
+                        step="any"
+                        value={inputs.downPayment || ''}
                         onChange={e => {
-                          const val = e.target.value.replace(/[^0-9.]/g, '');
-                          const num = parseFloat(val);
-                          if (!isNaN(num) || val === '' || val === '.') {
-                            updateDownPaymentPercent(isNaN(num) ? 0 : num);
-                          }
+                          const num = parseFloat(e.target.value);
+                          updateDownPaymentPercent(isNaN(num) ? 0 : num);
                         }}
                         className="w-full pr-8 pl-4 py-2 border-2 border-slate-300 rounded-lg
-                                   focus:border-blue-500 focus:outline-none"
+                                   focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
                     </div>
                     <div className="relative flex-1">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                       <input
-                        type="text"
-                        value={downPaymentAmount.toFixed(0)}
+                        type="number"
+                        step="any"
+                        value={downPaymentAmount || ''}
                         onChange={e => {
-                          const val = e.target.value.replace(/[^0-9.]/g, '');
-                          const num = parseFloat(val);
-                          if (!isNaN(num) || val === '' || val === '.') {
-                            updateDownPaymentDollar(isNaN(num) ? 0 : num);
-                          }
+                          const num = parseFloat(e.target.value);
+                          updateDownPaymentDollar(isNaN(num) ? 0 : num);
                         }}
                         className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
-                                   focus:border-blue-500 focus:outline-none"
+                                   focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     </div>
                   </div>
@@ -296,17 +290,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="space-y-2">
                   <div className="relative">
                     <input
-                      type="text"
-                      value={inputs.interestRate}
+                      type="number"
+                      step="any"
+                      value={inputs.interestRate || ''}
                       onChange={e => {
-                        const val = e.target.value.replace(/[^0-9.]/g, '');
-                        const num = parseFloat(val);
-                        if (!isNaN(num) || val === '' || val === '.') {
-                          updateInput('interestRate', isNaN(num) ? 0 : num);
-                        }
+                        const num = parseFloat(e.target.value);
+                        updateInput('interestRate', isNaN(num) ? 0 : num);
                       }}
                       className="w-full pr-8 pl-4 py-2 border-2 border-slate-300 rounded-lg
-                                 focus:border-blue-500 focus:outline-none"
+                                 focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">%</span>
                   </div>
@@ -379,17 +371,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="text"
-                    value={inputs.propertyTax}
+                    type="number"
+                    step="any"
+                    value={inputs.propertyTax || ''}
                     onChange={e => {
-                      const val = e.target.value.replace(/[^0-9.]/g, '');
-                      const num = parseFloat(val);
-                      if (!isNaN(num) || val === '' || val === '.') {
-                        updateInput('propertyTax', isNaN(num) ? 0 : num);
-                      }
+                      const num = parseFloat(e.target.value);
+                      updateInput('propertyTax', isNaN(num) ? 0 : num);
                     }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
-                               focus:border-blue-500 focus:outline-none"
+                               focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -405,17 +395,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="text"
-                    value={inputs.homeInsurance}
+                    type="number"
+                    step="any"
+                    value={inputs.homeInsurance || ''}
                     onChange={e => {
-                      const val = e.target.value.replace(/[^0-9.]/g, '');
-                      const num = parseFloat(val);
-                      if (!isNaN(num) || val === '' || val === '.') {
-                        updateInput('homeInsurance', isNaN(num) ? 0 : num);
-                      }
+                      const num = parseFloat(e.target.value);
+                      updateInput('homeInsurance', isNaN(num) ? 0 : num);
                     }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
-                               focus:border-blue-500 focus:outline-none"
+                               focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
@@ -431,17 +419,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
                   <input
-                    type="text"
-                    value={inputs.hoaFees}
+                    type="number"
+                    step="any"
+                    value={inputs.hoaFees || ''}
                     onChange={e => {
-                      const val = e.target.value.replace(/[^0-9.]/g, '');
-                      const num = parseFloat(val);
-                      if (!isNaN(num) || val === '' || val === '.') {
-                        updateInput('hoaFees', isNaN(num) ? 0 : num);
-                      }
+                      const num = parseFloat(e.target.value);
+                      updateInput('hoaFees', isNaN(num) ? 0 : num);
                     }}
                     className="w-full pl-8 pr-4 py-2 border-2 border-slate-300 rounded-lg
-                               focus:border-blue-500 focus:outline-none"
+                               focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
               </div>
@@ -493,17 +479,15 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                       <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm">$</span>
                         <input
-                          type="text"
-                          value={payment.amount}
+                          type="number"
+                          step="any"
+                          value={payment.amount || ''}
                           onChange={e => {
-                            const val = e.target.value.replace(/[^0-9.]/g, '');
-                            const num = parseFloat(val);
-                            if (!isNaN(num) || val === '' || val === '.') {
-                              updateExtraPayment(payment.id, 'amount', isNaN(num) ? 0 : num);
-                            }
+                            const num = parseFloat(e.target.value);
+                            updateExtraPayment(payment.id, 'amount', isNaN(num) ? 0 : num);
                           }}
                           className="w-full pl-6 pr-2 py-2 border-2 border-slate-300 rounded-lg
-                                     focus:border-blue-500 focus:outline-none"
+                                     focus:border-blue-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           placeholder="Amount"
                         />
                       </div>
@@ -563,16 +547,14 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                 </label>
                 <div className="relative">
                   <input
-                    type="text"
-                    value={investmentReturnRate}
+                    type="number"
+                    step="any"
+                    value={investmentReturnRate || ''}
                     onChange={e => {
-                      const val = e.target.value;
-                      const num = parseFloat(val);
-                      if (!isNaN(num) || val === '' || val === '.') {
-                        setInvestmentReturnRate(isNaN(num) ? 0 : num);
-                      }
+                      const num = parseFloat(e.target.value);
+                      setInvestmentReturnRate(isNaN(num) ? 0 : num);
                     }}
-                    className="w-20 pr-6 pl-3 py-2 border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none text-center"
+                    className="w-20 pr-6 pl-3 py-2 border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm">%</span>
                 </div>
