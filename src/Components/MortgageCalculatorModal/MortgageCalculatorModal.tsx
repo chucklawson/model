@@ -26,7 +26,8 @@ import {
 } from '../../Lib/MortgageCalculation';
 import { MORTGAGE_PRESETS, COMMON_INTEREST_RATES, LOAN_TERMS } from '../../Lib/MortgageScenario';
 import { formatMonthLabel } from '../../Lib/AmortizationSchedule';
-import { calculateInvestmentGrowth } from '../../Lib/InvestmentCalculation';
+import { calculateInvestmentGrowth, calculateDrawDownInvestment } from '../../Lib/InvestmentCalculation';
+import type { DrawDownInvestmentInputs } from '../../Lib/InvestmentCalculation';
 import PrincipalVsInterestChart from '../MortgageCharts/PrincipalVsInterestChart';
 import RemainingBalanceChart from '../MortgageCharts/RemainingBalanceChart';
 import TotalInterestComparisonChart from '../MortgageCharts/TotalInterestComparisonChart';
@@ -54,7 +55,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
   const [showExtraPayments, setShowExtraPayments] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [investmentReturnRate, setInvestmentReturnRate] = useState<number>(inputs.interestRate);
-  const [investmentComparisonMode, setInvestmentComparisonMode] = useState<'lump-sum' | 'monthly-payment'>('lump-sum');
+  const [investmentComparisonMode, setInvestmentComparisonMode] = useState<'lump-sum' | 'monthly-payment' | 'draw-down'>('lump-sum');
 
   // Sync investment rate with mortgage rate when it changes
   useEffect(() => {
@@ -742,6 +743,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                         >
                           <option value="lump-sum">Lump Sum Investment</option>
                           <option value="monthly-payment">Monthly Payment Investment</option>
+                          <option value="draw-down">Draw-Down Investment</option>
                         </select>
                       </div>
                       <InvestmentComparisonChart
@@ -796,13 +798,23 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                                 annualReturnRate: investmentReturnRate,
                                 investmentTermYears: inputs.loanTermYears
                               }
-                            : {
+                            : investmentComparisonMode === 'monthly-payment'
+                            ? {
                                 initialInvestment: 0,
                                 monthlyContribution: monthlyPayment,
                                 annualReturnRate: investmentReturnRate,
                                 investmentTermYears: inputs.loanTermYears
+                              }
+                            : {
+                                // draw-down mode
+                                initialInvestment: inputs.loanAmount,
+                                monthlyWithdrawal: monthlyPayment,
+                                annualReturnRate: investmentReturnRate,
+                                investmentTermYears: inputs.loanTermYears
                               };
-                          const investmentResults = calculateInvestmentGrowth(investmentInputs);
+                          const investmentResults = investmentComparisonMode === 'draw-down'
+                            ? calculateDrawDownInvestment(investmentInputs as DrawDownInvestmentInputs)
+                            : calculateInvestmentGrowth(investmentInputs);
                           investmentSchedule = investmentResults.monthlyGrowthSchedule;
                         }
 

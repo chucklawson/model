@@ -143,6 +143,103 @@ export function calculateInvestmentGrowth(
 /**
  * Validate investment inputs
  */
+/**
+ * Draw-down investment inputs where monthly payments are withdrawn
+ */
+export interface DrawDownInvestmentInputs {
+  initialInvestment: number;      // Starting balance
+  monthlyWithdrawal: number;       // Amount withdrawn each month (mortgage payment)
+  annualReturnRate: number;        // Return rate on remaining balance
+  investmentTermYears: number;     // Duration to track
+}
+
+/**
+ * Calculate draw-down investment where monthly payments are withdrawn
+ * from an initial investment while remainder earns returns
+ */
+export function calculateDrawDownInvestment(
+  inputs: DrawDownInvestmentInputs
+): InvestmentResults {
+  const { initialInvestment, monthlyWithdrawal, annualReturnRate, investmentTermYears } = inputs;
+
+  if (investmentTermYears <= 0 || initialInvestment <= 0) {
+    return {
+      finalValue: 0,
+      totalContributions: initialInvestment,
+      totalInterestEarned: 0,
+      monthlyGrowthSchedule: []
+    };
+  }
+
+  const monthlyRate = annualReturnRate / 100 / 12;
+  const totalMonths = investmentTermYears * 12;
+  const monthlyGrowthSchedule: MonthlyInvestmentGrowth[] = [];
+
+  let totalValue = initialInvestment;
+  let cumulativeInterest = 0;
+
+  // Current date for year calculation
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  for (let month = 1; month <= totalMonths; month++) {
+    // Earn interest on current balance FIRST
+    const interestThisMonth = totalValue * monthlyRate;
+    totalValue += interestThisMonth;
+    cumulativeInterest += interestThisMonth;
+
+    // Then withdraw monthly payment
+    // Check if we have enough to withdraw
+    const actualWithdrawal = Math.min(monthlyWithdrawal, totalValue);
+    totalValue -= actualWithdrawal;
+
+    // Calculate calendar year and month
+    const monthsSinceStart = month - 1;
+    const yearOffset = Math.floor((currentMonth - 1 + monthsSinceStart) / 12);
+    const monthOfYear = ((currentMonth - 1 + monthsSinceStart) % 12) + 1;
+
+    monthlyGrowthSchedule.push({
+      month,
+      year: currentYear + yearOffset,
+      monthOfYear,
+      monthlyContribution: -actualWithdrawal, // Negative to show withdrawal
+      interestEarned: interestThisMonth,
+      totalValue,
+      cumulativeContributions: initialInvestment, // Initial only, no additions
+      cumulativeInterest
+    });
+
+    // Stop if balance is depleted
+    if (totalValue <= 0) {
+      // Fill remaining months with zero values
+      for (let remainingMonth = month + 1; remainingMonth <= totalMonths; remainingMonth++) {
+        const monthsSinceStart = remainingMonth - 1;
+        const yearOffset = Math.floor((currentMonth - 1 + monthsSinceStart) / 12);
+        const monthOfYear = ((currentMonth - 1 + monthsSinceStart) % 12) + 1;
+
+        monthlyGrowthSchedule.push({
+          month: remainingMonth,
+          year: currentYear + yearOffset,
+          monthOfYear,
+          monthlyContribution: 0,
+          interestEarned: 0,
+          totalValue: 0,
+          cumulativeContributions: initialInvestment,
+          cumulativeInterest
+        });
+      }
+      break;
+    }
+  }
+
+  return {
+    finalValue: totalValue,
+    totalContributions: initialInvestment,
+    totalInterestEarned: cumulativeInterest,
+    monthlyGrowthSchedule
+  };
+}
+
 export function validateInvestmentInputs(inputs: InvestmentInputs): {
   isValid: boolean;
   errors: string[];

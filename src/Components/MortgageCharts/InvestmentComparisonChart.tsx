@@ -13,13 +13,14 @@ import { AlertCircle } from 'lucide-react';
 import type { MonthlyPayment, MortgageInputs } from '../../Lib/MortgageCalculation';
 import { calculateMonthlyPayment } from '../../Lib/MortgageCalculation';
 import { formatMonthLabel, sampleScheduleForChart } from '../../Lib/AmortizationSchedule';
-import { calculateInvestmentGrowth, validateInvestmentInputs } from '../../Lib/InvestmentCalculation';
+import { calculateInvestmentGrowth, calculateDrawDownInvestment, validateInvestmentInputs } from '../../Lib/InvestmentCalculation';
+import type { DrawDownInvestmentInputs } from '../../Lib/InvestmentCalculation';
 
 interface InvestmentComparisonChartProps {
   mortgageSchedule: MonthlyPayment[];
   mortgageInputs: MortgageInputs;
   investmentReturnRate: number;
-  comparisonMode: 'lump-sum' | 'monthly-payment';
+  comparisonMode: 'lump-sum' | 'monthly-payment' | 'draw-down';
 }
 
 export default function InvestmentComparisonChart({
@@ -52,18 +53,30 @@ export default function InvestmentComparisonChart({
         annualReturnRate: investmentReturnRate,
         investmentTermYears: mortgageInputs.loanTermYears
       }
-    : {
+    : comparisonMode === 'monthly-payment'
+    ? {
         initialInvestment: 0,
         monthlyContribution: monthlyPayment,
         annualReturnRate: investmentReturnRate,
         investmentTermYears: mortgageInputs.loanTermYears
+      }
+    : {
+        // draw-down mode
+        initialInvestment: mortgageInputs.loanAmount,
+        monthlyWithdrawal: monthlyPayment,
+        annualReturnRate: investmentReturnRate,
+        investmentTermYears: mortgageInputs.loanTermYears
       };
 
-  // Validate inputs
-  const validation = validateInvestmentInputs(investmentInputs);
+  // Validate inputs (only for lump-sum and monthly-payment modes)
+  const validation = comparisonMode === 'draw-down'
+    ? { isValid: true, errors: [], warnings: [] }
+    : validateInvestmentInputs(investmentInputs);
 
   // Calculate investment growth
-  const investmentResults = calculateInvestmentGrowth(investmentInputs);
+  const investmentResults = comparisonMode === 'draw-down'
+    ? calculateDrawDownInvestment(investmentInputs as DrawDownInvestmentInputs)
+    : calculateInvestmentGrowth(investmentInputs);
 
   // Sample data for chart (reduce points for long schedules)
   const sampledMortgageSchedule = sampleScheduleForChart(mortgageSchedule, 120);
@@ -147,7 +160,9 @@ export default function InvestmentComparisonChart({
         <p className="text-sm text-slate-600">
           {comparisonMode === 'lump-sum'
             ? `Compare investing ${formatCurrency(mortgageInputs.loanAmount)} upfront vs paying a mortgage`
-            : `Compare investing ${formatCurrency(monthlyPayment)}/month vs making mortgage payments`}
+            : comparisonMode === 'monthly-payment'
+            ? `Compare investing ${formatCurrency(monthlyPayment)}/month vs making mortgage payments`
+            : `Start with ${formatCurrency(mortgageInputs.loanAmount)} and make ${formatCurrency(monthlyPayment)} mortgage payments while earning returns`}
         </p>
       </div>
 
@@ -260,11 +275,23 @@ export default function InvestmentComparisonChart({
               would grow to over {mortgageInputs.loanTermYears} years, compared to the total cost of the mortgage
               (principal + interest paid).
             </p>
-          ) : (
+          ) : comparisonMode === 'monthly-payment' ? (
             <p>
               This shows what investing {formatCurrency(monthlyPayment)}/month at {investmentReturnRate.toFixed(2)}%
               would accumulate over {mortgageInputs.loanTermYears} years, compared to making mortgage payments
               of the same amount.
+            </p>
+          ) : (
+            <p>
+              This shows starting with {formatCurrency(mortgageInputs.loanAmount)} and making
+              monthly mortgage payments of {formatCurrency(monthlyPayment)} from this investment,
+              while earning {investmentReturnRate.toFixed(2)}% returns on the remaining balance.
+              {investmentResults.finalValue > 0
+                ? ` After ${mortgageInputs.loanTermYears} years, ${formatCurrency(investmentResults.finalValue)} remains.`
+                : ' The investment depletes before the mortgage term ends.'}
+              {' '}<strong>Key insight:</strong> If the return rate equals the mortgage rate ({mortgageInputs.interestRate.toFixed(2)}%),
+              the result is equivalent to paying cash. Returns above {mortgageInputs.interestRate.toFixed(2)}% mean you profit
+              by investing instead of paying cash; returns below mean you would have been better off paying cash.
             </p>
           )}
           <p className="text-xs text-blue-700 pt-2 border-t border-blue-200">
