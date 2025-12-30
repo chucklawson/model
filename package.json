@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run test:run && tsc -b && vite build",
     "build:notify": "npm run build && node scripts/send-sms.js \"Build completed successfully\" \"Build\" || node scripts/send-sms.js \"Build failed - check logs\" \"Error\"",
     "lint": "eslint .",
     "preview": "vite preview",
