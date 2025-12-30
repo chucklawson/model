@@ -26,6 +26,7 @@ const TickerInput =( props:TickerInputProps )=> {
     const [oneYearHistoryChecked, setOneYearHistoryChecked] = React.useState(false);
     const [tFirstTermChecked, settFirstTermChecked] = React.useState(false);
     const [bidenTermChecked, setBidenTermChecked] = React.useState(false);
+    const [ytdChecked, setYtdChecked] = React.useState(false);
     const getValuesBasedOnDate = new GetValuesBasedOnDate();
 
 
@@ -34,7 +35,7 @@ const TickerInput =( props:TickerInputProps )=> {
       initializeStartAndEndDates()
       setContainerClassValues('bg-white rounded-lg shadow-md p-6 mb-4')
   },
-  [oneYearHistoryChecked,tFirstTermChecked,bidenTermChecked])
+  [oneYearHistoryChecked,tFirstTermChecked,bidenTermChecked,ytdChecked])
 
     useEffect (() => {
 
@@ -46,7 +47,7 @@ const TickerInput =( props:TickerInputProps )=> {
     useEffect(() => {
       // Wait for dates to be updated after checkbox change
       const timer = setTimeout(() => {
-        if (startDate && endDate && enteredValue && (tFirstTermChecked || oneYearHistoryChecked || bidenTermChecked)) {
+        if (startDate && endDate && enteredValue && (tFirstTermChecked || oneYearHistoryChecked || bidenTermChecked || ytdChecked)) {
           const year = parseInt(startDate.substring(0, startDate.indexOf('-')));
           const adjustedYear = year - 1;
           const adjustedStartDate = adjustedYear + startDate.substring(startDate.indexOf('-'));
@@ -55,7 +56,7 @@ const TickerInput =( props:TickerInputProps )=> {
       }, 100); // Small delay to let dates update first
 
       return () => clearTimeout(timer);
-    }, [tFirstTermChecked, oneYearHistoryChecked, bidenTermChecked])
+    }, [tFirstTermChecked, oneYearHistoryChecked, bidenTermChecked, ytdChecked])
 
     const tickerInputChangeHandler = (event:ChangeEvent<HTMLInputElement> )=> {
        // event.preventDefault();
@@ -109,10 +110,10 @@ const TickerInput =( props:TickerInputProps )=> {
 
   const initializeStartAndEndDates = ()=>
   {
-    if((tFirstTermChecked===false)&&(bidenTermChecked===false))
+    if((tFirstTermChecked===false)&&(bidenTermChecked===false)&&(ytdChecked===false))
     {
       let tempDate=getValuesBasedOnDate.getAHistoricDateBySubtractingFromNow(60,oneYearHistoryChecked);
-      
+
       //console.log('tempDate: ' + tempDate)
       tempDate.setHours(0)
       tempDate.setMinutes(0)
@@ -149,7 +150,7 @@ const TickerInput =( props:TickerInputProps )=> {
         tempDate.setMinutes(0);
         tempDate.setSeconds(0);
         setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
-  
+
         tempDate=getValuesBasedOnDate.getDate_2025();
         tempDate.setHours(0);
         tempDate.setMinutes(0);
@@ -157,8 +158,26 @@ const TickerInput =( props:TickerInputProps )=> {
         setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
       }
 
-    //setStartDateIsValid(true); 
-    //setEndDateIsValid(true);    
+    if(ytdChecked)
+      {
+        // Year to Date: January 1st of current year to today
+        let tempDate = new Date();
+        tempDate.setMonth(0); // January (0-indexed)
+        tempDate.setDate(1);  // 1st day
+        tempDate.setHours(0);
+        tempDate.setMinutes(0);
+        tempDate.setSeconds(0);
+        setStartDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
+
+        tempDate = new Date(); // Today
+        tempDate.setHours(0);
+        tempDate.setMinutes(0);
+        tempDate.setSeconds(0);
+        setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
+      }
+
+    //setStartDateIsValid(true);
+    //setEndDateIsValid(true);
   }
 
     const startDateChangeHandler = (event:ChangeEvent<HTMLInputElement>) => {
@@ -179,23 +198,33 @@ const TickerInput =( props:TickerInputProps )=> {
       }
     };    
 
-    const tFirstTermChangeHandler = () => {      
+    const tFirstTermChangeHandler = () => {
       settFirstTermChecked(!tFirstTermChecked);
       setOneYearHistoryChecked(false);
       setBidenTermChecked(false);
+      setYtdChecked(false);
     };
 
     const oneYearHistoryChangeHandler = () => {
       settFirstTermChecked(false);
       setOneYearHistoryChecked(!oneYearHistoryChecked);
       setBidenTermChecked(false);
+      setYtdChecked(false);
     };
 
     const bidenTermChangeHandler = () => {
-      
+
       settFirstTermChecked(false);
-      setOneYearHistoryChecked(false);      
+      setOneYearHistoryChecked(false);
       setBidenTermChecked(!bidenTermChecked);
+      setYtdChecked(false);
+    };
+
+    const ytdChangeHandler = () => {
+      settFirstTermChecked(false);
+      setOneYearHistoryChecked(false);
+      setBidenTermChecked(false);
+      setYtdChecked(!ytdChecked);
     };
 
     return (
@@ -241,6 +270,17 @@ const TickerInput =( props:TickerInputProps )=> {
             }`}
           >
             2021-2024
+          </button>
+          <button
+            type="button"
+            onClick={ytdChangeHandler}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              ytdChecked
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50'
+            }`}
+          >
+            Year to Date
           </button>
         </div>
       </div>
