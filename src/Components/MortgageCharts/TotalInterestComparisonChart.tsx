@@ -86,8 +86,8 @@ export default function TotalInterestComparisonChart({
     return null;
   };
 
-  // Color mapping
-  const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#ef4444'];
+  // Color mapping for interest bars (different from principal blue)
+  const colors = ['#10b981', '#f59e0b', '#8b5cf6', '#ef4444']; // green, orange, purple, red
 
   return (
     <div className="w-full">
