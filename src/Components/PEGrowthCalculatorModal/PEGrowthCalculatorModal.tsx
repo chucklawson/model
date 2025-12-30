@@ -749,7 +749,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                           setResults(null);
                         }}
                         placeholder={quoteData.eps?.toFixed(2) || '0.00'}
-                        className="w-full px-2 py-1 text-sm border-2 border-slate-300 rounded focus:border-orange-500 focus:outline-none"
+                        className="w-full px-2 py-1 text-sm border-2 border-slate-300 rounded focus:border-orange-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       {useEpsOverride && (
                         <button
@@ -879,7 +879,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                   }
                 }}
                 disabled={useAnalystEstimates && analystData.length > 0}
-                className={`w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none ${
+                className={`w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                   useAnalystEstimates && analystData.length > 0 ? 'bg-slate-100 cursor-not-allowed' : ''
                 }`}
                 placeholder="10"
@@ -902,7 +902,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     setFormData({ ...formData, targetPE: parseFloat(e.target.value) || 0 });
                     setResults(null);
                   }}
-                  className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                  className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="20"
                 />
               </div>
@@ -927,7 +927,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                       setFormData({ ...formData, years: Math.min(years, maxYears) });
                       setResults(null);
                     }}
-                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="5"
                   />
                   {useAnalystEstimates && analystData.length > 0 && (
@@ -950,7 +950,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                       setFormData({ ...formData, futurePEInput: parseFloat(e.target.value) || 0 });
                       setResults(null);
                     }}
-                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder={quoteData?.pe?.toFixed(2) || "20"}
                   />
                   <p className="text-xs text-slate-500 mt-1">
