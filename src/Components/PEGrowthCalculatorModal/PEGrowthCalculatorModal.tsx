@@ -922,9 +922,16 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     step="1"
                     value={formData.years}
                     onChange={(e) => {
-                      const years = parseInt(e.target.value) || 1;
-                      const maxYears = useAnalystEstimates && analystData.length > 0 ? analystData.length : 30;
-                      setFormData({ ...formData, years: Math.min(years, maxYears) });
+                      const value = e.target.value;
+                      if (value === '') {
+                        setFormData({ ...formData, years: 1 });
+                      } else {
+                        const years = parseInt(value);
+                        if (!isNaN(years)) {
+                          const maxYears = useAnalystEstimates && analystData.length > 0 ? analystData.length : 30;
+                          setFormData({ ...formData, years: Math.min(Math.max(1, years), maxYears) });
+                        }
+                      }
                       setResults(null);
                     }}
                     className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
