@@ -80,6 +80,12 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
   const [sectorPEData, setSectorPEData] = useState<SectorPESnapshot[]>([]);
   const [fetchingProfile, setFetchingProfile] = useState(false);
 
+  // String inputs for number fields (to allow empty during typing)
+  const [yearsInput, setYearsInput] = useState<string>('5');
+  const [growthRateInput, setGrowthRateInput] = useState<string>('10');
+  const [targetPEInput, setTargetPEInput] = useState<string>('20');
+  const [futurePEInputStr, setFuturePEInputStr] = useState<string>('20');
+
   // Fetch P/E data from API
   const fetchPEData = async (ticker: string) => {
     if (!ticker || ticker.length < 1) return;
@@ -870,20 +876,25 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                 value={
                   useAnalystEstimates && analystData.length > 0 && getEffectiveEPS()
                     ? calculateImpliedGrowth(getEffectiveEPS()!, analystData).toFixed(2)
-                    : formData.earningsGrowthRate
+                    : growthRateInput
                 }
                 onChange={(e) => {
                   if (!useAnalystEstimates) {
                     const value = e.target.value;
-                    if (value === '' || value === '-') {
-                      setFormData({ ...formData, earningsGrowthRate: 0 });
-                    } else {
+                    setGrowthRateInput(value);
+                    if (value !== '' && value !== '-') {
                       const rate = parseFloat(value);
                       if (!isNaN(rate)) {
                         setFormData({ ...formData, earningsGrowthRate: rate });
                       }
                     }
                     setResults(null);
+                  }
+                }}
+                onBlur={() => {
+                  if (!useAnalystEstimates && (growthRateInput === '' || growthRateInput === '-')) {
+                    setGrowthRateInput('0');
+                    setFormData({ ...formData, earningsGrowthRate: 0 });
                   }
                 }}
                 disabled={useAnalystEstimates && analystData.length > 0}
@@ -905,18 +916,23 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                   min="0"
                   max="200"
                   step="0.1"
-                  value={formData.targetPE}
+                  value={targetPEInput}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value === '') {
-                      setFormData({ ...formData, targetPE: 0 });
-                    } else {
+                    setTargetPEInput(value);
+                    if (value !== '') {
                       const pe = parseFloat(value);
-                      if (!isNaN(pe)) {
-                        setFormData({ ...formData, targetPE: Math.max(0, pe) });
+                      if (!isNaN(pe) && pe >= 0) {
+                        setFormData({ ...formData, targetPE: pe });
                       }
                     }
                     setResults(null);
+                  }}
+                  onBlur={() => {
+                    if (targetPEInput === '' || parseFloat(targetPEInput) < 0) {
+                      setTargetPEInput('0');
+                      setFormData({ ...formData, targetPE: 0 });
+                    }
                   }}
                   className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="20"
@@ -936,19 +952,24 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     min="1"
                     max={useAnalystEstimates && analystData.length > 0 ? analystData.length : 30}
                     step="1"
-                    value={formData.years}
+                    value={yearsInput}
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (value === '') {
-                        setFormData({ ...formData, years: 1 });
-                      } else {
+                      setYearsInput(value);
+                      if (value !== '') {
                         const years = parseInt(value);
-                        if (!isNaN(years)) {
+                        if (!isNaN(years) && years >= 1) {
                           const maxYears = useAnalystEstimates && analystData.length > 0 ? analystData.length : 30;
-                          setFormData({ ...formData, years: Math.min(Math.max(1, years), maxYears) });
+                          setFormData({ ...formData, years: Math.min(years, maxYears) });
                         }
                       }
                       setResults(null);
+                    }}
+                    onBlur={() => {
+                      if (yearsInput === '' || parseInt(yearsInput) < 1) {
+                        setYearsInput('1');
+                        setFormData({ ...formData, years: 1 });
+                      }
                     }}
                     className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="5"
@@ -968,18 +989,23 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     min="0"
                     max="200"
                     step="0.1"
-                    value={formData.futurePEInput}
+                    value={futurePEInputStr}
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (value === '') {
-                        setFormData({ ...formData, futurePEInput: 0 });
-                      } else {
+                      setFuturePEInputStr(value);
+                      if (value !== '') {
                         const pe = parseFloat(value);
-                        if (!isNaN(pe)) {
-                          setFormData({ ...formData, futurePEInput: Math.max(0, pe) });
+                        if (!isNaN(pe) && pe >= 0) {
+                          setFormData({ ...formData, futurePEInput: pe });
                         }
                       }
                       setResults(null);
+                    }}
+                    onBlur={() => {
+                      if (futurePEInputStr === '' || parseFloat(futurePEInputStr) < 0) {
+                        setFuturePEInputStr('0');
+                        setFormData({ ...formData, futurePEInput: 0 });
+                      }
                     }}
                     className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder={quoteData?.pe?.toFixed(2) || "20"}
