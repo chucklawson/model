@@ -244,8 +244,8 @@ export default function InvestmentComparisonChart({
               <stop offset="95%" stopColor="#ef4444" stopOpacity={0.3} />
             </linearGradient>
             <linearGradient id="investmentGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.7} />
-              <stop offset="95%" stopColor="#67e8f9" stopOpacity={0.2} />
+              <stop offset="5%" stopColor="#10b981" stopOpacity={0.7} />
+              <stop offset="95%" stopColor="#86efac" stopOpacity={0.2} />
             </linearGradient>
           </defs>
 
@@ -301,7 +301,7 @@ export default function InvestmentComparisonChart({
           <Line
             type="monotone"
             dataKey="investmentValue"
-            stroke="#06b6d4"
+            stroke="#10b981"
             strokeWidth={3}
             dot={false}
             name="investmentValue"
