@@ -107,13 +107,16 @@ export default function InvestmentComparisonChart({
     const investmentData = sampledInvestmentSchedule[idx];
     const mortgageCost = payment.cumulativePrincipal + payment.cumulativeInterest;
     const investmentValue = investmentData?.totalValue || 0;
+    const netDifference = investmentValue - mortgageCost;
 
     return {
       month: payment.month,
       label: formatMonthLabel(payment),
       mortgageCost,
       investmentValue,
-      netDifference: investmentValue - mortgageCost
+      netDifference,
+      // For filling: when investment > mortgage, show the profit area
+      profitArea: netDifference > 0 ? investmentValue : mortgageCost
     };
   });
 
@@ -283,6 +286,14 @@ export default function InvestmentComparisonChart({
             strokeWidth={2}
             fill="url(#mortgageGradient)"
             name="mortgageCost"
+          />
+
+          <Area
+            type="monotone"
+            dataKey="profitArea"
+            stroke="none"
+            fill="url(#investmentGradient)"
+            fillOpacity={0.6}
           />
 
           <Line
