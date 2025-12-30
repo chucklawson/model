@@ -51,6 +51,21 @@ export default function RemainingBalanceChart({
   const milestones = getMilestonePayments(schedule, originalLoan);
   const pmiRemovalMonth = getPMIRemovalMonth(schedule);
 
+  // Find closest sampled points for milestones
+  const findClosestSampledPoint = (targetMonth: number) => {
+    return sampledSchedule.reduce((prev, curr) => {
+      return Math.abs(curr.month - targetMonth) < Math.abs(prev.month - targetMonth) ? curr : prev;
+    });
+  };
+
+  const sampledMilestones = {
+    twentyFivePercent: milestones.twentyFivePercent ? findClosestSampledPoint(milestones.twentyFivePercent.month) : null,
+    fiftyPercent: milestones.fiftyPercent ? findClosestSampledPoint(milestones.fiftyPercent.month) : null,
+    seventyFivePercent: milestones.seventyFivePercent ? findClosestSampledPoint(milestones.seventyFivePercent.month) : null
+  };
+
+  const sampledPmiMonth = pmiRemovalMonth ? findClosestSampledPoint(pmiRemovalMonth) : null;
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -132,10 +147,10 @@ export default function RemainingBalanceChart({
           />
 
           {/* Milestone markers */}
-          {milestones.twentyFivePercent && (
+          {sampledMilestones.twentyFivePercent && (
             <ReferenceDot
-              x={milestones.twentyFivePercent.month}
-              y={milestones.twentyFivePercent.remainingBalance}
+              x={sampledMilestones.twentyFivePercent.month}
+              y={sampledMilestones.twentyFivePercent.remainingBalance}
               r={8}
               fill="#f59e0b"
               stroke="#fff"
@@ -150,10 +165,10 @@ export default function RemainingBalanceChart({
             />
           )}
 
-          {milestones.fiftyPercent && (
+          {sampledMilestones.fiftyPercent && (
             <ReferenceDot
-              x={milestones.fiftyPercent.month}
-              y={milestones.fiftyPercent.remainingBalance}
+              x={sampledMilestones.fiftyPercent.month}
+              y={sampledMilestones.fiftyPercent.remainingBalance}
               r={8}
               fill="#10b981"
               stroke="#fff"
@@ -168,10 +183,10 @@ export default function RemainingBalanceChart({
             />
           )}
 
-          {milestones.seventyFivePercent && (
+          {sampledMilestones.seventyFivePercent && (
             <ReferenceDot
-              x={milestones.seventyFivePercent.month}
-              y={milestones.seventyFivePercent.remainingBalance}
+              x={sampledMilestones.seventyFivePercent.month}
+              y={sampledMilestones.seventyFivePercent.remainingBalance}
               r={8}
               fill="#8b5cf6"
               stroke="#fff"
@@ -187,10 +202,10 @@ export default function RemainingBalanceChart({
           )}
 
           {/* PMI removal marker */}
-          {pmiRemovalMonth && (
+          {sampledPmiMonth && (
             <ReferenceDot
-              x={pmiRemovalMonth}
-              y={schedule.find(p => p.month === pmiRemovalMonth)?.remainingBalance || 0}
+              x={sampledPmiMonth.month}
+              y={sampledPmiMonth.remainingBalance}
               r={8}
               fill="#ef4444"
               stroke="#fff"
