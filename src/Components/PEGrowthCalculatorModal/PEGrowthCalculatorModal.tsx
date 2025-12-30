@@ -874,7 +874,15 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                 }
                 onChange={(e) => {
                   if (!useAnalystEstimates) {
-                    setFormData({ ...formData, earningsGrowthRate: parseFloat(e.target.value) || 0 });
+                    const value = e.target.value;
+                    if (value === '' || value === '-') {
+                      setFormData({ ...formData, earningsGrowthRate: 0 });
+                    } else {
+                      const rate = parseFloat(value);
+                      if (!isNaN(rate)) {
+                        setFormData({ ...formData, earningsGrowthRate: rate });
+                      }
+                    }
                     setResults(null);
                   }
                 }}
@@ -899,7 +907,15 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                   step="0.1"
                   value={formData.targetPE}
                   onChange={(e) => {
-                    setFormData({ ...formData, targetPE: parseFloat(e.target.value) || 0 });
+                    const value = e.target.value;
+                    if (value === '') {
+                      setFormData({ ...formData, targetPE: 0 });
+                    } else {
+                      const pe = parseFloat(value);
+                      if (!isNaN(pe)) {
+                        setFormData({ ...formData, targetPE: Math.max(0, pe) });
+                      }
+                    }
                     setResults(null);
                   }}
                   className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -954,7 +970,15 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
                     step="0.1"
                     value={formData.futurePEInput}
                     onChange={(e) => {
-                      setFormData({ ...formData, futurePEInput: parseFloat(e.target.value) || 0 });
+                      const value = e.target.value;
+                      if (value === '') {
+                        setFormData({ ...formData, futurePEInput: 0 });
+                      } else {
+                        const pe = parseFloat(value);
+                        if (!isNaN(pe)) {
+                          setFormData({ ...formData, futurePEInput: Math.max(0, pe) });
+                        }
+                      }
                       setResults(null);
                     }}
                     className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-purple-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
