@@ -479,7 +479,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                     type="number"
                     value={formData.principal}
                     onChange={(e) => setFormData({ ...formData, principal: Number(e.target.value) })}
-                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="1000"
                   />
                 </div>
@@ -492,7 +492,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                       type="number"
                       value={formData.rate}
                       onChange={(e) => setFormData({ ...formData, rate: Number(e.target.value) })}
-                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="8"
                       min="0.1"
                       max="100"
@@ -529,7 +529,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                     type="number"
                     value={formData.principal}
                     onChange={(e) => setFormData({ ...formData, principal: Number(e.target.value) })}
-                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="1000"
                   />
                 </div>
@@ -542,7 +542,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                       type="number"
                       value={formData.years}
                       onChange={(e) => setFormData({ ...formData, years: Number(e.target.value) })}
-                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="9"
                       min="1"
                       max="100"
@@ -579,7 +579,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                     type="number"
                     value={formData.principal}
                     onChange={(e) => setFormData({ ...formData, principal: Number(e.target.value) })}
-                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="1000"
                   />
                 </div>
@@ -598,7 +598,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                           newRates[idx] = Number(e.target.value);
                           setFormData({ ...formData, comparisonRates: newRates });
                         }}
-                        className="px-3 py-2 text-center border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none"
+                        className="px-3 py-2 text-center border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     ))}
                   </div>
@@ -617,7 +617,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                     type="number"
                     value={formData.principal}
                     onChange={(e) => setFormData({ ...formData, principal: Number(e.target.value) })}
-                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="1000"
                   />
                 </div>
@@ -630,7 +630,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                       type="number"
                       value={formData.rate}
                       onChange={(e) => setFormData({ ...formData, rate: Number(e.target.value) })}
-                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="8"
                       min="0.1"
                       max="100"
@@ -662,7 +662,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                       type="number"
                       value={formData.years}
                       onChange={(e) => setFormData({ ...formData, years: Number(e.target.value) })}
-                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                      className="px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="9"
                       min="1"
                       max="100"
@@ -693,7 +693,7 @@ export default function RuleOf72CalculatorModal({ onClose }: { onClose: () => vo
                     type="number"
                     value={formData.monthlyContribution}
                     onChange={(e) => setFormData({ ...formData, monthlyContribution: Number(e.target.value) })}
-                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 text-lg border-2 border-slate-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0"
                   />
                 </div>
