@@ -115,8 +115,8 @@ export default function InvestmentComparisonChart({
       mortgageCost,
       investmentValue,
       netDifference,
-      // For filling: when investment > mortgage, show the profit area
-      profitArea: netDifference > 0 ? investmentValue : mortgageCost
+      // Profit gap: only the difference when investment exceeds mortgage
+      profitGap: Math.max(0, netDifference)
     };
   });
 
@@ -286,14 +286,16 @@ export default function InvestmentComparisonChart({
             strokeWidth={2}
             fill="url(#mortgageGradient)"
             name="mortgageCost"
+            stackId="a"
           />
 
           <Area
             type="monotone"
-            dataKey="profitArea"
+            dataKey="profitGap"
             stroke="none"
             fill="url(#investmentGradient)"
-            fillOpacity={0.6}
+            fillOpacity={0.8}
+            stackId="a"
           />
 
           <Line
