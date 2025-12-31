@@ -4,9 +4,6 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 
 const amplifyClient = generateClient<Schema>();
 
-// IMPORTANT: Replace with actual Lambda Function URL after deployment
-const FMP_PROXY_URL = import.meta.env.VITE_FMP_PROXY_URL || '';
-
 export interface FmpApiClientOptions {
   endpoint: string;
   queryParams?: Record<string, string>;
@@ -16,6 +13,9 @@ export async function callFmpApi<T = any>(options: FmpApiClientOptions): Promise
   const { endpoint, queryParams = {} } = options;
 
   try {
+    // IMPORTANT: Check environment variable directly to allow test stubbing
+    const FMP_PROXY_URL = import.meta.env.VITE_FMP_PROXY_URL || '';
+
     if (!FMP_PROXY_URL) {
       throw new Error('FMP Proxy URL not configured');
     }
