@@ -56,7 +56,12 @@
       "Bash(npm test)",
       "Bash(npm test:*)",
       "Bash(done)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(while read f)",
+      "Bash(do basename \"$f\" .ts)",
+      "Bash(while read base)",
+      "Bash(do if [ ! -f \"src/utils/$base.test.ts\" ])",
+      "Bash(then echo \"✗ src/utils/$base.ts\")"
     ],
     "deny": [],
     "ask": []
