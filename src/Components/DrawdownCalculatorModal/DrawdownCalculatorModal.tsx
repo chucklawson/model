@@ -216,8 +216,11 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-0">$</span>
                   <input
                     type="number"
-                    value={inputs.beginningBalance}
-                    onChange={(e) => updateInput('beginningBalance', parseFloat(e.target.value) || 0)}
+                    value={inputs.beginningBalance || ''}
+                    onChange={(e) => {
+                      const num = parseFloat(e.target.value);
+                      updateInput('beginningBalance', isNaN(num) ? 0 : num);
+                    }}
                     className="relative z-10 w-full pl-10 pr-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     step="any"
                   />
@@ -232,8 +235,11 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
                 <div className="relative mb-2">
                   <input
                     type="number"
-                    value={inputs.annualInterestRate}
-                    onChange={(e) => updateInput('annualInterestRate', parseFloat(e.target.value) || 0)}
+                    value={inputs.annualInterestRate || ''}
+                    onChange={(e) => {
+                      const num = parseFloat(e.target.value);
+                      updateInput('annualInterestRate', isNaN(num) ? 0 : num);
+                    }}
                     className="relative z-10 w-full pr-10 pl-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     step="any"
                   />
@@ -261,8 +267,11 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-0">$</span>
                   <input
                     type="number"
-                    value={inputs.fixedMonthlyDrawdown}
-                    onChange={(e) => updateInput('fixedMonthlyDrawdown', parseFloat(e.target.value) || 0)}
+                    value={inputs.fixedMonthlyDrawdown || ''}
+                    onChange={(e) => {
+                      const num = parseFloat(e.target.value);
+                      updateInput('fixedMonthlyDrawdown', isNaN(num) ? 0 : num);
+                    }}
                     className="relative z-10 w-full pl-10 pr-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     step="any"
                   />
@@ -291,8 +300,11 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
                 </div>
                 <input
                   type="number"
-                  value={inputs.durationYears}
-                  onChange={(e) => updateDuration(parseFloat(e.target.value) || 1)}
+                  value={inputs.durationYears || ''}
+                  onChange={(e) => {
+                    const num = parseFloat(e.target.value);
+                    updateDuration(isNaN(num) ? 0 : num);
+                  }}
                   className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   step="1"
                   min="1"
@@ -413,8 +425,11 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
                       <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none z-0">$</span>
                       <input
                         type="number"
-                        value={vd.amount}
-                        onChange={(e) => updateVariableDrawdown(vd.id, 'amount', parseFloat(e.target.value) || 0)}
+                        value={vd.amount || ''}
+                        onChange={(e) => {
+                          const num = parseFloat(e.target.value);
+                          updateVariableDrawdown(vd.id, 'amount', isNaN(num) ? 0 : num);
+                        }}
                         className="relative z-10 w-full pl-8 pr-2 py-1 border border-slate-300 rounded text-sm bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="Amount"
                       />
