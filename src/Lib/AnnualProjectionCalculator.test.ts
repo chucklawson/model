@@ -157,9 +157,9 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 2.42, epsHigh: 2.5, epsLow: 2.3, numberAnalysts: 10 },
-        { date: '2027-12-31', epsAvg: 2.662, epsHigh: 2.8, epsLow: 2.5, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.42, epsHigh: 2.5, epsLow: 2.3, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2027-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.662, epsHigh: 2.8, epsLow: 2.5, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -173,7 +173,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -187,11 +187,11 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 1.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 1.2, epsHigh: 1.3, epsLow: 1.1, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 1.44, epsHigh: 1.5, epsLow: 1.4, numberAnalysts: 10 },
-        { date: '2027-12-31', epsAvg: 1.728, epsHigh: 1.8, epsLow: 1.7, numberAnalysts: 10 },
-        { date: '2028-12-31', epsAvg: 2.074, epsHigh: 2.1, epsLow: 2.0, numberAnalysts: 10 },
-        { date: '2029-12-31', epsAvg: 2.488, epsHigh: 2.5, epsLow: 2.4, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 1.2, epsHigh: 1.3, epsLow: 1.1, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 1.44, epsHigh: 1.5, epsLow: 1.4, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2027-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 1.728, epsHigh: 1.8, epsLow: 1.7, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2028-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.074, epsHigh: 2.1, epsLow: 2.0, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2029-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.488, epsHigh: 2.5, epsLow: 2.4, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -205,8 +205,8 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 5.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 4.5, epsHigh: 4.6, epsLow: 4.4, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 4.05, epsHigh: 4.2, epsLow: 4.0, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 4.5, epsHigh: 4.6, epsLow: 4.4, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 4.05, epsHigh: 4.2, epsLow: 4.0, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -234,7 +234,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -248,7 +248,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = -2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.2, epsHigh: 2.3, epsLow: 2.1, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -262,7 +262,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: undefined as any, epsHigh: 2.3, epsLow: 2.1, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: undefined as any, epsHigh: 2.3, epsLow: 2.1, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -276,7 +276,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 0, epsHigh: 0, epsLow: 0, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 0, epsHigh: 0, epsLow: 0, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -290,7 +290,7 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 2.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: -1.5, epsHigh: -1.0, epsLow: -2.0, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: -1.5, epsHigh: -1.0, epsLow: -2.0, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -304,9 +304,9 @@ describe('AnnualProjectionCalculator', () => {
       // Arrange
       const currentEPS = 1.0;
       const estimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 2.0, epsHigh: 2.1, epsLow: 1.9, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 4.0, epsHigh: 4.2, epsLow: 3.8, numberAnalysts: 10 },
-        { date: '2027-12-31', epsAvg: 8.0, epsHigh: 8.5, epsLow: 7.5, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 2.0, epsHigh: 2.1, epsLow: 1.9, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 4.0, epsHigh: 4.2, epsLow: 3.8, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2027-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 8.0, epsHigh: 8.5, epsLow: 7.5, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -374,9 +374,9 @@ describe('AnnualProjectionCalculator', () => {
       const growthRate = 0.10;
       const useAnalystEstimates = true;
       const analystData: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 5.5, epsHigh: 5.6, epsLow: 5.4, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 6.2, epsHigh: 6.3, epsLow: 6.1, numberAnalysts: 10 },
-        { date: '2027-12-31', epsAvg: 7.0, epsHigh: 7.2, epsLow: 6.8, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 5.5, epsHigh: 5.6, epsLow: 5.4, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 6.2, epsHigh: 6.3, epsLow: 6.1, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2027-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 7.0, epsHigh: 7.2, epsLow: 6.8, numAnalystsRevenue:10, numAnalystsEps: 0 }
       ];
 
       // Act
@@ -408,8 +408,8 @@ describe('AnnualProjectionCalculator', () => {
       const growthRate = 0.10;
       const useAnalystEstimates = true;
       const analystData: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 5.5, epsHigh: 5.6, epsLow: 5.4, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 6.2, epsHigh: 6.3, epsLow: 6.1, numberAnalysts: 10 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 5.5, epsHigh: 5.6, epsLow: 5.4, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 6.2, epsHigh: 6.3, epsLow: 6.1, numAnalystsRevenue:10, numAnalystsEps: 0 }
         // Only 2 years of analyst data
       ];
 

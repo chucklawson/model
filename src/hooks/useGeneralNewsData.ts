@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { NewsArticle } from '../types/news';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 export interface UseGeneralNewsDataParams {
   limit: number;
@@ -42,7 +43,7 @@ export function useGeneralNewsData({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch general news');
         setError(error);
-        console.error('General news fetch error:', error);
+        logger.error({ error, limit, context: 'useGeneralNewsData' }, 'Failed to fetch general news');
       } finally {
         setLoading(false);
       }

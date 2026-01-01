@@ -5,6 +5,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { importCSVData, formatImportSummary } from './csvImporter';
+import logger from './logger';
 import type {
   ValidationResult,
   ParsedCSVRow,
@@ -44,7 +45,7 @@ describe('csvImporter', () => {
     costPerShare: 150.0,
     purchaseDate: '2024-01-15',
     portfolios: ['Tech'],
-    calculatePL: true,
+    calculateAccumulatedProfitLoss: true,
     isDividend: false,
     notes: 'Test note',
     rowIndex: 1,
@@ -181,7 +182,7 @@ describe('csvImporter', () => {
         const validationResults: ValidationResult[] = [
           createValidationResult({
             row: createValidRow({
-              calculatePL: undefined,
+              calculateAccumulatedProfitLoss: undefined,
               isDividend: undefined,
               notes: undefined,
             }),
@@ -289,7 +290,7 @@ describe('csvImporter', () => {
           return Promise.resolve({ data: {} });
         });
 
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
 
         const validationResults: ValidationResult[] = [
           createValidationResult({
@@ -305,9 +306,9 @@ describe('csvImporter', () => {
         );
 
         expect(result.portfoliosCreated).toHaveLength(0);
-        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(loggerErrorSpy).toHaveBeenCalled();
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
       });
 
       it('should sort portfolios to create alphabetically', async () => {
@@ -454,7 +455,7 @@ describe('csvImporter', () => {
           return Promise.resolve({ data: {} });
         });
 
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
 
         const validationResults: ValidationResult[] = [
           createValidationResult({
@@ -470,9 +471,9 @@ describe('csvImporter', () => {
         );
 
         expect(result.tickersCreated).toBe(0);
-        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(loggerErrorSpy).toHaveBeenCalled();
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
       });
 
       it('should create each unique ticker only once even if used in multiple rows', async () => {
@@ -637,7 +638,7 @@ describe('csvImporter', () => {
           return Promise.resolve({ data: {} });
         });
 
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
 
         const validationResults: ValidationResult[] = [
           createValidationResult({
@@ -661,14 +662,14 @@ describe('csvImporter', () => {
         expect(result.details.find(d => d.row.ticker === 'FAIL')?.reason).toBe('Database error');
         expect(result.details.find(d => d.row.ticker === 'AAPL')?.status).toBe('success');
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
       });
 
       it('should include error message in failed lot details', async () => {
         const mockClient = createMockClient();
         mockClient._mockCreate.mockRejectedValue(new Error('Connection timeout'));
 
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
 
         const validationResults: ValidationResult[] = [
           createValidationResult({
@@ -687,14 +688,14 @@ describe('csvImporter', () => {
         expect(result.details[0].status).toBe('failed');
         expect(result.details[0].reason).toBe('Connection timeout');
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
       });
 
       it('should handle non-Error exceptions', async () => {
         const mockClient = createMockClient();
         mockClient._mockCreate.mockRejectedValue('String error');
 
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
 
         const validationResults: ValidationResult[] = [
           createValidationResult({
@@ -712,7 +713,7 @@ describe('csvImporter', () => {
         expect(result.failed).toBe(1);
         expect(result.details[0].reason).toBe('Unknown error');
 
-        consoleErrorSpy.mockRestore();
+        loggerErrorSpy.mockRestore();
       });
     });
 

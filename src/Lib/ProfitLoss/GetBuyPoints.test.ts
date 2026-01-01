@@ -24,18 +24,18 @@ describe('GetBuyPoints', () => {
       // Assert
       expect(mockSetBuyPoints).toHaveBeenCalledOnce();
       expect(capturedBuyPoints).not.toBeNull();
-      expect(capturedBuyPoints?.downFivePercent).toBe('$95.00');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$90.00');
-      expect(capturedBuyPoints?.downFifteenPercent).toBe('$85.00');
-      expect(capturedBuyPoints?.downTwentyPercent).toBe('$80.00');
-      expect(capturedBuyPoints?.downTwentyFivePercent).toBe('$75.00');
-      expect(capturedBuyPoints?.downThirtyPercent).toBe('$70.00');
-      expect(capturedBuyPoints?.downThirtyFivePercent).toBe('$65.00');
-      expect(capturedBuyPoints?.downFortyPercent).toBe('$60.00');
-      expect(capturedBuyPoints?.downFortyFivePercent).toBe('$55.00');
-      expect(capturedBuyPoints?.downFiftyPercent).toBe('$50.00');
-      expect(capturedBuyPoints?.downFiftyFivePercent).toBe('$45.00');
-      expect(capturedBuyPoints?.downSixtyPercent).toBe('$40.00');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$95.00');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$90.00');
+      expect(capturedBuyPoints!.downFifteenPercent).toBe('$85.00');
+      expect(capturedBuyPoints!.downTwentyPercent).toBe('$80.00');
+      expect(capturedBuyPoints!.downTwentyFivePercent).toBe('$75.00');
+      expect(capturedBuyPoints!.downThirtyPercent).toBe('$70.00');
+      expect(capturedBuyPoints!.downThirtyFivePercent).toBe('$65.00');
+      expect(capturedBuyPoints!.downFortyPercent).toBe('$60.00');
+      expect(capturedBuyPoints!.downFortyFivePercent).toBe('$55.00');
+      expect(capturedBuyPoints!.downFiftyPercent).toBe('$50.00');
+      expect(capturedBuyPoints!.downFiftyFivePercent).toBe('$45.00');
+      expect(capturedBuyPoints!.downSixtyPercent).toBe('$40.00');
     });
 
     it('should format values with exactly 2 decimal places', () => {
@@ -50,10 +50,10 @@ describe('GetBuyPoints', () => {
       instance.CalculateBuyPoints(highValue, mockSetBuyPoints);
 
       // Assert
-      expect(capturedBuyPoints?.downFivePercent).toBe('$117.28');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$111.11');
-      expect(capturedBuyPoints?.downFifteenPercent).toBe('$104.94');
-      expect(capturedBuyPoints?.downTwentyPercent).toBe('$98.76');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$117.28');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$111.11');
+      expect(capturedBuyPoints!.downFifteenPercent).toBe('$104.94');
+      expect(capturedBuyPoints!.downTwentyPercent).toBe('$98.76');
     });
 
     it('should handle small decimal values correctly', () => {
@@ -69,15 +69,15 @@ describe('GetBuyPoints', () => {
 
       // Assert
       // 1.50 * 0.95 = 1.425 -> rounds to 1.42
-      expect(capturedBuyPoints?.downFivePercent).toBe('$1.42');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$1.42');
       // 1.50 * 0.90 = 1.35
-      expect(capturedBuyPoints?.downTenPercent).toBe('$1.35');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$1.35');
       // 1.50 * 0.85 = 1.275 -> rounds to 1.27 (banker's rounding)
-      expect(capturedBuyPoints?.downFifteenPercent).toBe('$1.27');
+      expect(capturedBuyPoints!.downFifteenPercent).toBe('$1.27');
       // 1.50 * 0.80 = 1.20
-      expect(capturedBuyPoints?.downTwentyPercent).toBe('$1.20');
+      expect(capturedBuyPoints!.downTwentyPercent).toBe('$1.20');
       // 1.50 * 0.40 = 0.60
-      expect(capturedBuyPoints?.downSixtyPercent).toBe('$0.60');
+      expect(capturedBuyPoints!.downSixtyPercent).toBe('$0.60');
     });
 
     it('should handle large values correctly', () => {
@@ -92,10 +92,10 @@ describe('GetBuyPoints', () => {
       instance.CalculateBuyPoints(highValue, mockSetBuyPoints);
 
       // Assert
-      expect(capturedBuyPoints?.downFivePercent).toBe('$4750.71');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$4500.68');
-      expect(capturedBuyPoints?.downTwentyPercent).toBe('$4000.60');
-      expect(capturedBuyPoints?.downFiftyPercent).toBe('$2500.38');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$4750.71');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$4500.68');
+      expect(capturedBuyPoints!.downTwentyPercent).toBe('$4000.60');
+      expect(capturedBuyPoints!.downFiftyPercent).toBe('$2500.38');
     });
 
     it('should handle zero value', () => {
@@ -110,9 +110,9 @@ describe('GetBuyPoints', () => {
       instance.CalculateBuyPoints(highValue, mockSetBuyPoints);
 
       // Assert
-      expect(capturedBuyPoints?.downFivePercent).toBe('$0.00');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$0.00');
-      expect(capturedBuyPoints?.downSixtyPercent).toBe('$0.00');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$0.00');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$0.00');
+      expect(capturedBuyPoints!.downSixtyPercent).toBe('$0.00');
     });
 
     it('should handle very small fractional values', () => {
@@ -127,10 +127,10 @@ describe('GetBuyPoints', () => {
       instance.CalculateBuyPoints(highValue, mockSetBuyPoints);
 
       // Assert
-      expect(capturedBuyPoints?.downFivePercent).toBe('$0.05');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$0.05');
-      expect(capturedBuyPoints?.downFifteenPercent).toBe('$0.04');
-      expect(capturedBuyPoints?.downSixtyPercent).toBe('$0.02');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$0.05');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$0.05');
+      expect(capturedBuyPoints!.downFifteenPercent).toBe('$0.04');
+      expect(capturedBuyPoints!.downSixtyPercent).toBe('$0.02');
     });
 
     it('should round correctly for values ending in .5', () => {
@@ -146,9 +146,9 @@ describe('GetBuyPoints', () => {
 
       // Assert
       // 99.99 * 0.95 = 94.9905, should round to 94.99
-      expect(capturedBuyPoints?.downFivePercent).toBe('$94.99');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$94.99');
       // 99.99 * 0.90 = 89.991, should round to 89.99
-      expect(capturedBuyPoints?.downTenPercent).toBe('$89.99');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$89.99');
     });
 
     it('should invoke callback function with calculated buy points', () => {
@@ -190,18 +190,18 @@ describe('GetBuyPoints', () => {
       instance.CalculateBuyPoints(highValue, mockSetBuyPoints);
 
       // Assert - Verify mathematical accuracy
-      expect(capturedBuyPoints?.downFivePercent).toBe('$950.00'); // 95% of 1000
-      expect(capturedBuyPoints?.downTenPercent).toBe('$900.00'); // 90% of 1000
-      expect(capturedBuyPoints?.downFifteenPercent).toBe('$850.00'); // 85% of 1000
-      expect(capturedBuyPoints?.downTwentyPercent).toBe('$800.00'); // 80% of 1000
-      expect(capturedBuyPoints?.downTwentyFivePercent).toBe('$750.00'); // 75% of 1000
-      expect(capturedBuyPoints?.downThirtyPercent).toBe('$700.00'); // 70% of 1000
-      expect(capturedBuyPoints?.downThirtyFivePercent).toBe('$650.00'); // 65% of 1000
-      expect(capturedBuyPoints?.downFortyPercent).toBe('$600.00'); // 60% of 1000
-      expect(capturedBuyPoints?.downFortyFivePercent).toBe('$550.00'); // 55% of 1000
-      expect(capturedBuyPoints?.downFiftyPercent).toBe('$500.00'); // 50% of 1000
-      expect(capturedBuyPoints?.downFiftyFivePercent).toBe('$450.00'); // 45% of 1000
-      expect(capturedBuyPoints?.downSixtyPercent).toBe('$400.00'); // 40% of 1000
+      expect(capturedBuyPoints!.downFivePercent).toBe('$950.00'); // 95% of 1000
+      expect(capturedBuyPoints!.downTenPercent).toBe('$900.00'); // 90% of 1000
+      expect(capturedBuyPoints!.downFifteenPercent).toBe('$850.00'); // 85% of 1000
+      expect(capturedBuyPoints!.downTwentyPercent).toBe('$800.00'); // 80% of 1000
+      expect(capturedBuyPoints!.downTwentyFivePercent).toBe('$750.00'); // 75% of 1000
+      expect(capturedBuyPoints!.downThirtyPercent).toBe('$700.00'); // 70% of 1000
+      expect(capturedBuyPoints!.downThirtyFivePercent).toBe('$650.00'); // 65% of 1000
+      expect(capturedBuyPoints!.downFortyPercent).toBe('$600.00'); // 60% of 1000
+      expect(capturedBuyPoints!.downFortyFivePercent).toBe('$550.00'); // 55% of 1000
+      expect(capturedBuyPoints!.downFiftyPercent).toBe('$500.00'); // 50% of 1000
+      expect(capturedBuyPoints!.downFiftyFivePercent).toBe('$450.00'); // 45% of 1000
+      expect(capturedBuyPoints!.downSixtyPercent).toBe('$400.00'); // 40% of 1000
     });
 
     it('should format all values with dollar sign prefix', () => {
@@ -626,8 +626,8 @@ describe('GetBuyPoints', () => {
 
       // Assert
       // Negative values still calculate (though not realistic for stock prices)
-      expect(capturedBuyPoints?.downFivePercent).toBe('$-95.00');
-      expect(capturedBuyPoints?.downTenPercent).toBe('$-90.00');
+      expect(capturedBuyPoints!.downFivePercent).toBe('$-95.00');
+      expect(capturedBuyPoints!.downTenPercent).toBe('$-90.00');
     });
 
     it('should maintain instance state across multiple method calls', () => {

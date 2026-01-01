@@ -753,7 +753,7 @@ describe('RSIChartEntries', () => {
       if (result && result.length > 0) {
         // Note: Due to implementation bug, pure upward trends result in RSI = 0 instead of 100
         // This test verifies the current behavior, not the correct RSI behavior
-        const avgRSI = result.reduce((sum, entry) => sum + entry.rsiValue, 0) / result.length;
+        const _avgRSI = result.reduce((sum, entry) => sum + entry.rsiValue, 0) / result.length;
         // All RSI values should be valid numbers between 0 and 100
         result.forEach(entry => {
           expect(entry.rsiValue).toBeGreaterThanOrEqual(0);

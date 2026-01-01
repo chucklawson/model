@@ -10,6 +10,7 @@ import type {
   DateRangePortfolioPerformance,
   HistoricalPrice
 } from '../types/customRange';
+import logger from './logger';
 
 // Cache for start date prices (with TTL)
 interface CachedPriceData {
@@ -79,7 +80,7 @@ export async function fetchHistoricalPriceForDate(
     });
 
     if (!response.historical || response.historical.length === 0) {
-      console.warn(`No historical data found for ${ticker} around ${targetDate}`);
+      logger.warn({ ticker, targetDate }, 'No historical data found for ticker on target date');
       return null;
     }
 
@@ -98,7 +99,7 @@ export async function fetchHistoricalPriceForDate(
 
     return price;
   } catch (error) {
-    console.error(`Error fetching historical price for ${ticker} on ${targetDate}:`, error);
+    logger.error({ error, ticker, targetDate }, 'Failed to fetch historical price for date');
     return null;
   }
 }
@@ -141,7 +142,7 @@ export async function fetchHistoricalPriceRange(
 
     return data;
   } catch (error) {
-    console.error(`Error fetching historical price range for ${ticker}:`, error);
+    logger.error({ error, ticker, startDate, endDate }, 'Failed to fetch historical price range');
     return [];
   }
 }
@@ -251,7 +252,7 @@ export async function calculateDateRangePerformance(
   for (const [ticker, tickerLots] of lotsByTicker.entries()) {
     const currentPrice = currentPrices[ticker];
     if (!currentPrice) {
-      console.warn(`No current price available for ${ticker}`);
+      logger.warn({ ticker, lotCount: tickerLots.length }, 'No current price available for ticker');
       continue;
     }
 

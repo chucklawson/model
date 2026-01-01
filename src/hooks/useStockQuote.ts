@@ -3,6 +3,7 @@ import type Quote_V3 from '../Lib/Quote_V3';
 import type HistoricalPriceFull_V3 from '../Lib/HistoricalPriceFull_V3';
 import type AnalysisKeyMetricsItem_V3 from '../Lib/AnalysisKeyMetricsItem_V3';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 interface UseStockQuoteParams {
   stockSymbol: string;
@@ -83,7 +84,7 @@ export function useStockQuote({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch stock data');
         setError(error);
-        console.error('Stock quote fetch error:', error);
+        logger.error({ error, ticker: stockSymbol, context: 'useStockQuote' }, 'Failed to fetch stock data');
       } finally {
         setLoading(false);
       }

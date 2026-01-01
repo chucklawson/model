@@ -28,6 +28,7 @@ import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
 import CustomRangePerformanceModal from '../../Components/CustomRangePerformanceModal/CustomRangePerformanceModal';
 import { useAfterHoursData } from '../../hooks/useAfterHoursData';
+import logger from '../../utils/logger';
 
 // Type for old data schema with single portfolio field
 interface LegacyLot {
@@ -101,7 +102,7 @@ interface LegacyLot {
         setLoading(false);
       },
       error: (err: Error) => {
-        console.error('Subscription error:', err);
+        logger.error({ error: err }, 'TickerLot subscription error');
         setError('Failed to sync data');
       },
     });
@@ -119,7 +120,7 @@ interface LegacyLot {
         }));
         setPortfolios(portfolioList);
       },
-      error: (err: Error) => console.error('Portfolio subscription error:', err),
+      error: (err: Error) => logger.error({ error: err }, 'Portfolio subscription error'),
     });
 
     // Ticker subscription
@@ -139,7 +140,7 @@ interface LegacyLot {
           }));
         setTickers(tickerList);
       },
-      error: (err: Error) => console.error('Ticker subscription error:', err),
+      error: (err: Error) => logger.error({ error: err }, 'Ticker subscription error'),
     });
 
     return () => {
@@ -205,7 +206,7 @@ interface LegacyLot {
         }
       }
     } catch (err) {
-      console.error('Default portfolio initialization error:', err);
+      logger.error({ error: err }, 'Failed to initialize default portfolio');
     }
   };
 
@@ -222,7 +223,7 @@ interface LegacyLot {
         });
 
         if (response.errors) {
-          console.error('Portfolio load errors:', response.errors);
+          logger.error({ errors: response.errors }, 'Portfolio load errors');
           break;
         }
 
@@ -240,7 +241,7 @@ interface LegacyLot {
       }));
       setPortfolios(portfolioList);
     } catch (err) {
-      console.error('Portfolio load error:', err);
+      logger.error({ error: err }, 'Failed to load portfolios');
     }
   };
 
@@ -257,7 +258,7 @@ interface LegacyLot {
         });
 
         if (response.errors) {
-          console.error('Ticker load errors:', response.errors);
+          logger.error({ errors: response.errors }, 'Ticker load errors');
           break;
         }
 
@@ -279,7 +280,7 @@ interface LegacyLot {
         }));
       setTickers(tickerList);
     } catch (err) {
-      console.error('Ticker load error:', err);
+      logger.error({ error: err }, 'Failed to load tickers');
     }
   };
 
@@ -299,7 +300,7 @@ interface LegacyLot {
         });
 
         if (response.errors) {
-          console.error('Load errors:', response.errors);
+          logger.error({ errors: response.errors }, 'TickerLot load errors');
           setError('Failed to load lots');
           break;
         }
@@ -328,7 +329,7 @@ interface LegacyLot {
         }));
       setLots(tickerLots);
     } catch (err) {
-      console.error('Load error:', err);
+      logger.error({ error: err }, 'Failed to load ticker lots');
       setError('Failed to load lots');
     } finally {
       setLoading(false);
@@ -368,7 +369,7 @@ interface LegacyLot {
 
       await loadLots();
     } catch (err) {
-      console.error('Save error:', err);
+      logger.error({ error: err, lotData }, 'Failed to save ticker lot');
       setError('Failed to save lot');
       throw err;
     }
@@ -379,7 +380,7 @@ interface LegacyLot {
       await client.models.TickerLot.delete({ id });
       await loadLots();
     } catch (err) {
-      console.error('Delete error:', err);
+      logger.error({ error: err, lotId: id }, 'Failed to delete lot');
       setError('Failed to delete lot');
       throw err;
     }
@@ -392,7 +393,7 @@ interface LegacyLot {
       }
       await loadLots();
     } catch (err) {
-      console.error('Bulk delete error:', err);
+      logger.error({ error: err, lotIds: ids, lotCount: ids.length }, 'Failed to bulk delete lots');
       setError('Failed to delete selected lots');
       throw err;
     }
@@ -425,7 +426,7 @@ interface LegacyLot {
 
       await loadTickers();
     } catch (err) {
-      console.error('Error updating ticker:', err);
+      logger.error({ error: err, symbol: ticker.symbol }, 'Failed to update ticker');
       setError('Failed to update ticker');
       throw err;
     }
@@ -434,9 +435,9 @@ interface LegacyLot {
   const handleExportTickers = async () => {
     try {
       const count = await exportAllTickers(lots);
-      console.log(`Exported ${count} ticker files`);
+      logger.info({ count, tickers: summaries.length }, 'Exported ticker files');
     } catch (err) {
-      console.error('Export error:', err);
+      logger.error({ error: err, tickerCount: summaries.length }, 'Failed to export tickers');
       setError('Failed to export tickers');
     }
   };
@@ -464,17 +465,17 @@ interface LegacyLot {
     if (currentPath === '/tickers' && previousPath !== '/tickers' && previousPath !== '') {
       // If we have tickers, refetch immediately
       if (tickerSymbols.length > 0) {
-        console.log('Refetching prices on navigation to Tickers (immediate)');
+        logger.debug({ tickerCount: tickerSymbols.length }, 'Refetching prices on navigation to Tickers');
         refetch();
         previousPathRef.current = currentPath;
       } else {
         // If we don't have tickers yet, wait for them to load
         // Don't update previousPath yet so we can refetch when tickers are ready
-        console.log('Waiting for tickers to load before refetching');
+        logger.debug('Waiting for tickers to load before refetching');
       }
     } else if (currentPath === '/tickers' && previousPath !== '/tickers' && tickerSymbols.length > 0) {
       // Tickers just loaded after navigation, refetch now
-      console.log('Refetching prices after tickers loaded');
+      logger.debug({ tickerCount: tickerSymbols.length }, 'Refetching prices after tickers loaded');
       refetch();
       previousPathRef.current = currentPath;
     } else {

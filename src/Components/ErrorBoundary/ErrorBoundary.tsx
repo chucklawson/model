@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import type { ReactNode } from 'react';
 import { sendNotification } from '../../utils/sendNotification';
+import logger from '../../utils/logger';
 
 interface Props {
   children: ReactNode;
@@ -22,7 +23,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   async componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    logger.error({ error, errorInfo, componentStack: errorInfo.componentStack }, 'Error caught by boundary');
 
     // Send notification for critical errors
     await sendNotification({

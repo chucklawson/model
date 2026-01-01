@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TickerLot } from '../types';
 import type { YTDPortfolioPerformance } from '../types/ytd';
 import { calculateYTDPerformance } from '../utils/ytdCalculations';
+import logger from '../utils/logger';
 
 interface UseYTDDataParams {
   lots: TickerLot[];
@@ -72,8 +73,9 @@ export function useYTDData({
 
       setYtdData(performance);
     } catch (err) {
-      console.error('Error calculating YTD performance:', err);
-      setError(err instanceof Error ? err : new Error('Failed to calculate YTD performance'));
+      const error = err instanceof Error ? err : new Error('Failed to calculate YTD performance');
+      logger.error({ error, lotCount: filteredLots.length }, 'Failed to calculate YTD performance');
+      setError(error);
     } finally {
       setLoading(false);
     }

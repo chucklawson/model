@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type Quote_V3 from '../Lib/Quote_V3';
 import type StatementAnalysisKeyMetricsData from '../Lib/StatementsData/StatementAnalysisKeyMetricsData';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 interface UseKeyMetricsParams {
   stockSymbol: string;
@@ -56,7 +57,7 @@ export function useKeyMetrics({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch key metrics');
         setError(error);
-        console.error('Key metrics fetch error:', error);
+        logger.error({ error, ticker: stockSymbol, period, context: 'useKeyMetrics' }, 'Failed to fetch key metrics');
       } finally {
         setLoading(false);
       }

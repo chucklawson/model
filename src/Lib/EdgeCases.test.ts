@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   calculateInvestmentGrowth,
-  calculateDrawDownInvestment,
+  calculateDrawDownInvestment as _calculateDrawDownInvestment,
   validateInvestmentInputs
 } from './InvestmentCalculation';
 import {
@@ -12,7 +12,7 @@ import {
 import {
   generateAnnualProjections,
   calculateInterpolatedPE,
-  calculateImpliedGrowth
+  calculateImpliedGrowth as _calculateImpliedGrowth
 } from './AnnualProjectionCalculator';
 
 /**

@@ -1,3 +1,5 @@
+import logger from './logger';
+
 interface NotificationOptions {
   message: string;
   subject?: string;
@@ -11,7 +13,7 @@ export async function sendNotification({ message, subject }: NotificationOptions
     const functionUrl = import.meta.env.VITE_NOTIFICATION_FUNCTION_URL;
 
     if (!functionUrl) {
-      console.warn('Notification function URL not configured');
+      logger.warn('Notification function URL not configured');
       return;
     }
 
@@ -27,9 +29,9 @@ export async function sendNotification({ message, subject }: NotificationOptions
       throw new Error('Failed to send notification');
     }
 
-    console.log('Notification sent successfully');
+    logger.info({ subject }, 'Notification sent successfully');
   } catch (error) {
-    console.error('Error sending notification:', error);
+    logger.error({ error, subject }, 'Failed to send notification');
     // Don't throw - notifications should never break the app
   }
 }

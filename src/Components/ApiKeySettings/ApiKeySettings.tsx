@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Key, Save, Trash2, Eye, EyeOff } from 'lucide-react';
 import { getUserFmpApiKey, setUserFmpApiKey, deleteUserFmpApiKey } from '../../utils/fmpApiClient';
+import logger from '../../utils/logger';
 
 export default function ApiKeySettings() {
   const [apiKey, setApiKey] = useState('');
@@ -23,7 +24,7 @@ export default function ApiKeySettings() {
         setApiKey('••••••••••••••••••••');
       }
     } catch (error) {
-      console.error('Failed to load API key:', error);
+      logger.error({ error }, 'Failed to load API key from settings');
     }
   };
 

@@ -28,6 +28,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000,
+        cumulativePrincipal: 100,
+        cumulativeInterest: 200,
+        cumulativeTotal: 350,
         isPMIActive: true,
       };
 
@@ -45,6 +48,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 190000,
+        cumulativePrincipal: 1200,
+        cumulativeInterest: 2400,
+        cumulativeTotal: 4200,
         isPMIActive: true,
       };
 
@@ -68,6 +74,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         };
 
@@ -86,6 +95,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       };
 
@@ -105,6 +117,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -117,6 +132,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 199899,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -129,6 +147,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 199797,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
     ];
@@ -180,6 +201,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -192,6 +216,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 199899,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -204,6 +231,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 198000,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
     ];
@@ -247,6 +277,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 360,
         remainingBalance: 200000,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -259,6 +292,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 370,
         remainingBalance: 199879,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
       {
@@ -271,6 +307,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 199777,
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       },
     ];
@@ -305,6 +344,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -326,6 +368,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
       ];
@@ -349,6 +394,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -361,6 +409,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 180000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -373,6 +424,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 160000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
       ];
@@ -394,6 +448,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
       ];
@@ -415,6 +472,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -427,6 +487,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 199899,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -454,6 +517,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -466,6 +532,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 180000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
         {
@@ -478,6 +547,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 160000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -503,6 +575,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -515,6 +590,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 150000, // 75% threshold
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
         {
@@ -527,6 +605,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 100000, // 50% threshold
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
         {
@@ -539,6 +620,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 0,
           totalPaid: 300,
           remainingBalance: 50000, // 25% threshold
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: false,
         },
       ];
@@ -567,6 +651,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -579,6 +666,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 149000, // Below 25% threshold
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -591,6 +681,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 148000, // Still below
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -612,6 +705,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
         {
@@ -624,6 +720,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 180000, // Never reaches 25%
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -656,6 +755,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 
@@ -676,6 +778,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 
@@ -697,6 +802,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 
@@ -716,6 +824,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 
@@ -742,6 +853,9 @@ describe('AmortizationSchedule', () => {
           pmiPaid: 50,
           totalPaid: 350,
           remainingBalance: 200000,
+          cumulativePrincipal: 0,
+          cumulativeInterest: 0,
+          cumulativeTotal: 0,
           isPMIActive: true,
         },
       ];
@@ -762,6 +876,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 
@@ -782,6 +899,9 @@ describe('AmortizationSchedule', () => {
         pmiPaid: 50,
         totalPaid: 350,
         remainingBalance: 200000 - (i * 100),
+        cumulativePrincipal: 0,
+        cumulativeInterest: 0,
+        cumulativeTotal: 0,
         isPMIActive: true,
       }));
 

@@ -18,16 +18,16 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 150.50,
           totalCost: 15050,
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -35,9 +35,9 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           symbol: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
         },
       ];
 
@@ -46,9 +46,9 @@ describe('tickerCalculations', () => {
       expect(summaries).toHaveLength(1);
       expect(summaries[0]).toMatchObject({
         ticker: 'AAPL',
-        companyName: 'Apple Inc',
+        companyName:'Apple Inc',
         baseYield: 0.5,
-        expectedFiveYearGrowth: 10,
+        expectedFiveYearGrowth:10,
         totalShares: 100,
         totalCost: 15050,
         averageCostPerShare: 150.50,
@@ -64,30 +64,30 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 150.00,
           totalCost: 15000,
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
         {
           id: '2',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 50,
           costPerShare: 160.00,
           totalCost: 8000,
           purchaseDate: '2024-02-01',
           portfolios: ['Growth'],
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -111,30 +111,30 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 150.00,
           totalCost: 15000,
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
         {
           id: '2',
           ticker: 'MSFT',
-          companyName: 'Microsoft',
+          companyName:'Microsoft',
           shares: 50,
           costPerShare: 380.00,
           totalCost: 19000,
           purchaseDate: '2024-02-01',
           portfolios: ['Tech'],
           baseYield: 1.2,
-          expectedFiveYearGrowth: 12,
+          expectedFiveYearGrowth:12,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -151,30 +151,30 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 150.00,
           totalCost: 15000,
           purchaseDate: '2024-01-15',
           portfolios: ['Tech', 'Growth'],
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
         {
           id: '2',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 50,
           costPerShare: 160.00,
           totalCost: 8000,
           purchaseDate: '2024-02-01',
           portfolios: ['Tech', 'Dividend'], // Tech is duplicate
           baseYield: 0.5,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -188,16 +188,16 @@ describe('tickerCalculations', () => {
         {
           id: '1',
           ticker: 'UNKNOWN',
-          companyName: '',
+          companyName:'',
           shares: 100,
           costPerShare: 50.00,
           totalCost: 5000,
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -208,9 +208,9 @@ describe('tickerCalculations', () => {
       expect(summaries).toHaveLength(1);
       expect(summaries[0]).toMatchObject({
         ticker: 'UNKNOWN',
-        companyName: '',
+        companyName:'',
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
       });
     });
 
@@ -225,10 +225,10 @@ describe('tickerCalculations', () => {
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: '',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'',
         },
         {
           id: '2',
@@ -239,10 +239,10 @@ describe('tickerCalculations', () => {
           purchaseDate: '2024-02-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: '',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'',
         },
         {
           id: '3',
@@ -253,10 +253,10 @@ describe('tickerCalculations', () => {
           purchaseDate: '2024-03-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: '',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'',
         },
       ];
 
@@ -282,10 +282,10 @@ describe('tickerCalculations', () => {
           purchaseDate: '2024-01-15',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: '',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'',
         },
         {
           id: '2',
@@ -296,10 +296,10 @@ describe('tickerCalculations', () => {
           purchaseDate: '2024-02-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: '',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'',
         },
       ];
 
@@ -322,10 +322,10 @@ describe('tickerCalculations', () => {
         purchaseDate: '2024-03-01', // Newer date
         portfolios: ['Tech'],
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
         isDividend: false,
-        calculatePL: true,
-        companyName: '',
+        calculateAccumulatedProfitLoss: true,
+        companyName:'',
       },
       {
         id: '2',
@@ -336,10 +336,10 @@ describe('tickerCalculations', () => {
         purchaseDate: '2024-01-15', // Older date, more shares
         portfolios: ['Tech'],
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
         isDividend: false,
-        calculatePL: true,
-        companyName: '',
+        calculateAccumulatedProfitLoss: true,
+        companyName:'',
       },
       {
         id: '3',
@@ -350,10 +350,10 @@ describe('tickerCalculations', () => {
         purchaseDate: '2024-01-15', // Same date as id:2, fewer shares
         portfolios: ['Tech'],
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
         isDividend: false,
-        calculatePL: true,
-        companyName: '',
+        calculateAccumulatedProfitLoss: true,
+        companyName:'',
       },
       {
         id: '4',
@@ -364,10 +364,10 @@ describe('tickerCalculations', () => {
         purchaseDate: '2024-01-15', // Same date and shares as id:3, lower cost
         portfolios: ['Tech'],
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
         isDividend: false,
-        calculatePL: true,
-        companyName: '',
+        calculateAccumulatedProfitLoss: true,
+        companyName:'',
       },
       {
         id: '5',
@@ -378,10 +378,10 @@ describe('tickerCalculations', () => {
         purchaseDate: '2024-02-01',
         portfolios: ['Tech'],
         baseYield: 0,
-        expectedFiveYearGrowth: 0,
+        expectedFiveYearGrowth:0,
         isDividend: false,
-        calculatePL: true,
-        companyName: '',
+        calculateAccumulatedProfitLoss: true,
+        companyName:'',
       },
     ];
 
@@ -436,9 +436,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           baseYield: 2.0,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           totalShares: 100,
           totalCost: 15000,
           averageCostPerShare: 150.00,
@@ -449,9 +449,9 @@ describe('tickerCalculations', () => {
         },
         {
           ticker: 'MSFT',
-          companyName: 'Microsoft',
+          companyName:'Microsoft',
           baseYield: 3.0,
-          expectedFiveYearGrowth: 12,
+          expectedFiveYearGrowth:12,
           totalShares: 50,
           totalCost: 20000,
           averageCostPerShare: 400.00,
@@ -478,9 +478,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           baseYield: 0,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           totalShares: 100,
           totalCost: 15000,
           averageCostPerShare: 150.00,
@@ -508,9 +508,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           baseYield: 0,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           totalShares: 100,
           totalCost: 10000,
           averageCostPerShare: 100.00,
@@ -521,9 +521,9 @@ describe('tickerCalculations', () => {
         },
         {
           ticker: 'T',
-          companyName: 'AT&T',
+          companyName:'AT&T',
           baseYield: 5.0,
-          expectedFiveYearGrowth: 2,
+          expectedFiveYearGrowth:2,
           totalShares: 500,
           totalCost: 10000,
           averageCostPerShare: 20.00,
@@ -550,9 +550,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'REIT',
-          companyName: 'High Yield REIT',
+          companyName:'High Yield REIT',
           baseYield: 8.5,
-          expectedFiveYearGrowth: 5,
+          expectedFiveYearGrowth:5,
           totalShares: 100,
           totalCost: 10000,
           averageCostPerShare: 100.00,
@@ -573,9 +573,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           baseYield: 0.53,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           totalShares: 100,
           totalCost: 15000,
           averageCostPerShare: 150.00,
@@ -596,9 +596,9 @@ describe('tickerCalculations', () => {
       const summaries = [
         {
           ticker: 'LOW_YIELD',
-          companyName: 'Low Yield Corp',
+          companyName:'Low Yield Corp',
           baseYield: 1.0,
-          expectedFiveYearGrowth: 10,
+          expectedFiveYearGrowth:10,
           totalShares: 100,
           totalCost: 90000, // Large investment
           averageCostPerShare: 900.00,
@@ -609,9 +609,9 @@ describe('tickerCalculations', () => {
         },
         {
           ticker: 'HIGH_YIELD',
-          companyName: 'High Yield Corp',
+          companyName:'High Yield Corp',
           baseYield: 10.0,
-          expectedFiveYearGrowth: 2,
+          expectedFiveYearGrowth:2,
           totalShares: 100,
           totalCost: 10000, // Small investment
           averageCostPerShare: 100.00,

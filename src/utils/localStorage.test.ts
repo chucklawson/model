@@ -6,6 +6,7 @@ import {
   STORAGE_KEYS,
   STORAGE_VERSIONS,
 } from './localStorage';
+import logger from './logger';
 
 describe('localStorage', () => {
   let mockLocalStorage: Record<string, string>;
@@ -30,9 +31,9 @@ describe('localStorage', () => {
       key: vi.fn(),
     } as Storage;
 
-    // Spy on console methods without mocking implementation
-    vi.spyOn(console, 'warn');
-    vi.spyOn(console, 'error');
+    // Spy on logger methods without mocking implementation
+    vi.spyOn(logger, 'warn');
+    vi.spyOn(logger, 'error');
   });
 
   afterEach(() => {
@@ -126,9 +127,9 @@ describe('localStorage', () => {
       const result = saveToLocalStorage('test.key', 1, { data: 'test' });
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to save to localStorage'),
-        expect.any(Error)
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'test.key' }),
+        'Failed to save to localStorage'
       );
     });
 
@@ -194,8 +195,9 @@ describe('localStorage', () => {
       const fallback = { new: 'fallback' };
       loadFromLocalStorage('test.key', 3, fallback);
 
-      expect(console.warn).toHaveBeenCalledWith(
-        'localStorage version mismatch for test.key: expected 3, got 2'
+      expect(logger.warn).toHaveBeenCalledWith(
+        { key: 'test.key', expectedVersion: 3, actualVersion: 2 },
+        'localStorage version mismatch'
       );
     });
 
@@ -247,9 +249,9 @@ describe('localStorage', () => {
       const result = loadFromLocalStorage('test.key', 1, fallback);
 
       expect(result).toEqual(fallback);
-      expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to load from localStorage'),
-        expect.any(Error)
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'test.key' }),
+        'Failed to load from localStorage'
       );
     });
 
@@ -262,9 +264,9 @@ describe('localStorage', () => {
       const result = loadFromLocalStorage('test.key', 1, fallback);
 
       expect(result).toEqual(fallback);
-      expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to load from localStorage'),
-        expect.any(Error)
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'test.key' }),
+        'Failed to load from localStorage'
       );
     });
 
@@ -316,9 +318,9 @@ describe('localStorage', () => {
       const result = removeFromLocalStorage('test.key');
 
       expect(result).toBe(false);
-      expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to remove from localStorage'),
-        expect.any(Error)
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'test.key' }),
+        'Failed to remove from localStorage'
       );
     });
 

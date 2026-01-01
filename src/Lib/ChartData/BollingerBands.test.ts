@@ -810,7 +810,7 @@ describe('BollingerBands', () => {
       expect(result?.length).toBe(50);
 
       if (result) {
-        result.forEach((point, index) => {
+        result.forEach((point, _index) => {
           // All fields should be populated
           expect(point.date).toBeTruthy();
           expect(typeof point.upperBandValue).toBe('number');

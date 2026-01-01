@@ -15,6 +15,7 @@ import {
 import * as fmpApiClient from './fmpApiClient';
 import type { TickerLot } from '../types';
 import type { HistoricalPrice } from '../types/customRange';
+import logger from './logger';
 
 // Mock the API client
 vi.mock('./fmpApiClient');
@@ -175,15 +176,15 @@ describe('dateRangeCalculations', () => {
     });
 
     it('should return null and log error on API failure', async () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
       vi.mocked(fmpApiClient.callFmpApi).mockRejectedValue(new Error('API Error'));
 
       const price = await fetchHistoricalPriceForDate('ERROR-TEST', '2024-01-15');
 
       expect(price).toBeNull();
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
 
-      consoleErrorSpy.mockRestore();
+      loggerErrorSpy.mockRestore();
     });
 
     it('should handle different tickers separately in cache', async () => {
@@ -244,15 +245,15 @@ describe('dateRangeCalculations', () => {
     });
 
     it('should return empty array on API error', async () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const loggerErrorSpy = vi.spyOn(logger, 'error').mockImplementation(() => {});
       vi.mocked(fmpApiClient.callFmpApi).mockRejectedValue(new Error('API Error'));
 
       const prices = await fetchHistoricalPriceRange('ERROR-RANGE', '2024-01-15', '2024-01-17');
 
       expect(prices).toEqual([]);
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
 
-      consoleErrorSpy.mockRestore();
+      loggerErrorSpy.mockRestore();
     });
 
     it('should call API with correct parameters', async () => {
@@ -276,16 +277,16 @@ describe('dateRangeCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 140.00,
           totalCost: 14000,
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -316,16 +317,16 @@ describe('dateRangeCalculations', () => {
         {
           id: '1',
           ticker: 'AAPL',
-          companyName: 'Apple Inc',
+          companyName:'Apple Inc',
           shares: 100,
           costPerShare: 148.00,
           totalCost: 14800,
           purchaseDate: '2024-01-10', // During range
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
+          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -357,10 +358,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01', // Before range
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
         {
           id: '2',
@@ -371,10 +372,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2024-01-10', // During range
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
       ];
 
@@ -408,15 +409,15 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Test Company',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Test Company',
         },
       ];
 
       // Mock no historical data
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const loggerWarnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
       vi.mocked(fmpApiClient.callFmpApi).mockResolvedValue({ historical: [] });
 
       const result = await calculateTickerDateRangePerformance(
@@ -431,7 +432,7 @@ describe('dateRangeCalculations', () => {
       expect(result.warningMessage).toContain('Start date price unavailable');
       expect(result.baselineValue).toBe(14000); // Falls back to purchase price
 
-      consoleWarnSpy.mockRestore();
+      loggerWarnSpy.mockRestore();
     });
 
     it('should handle zero baseline value gracefully', async () => {
@@ -463,10 +464,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
       ];
 
@@ -511,10 +512,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
         {
           id: '2',
@@ -525,10 +526,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Microsoft',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Microsoft',
         },
       ];
 
@@ -575,10 +576,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
         {
           id: '2',
@@ -589,10 +590,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2024-01-05',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: true, // Dividend lot
-          calculatePL: false,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: false,
+          companyName:'Apple Inc',
         },
       ];
 
@@ -638,16 +639,16 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
       ];
 
       const currentPrices = {}; // No price for AAPL
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const loggerWarnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
 
       const result = await calculateDateRangePerformance(
         lots,
@@ -657,11 +658,12 @@ describe('dateRangeCalculations', () => {
       );
 
       expect(result.tickers).toEqual([]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('No current price available for AAPL')
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ ticker: 'AAPL' }),
+        'No current price available for ticker'
       );
 
-      consoleWarnSpy.mockRestore();
+      loggerWarnSpy.mockRestore();
     });
 
     it('should calculate allocation percentages correctly', async () => {
@@ -675,10 +677,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Apple Inc',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Apple Inc',
         },
         {
           id: '2',
@@ -689,10 +691,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Microsoft',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Microsoft',
         },
       ];
 
@@ -733,10 +735,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2023-12-01',
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Test Company',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Test Company',
         },
       ];
 
@@ -789,10 +791,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2024-01-01', // Owned from start
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Test Company',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Test Company',
         },
         {
           id: '2',
@@ -803,10 +805,10 @@ describe('dateRangeCalculations', () => {
           purchaseDate: '2024-01-03', // Purchased mid-range
           portfolios: ['Tech'],
           baseYield: 0,
-          expectedFiveYearGrowth: 0,
+          expectedFiveYearGrowth:0,
           isDividend: false,
-          calculatePL: true,
-          companyName: 'Test Company',
+          calculateAccumulatedProfitLoss: true,
+          companyName:'Test Company',
         },
       ];
 

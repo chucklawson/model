@@ -1,21 +1,22 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { sendNotification } from './sendNotification';
+import logger from './logger';
 
 describe('sendNotification', () => {
   let mockFetch: any;
-  let consoleLogSpy: any;
-  let consoleWarnSpy: any;
-  let consoleErrorSpy: any;
+  let loggerInfoSpy: any;
+  let loggerWarnSpy: any;
+  let loggerErrorSpy: any;
 
   beforeEach(() => {
     // Mock global fetch
     mockFetch = vi.fn();
     global.fetch = mockFetch;
 
-    // Spy on console methods without mocking implementation
-    consoleLogSpy = vi.spyOn(console, 'log');
-    consoleWarnSpy = vi.spyOn(console, 'warn');
-    consoleErrorSpy = vi.spyOn(console, 'error');
+    // Spy on logger methods without mocking implementation
+    loggerInfoSpy = vi.spyOn(logger, 'info');
+    loggerWarnSpy = vi.spyOn(logger, 'warn');
+    loggerErrorSpy = vi.spyOn(logger, 'error');
 
     // Clear environment
     vi.unstubAllEnvs();
@@ -55,7 +56,7 @@ describe('sendNotification', () => {
           }),
         }
       );
-      expect(consoleLogSpy).toHaveBeenCalledWith('Notification sent successfully');
+      expect(loggerInfoSpy).toHaveBeenCalledWith({ subject: 'Test subject' }, 'Notification sent successfully');
     });
 
     it('should send notification with message only', async () => {
@@ -76,7 +77,7 @@ describe('sendNotification', () => {
           }),
         })
       );
-      expect(consoleLogSpy).toHaveBeenCalledWith('Notification sent successfully');
+      expect(loggerInfoSpy).toHaveBeenCalledWith({ subject: undefined }, 'Notification sent successfully');
     });
 
     it('should send notification with empty subject', async () => {
@@ -154,8 +155,8 @@ describe('sendNotification', () => {
         message: 'Test',
       });
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('Notification sent successfully');
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(loggerInfoSpy).toHaveBeenCalledWith({ subject: undefined }, 'Notification sent successfully');
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
     });
 
     it('should handle response with status 201', async () => {
@@ -168,7 +169,7 @@ describe('sendNotification', () => {
         message: 'Test',
       });
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('Notification sent successfully');
+      expect(loggerInfoSpy).toHaveBeenCalledWith({ subject: undefined }, 'Notification sent successfully');
     });
   });
 
@@ -180,7 +181,7 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith('Notification function URL not configured');
+      expect(loggerWarnSpy).toHaveBeenCalledWith('Notification function URL not configured');
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
@@ -220,9 +221,9 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error sending notification:',
-        expect.any(Error)
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.any(Error) }),
+        'Failed to send notification'
       );
     });
 
@@ -236,11 +237,9 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error sending notification:',
-        expect.objectContaining({
-          message: 'Failed to send notification',
-        })
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.any(Error) }),
+        'Failed to send notification'
       );
     });
 
@@ -254,7 +253,7 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
     });
 
     it('should not throw error on failed response', async () => {
@@ -281,11 +280,9 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error sending notification:',
-        expect.objectContaining({
-          message: 'Network timeout',
-        })
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.any(Error) }),
+        'Failed to send notification'
       );
     });
 
@@ -296,9 +293,9 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error sending notification:',
-        expect.any(Error)
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ error: expect.any(Error) }),
+        'Failed to send notification'
       );
     });
 
@@ -309,7 +306,7 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
     });
 
     it('should not throw error on network failure', async () => {
@@ -327,7 +324,7 @@ describe('sendNotification', () => {
         message: 'Test message',
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
     });
   });
 
@@ -385,7 +382,7 @@ describe('sendNotification', () => {
       });
 
       expect(mockFetch).toHaveBeenCalled();
-      expect(consoleLogSpy).toHaveBeenCalledWith('Notification sent successfully');
+      expect(loggerInfoSpy).toHaveBeenCalledWith({ subject: 'Success ✨' }, 'Notification sent successfully');
     });
 
     it('should handle message with JSON-like content', async () => {
@@ -454,8 +451,8 @@ describe('sendNotification', () => {
       await Promise.all(promises);
 
       expect(mockFetch).toHaveBeenCalledTimes(4);
-      expect(consoleLogSpy).toHaveBeenCalledTimes(2); // 2 successful
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(2); // 2 failed
+      expect(loggerInfoSpy).toHaveBeenCalledTimes(2); // 2 successful
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(2); // 2 failed
     });
   });
 
@@ -542,7 +539,7 @@ describe('sendNotification', () => {
       await sendNotification({ message: 'Test' });
 
       // Error should be logged
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(loggerErrorSpy).toHaveBeenCalled();
 
       // Should still resolve successfully (not throw)
       expect(true).toBe(true);

@@ -544,7 +544,7 @@ AAPL,Apple Inc,0.5,100,150.50,2024-01-15,Tech,true,false,"Strong buy"`;
         costPerShare: 150.50,
         purchaseDate: '2024-01-15',
         portfolios: ['Tech'],
-        calculatePL: true,
+        calculateAccumulatedProfitLoss: true,
         isDividend: false,
         notes: 'Strong buy',
       });

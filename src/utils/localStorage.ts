@@ -2,6 +2,8 @@
 // FILE: src/utils/localStorage.ts
 // ============================================
 
+import logger from './logger';
+
 /**
  * Storage keys for localStorage
  */
@@ -53,13 +55,13 @@ export function loadFromLocalStorage<T>(
 
     // Version mismatch - return fallback
     if (parsed.version !== version) {
-      console.warn(`localStorage version mismatch for ${key}: expected ${version}, got ${parsed.version}`);
+      logger.warn({ key, expectedVersion: version, actualVersion: parsed.version }, 'localStorage version mismatch');
       return fallback;
     }
 
     return parsed.data;
   } catch (error) {
-    console.error(`Failed to load from localStorage (${key}):`, error);
+    logger.error({ error, key }, 'Failed to load from localStorage');
     return fallback;
   }
 }
@@ -87,7 +89,7 @@ export function saveToLocalStorage<T>(
     localStorage.setItem(fullKey, JSON.stringify(wrapped));
     return true;
   } catch (error) {
-    console.error(`Failed to save to localStorage (${key}):`, error);
+    logger.error({ error, key }, 'Failed to save to localStorage');
     return false;
   }
 }
@@ -103,7 +105,7 @@ export function removeFromLocalStorage(key: string): boolean {
     localStorage.removeItem(key);
     return true;
   } catch (error) {
-    console.error(`Failed to remove from localStorage (${key}):`, error);
+    logger.error({ error, key }, 'Failed to remove from localStorage');
     return false;
   }
 }

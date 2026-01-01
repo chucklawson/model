@@ -1,4 +1,5 @@
 import { sendNotification } from './sendNotification';
+import logger from './logger';
 
 // Expose to window for console access
 declare global {
@@ -9,9 +10,9 @@ declare global {
 
 if (import.meta.env.DEV) {
   window.notifyMe = async (message: string, subject?: string) => {
-    console.log('Sending notification:', { message, subject });
+    logger.debug({ message, subject }, 'Sending notification via dev tool');
     await sendNotification({ message, subject });
   };
 
-  console.log('💡 Dev tool available: window.notifyMe("Your message", "Optional Subject")');
+  logger.info('Dev tool available: window.notifyMe("Your message", "Optional Subject")');
 }

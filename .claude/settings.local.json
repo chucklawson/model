@@ -61,7 +61,9 @@
       "Bash(do basename \"$f\" .ts)",
       "Bash(while read base)",
       "Bash(do if [ ! -f \"src/utils/$base.test.ts\" ])",
-      "Bash(then echo \"✗ src/utils/$base.ts\")"
+      "Bash(then echo \"✗ src/utils/$base.ts\")",
+      "Bash(tree:*)",
+      "Bash(npm outdated:*)"
     ],
     "deny": [],
     "ask": []

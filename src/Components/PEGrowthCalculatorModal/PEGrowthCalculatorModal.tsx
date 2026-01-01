@@ -7,6 +7,7 @@ import AnnualProjectionTable from '../AnnualProjectionTable/AnnualProjectionTabl
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 import { callFmpApi } from '../../utils/fmpApiClient';
+import logger from '../../utils/logger';
 
 interface CalculatorFormData {
   ticker: string;
@@ -127,7 +128,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
             setFormData(prev => ({ ...prev, earningsGrowthRate: 10 }));
           }
         } catch (tickerErr) {
-          console.log('Could not fetch ticker growth rate:', tickerErr);
+          logger.debug({ error: tickerErr, ticker: formData.ticker }, 'Could not fetch ticker growth rate, using default');
           // Don't show error to user, just use default growth rate
         }
 

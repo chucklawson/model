@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type AfterHoursQuote_V3 from '../Lib/AfterHoursQuote_V3';
 import { shouldShowAfterHoursPricing } from '../utils/marketHours';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 interface UseAfterHoursDataParams {
   tickers: string[];
@@ -204,7 +205,7 @@ export function useAfterHoursData({
 
         } catch (batchError) {
           // Log batch error but continue with other batches
-          console.error(`Error fetching batch ${i / 10 + 1}:`, batchError);
+          logger.error({ error: batchError, batchNumber: i / 10 + 1, tickers: batch }, 'Error fetching after-hours batch');
         }
 
         // No delay needed with paid API tier
@@ -265,7 +266,7 @@ export function useAfterHoursData({
 
       // Check if maximum polling period has been exceeded
       if (elapsedTime >= maximumPeriodMs) {
-        console.log(`Maximum polling period of ${maximumPeriod} minutes reached. Polling stopped.`);
+        logger.info({ maximumPeriod, elapsedMinutes: Math.floor(elapsedTime / 60000) }, 'Maximum polling period reached, stopping');
         clearInterval(intervalId);
         return;
       }

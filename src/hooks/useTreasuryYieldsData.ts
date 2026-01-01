@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { TreasuryYieldData, UseTreasuryYieldsDataParams, UseTreasuryYieldsDataResult } from '../types/treasury';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 export function useTreasuryYieldsData({
   startDate,
@@ -33,7 +34,7 @@ export function useTreasuryYieldsData({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch treasury yields');
         setError(error);
-        console.error('Treasury yields fetch error:', error);
+        logger.error({ error, startDate, endDate, context: 'useTreasuryYieldsData' }, 'Failed to fetch treasury yields');
       } finally {
         setLoading(false);
       }

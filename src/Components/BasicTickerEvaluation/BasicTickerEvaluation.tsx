@@ -18,6 +18,7 @@ import ChartControls from '../ChartControls/ChartControls';
 import StockChartDisplay from '../StockChartDisplay/StockChartDisplay';
 import TradingRangeSidebar from '../TradingRangeSidebar/TradingRangeSidebar';
 import { useTechnicalIndicators } from '../../hooks/useTechnicalIndicators';
+import logger from '../../utils/logger';
 
 
 /*
@@ -456,7 +457,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         // Reject stale data from previous ticker selections
         // Only validate if we're not loading (prevents rejecting data during transitions)
         if (currentQuoteIn.symbol !== tickerToGet && tickerToGet !== '' && !isLoading) {
-            console.log("Rejecting data for wrong ticker. Got:", currentQuoteIn.symbol, "Expected:", tickerToGet);
+            logger.debug({ received: currentQuoteIn.symbol, expected: tickerToGet }, 'Rejecting data for wrong ticker');
             setDataFetched(true);
             return;
         }
@@ -474,7 +475,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
             // Check if the data range doesn't overlap with the requested range
             if (dataEnd < requestStart || dataStart > requestEnd) {
-                console.log("Rejecting data - date range mismatch. Requested:", startDate, "to", endDate);
+                logger.debug({ requestedStart: startDate, requestedEnd: endDate, dataStart, dataEnd }, 'Rejecting data - date range mismatch');
                 setDataFetched(true);
                 return;
             }
@@ -482,7 +483,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             // Additional validation: Check if ticker is too new for the requested date range
             // GEV started trading in 2024, so any data before 2024 is fake/wrong
             if (currentQuoteIn.symbol === 'GEV' && requestEnd < new Date('2024-01-01')) {
-                console.log("Rejecting data - GEV did not exist before 2024");
+                logger.debug({ ticker: 'GEV', requestedEnd: requestEnd }, 'Rejecting data - GEV did not exist before 2024');
                 setDataFetched(true);
                 return;
             }

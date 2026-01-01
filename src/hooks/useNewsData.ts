@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { NewsArticle, UseNewsDataParams, UseNewsDataResult } from '../types/news';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 export function useNewsData({
   symbol,
@@ -44,7 +45,7 @@ export function useNewsData({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch news data');
         setError(error);
-        console.error('News data fetch error:', error);
+        logger.error({ error, symbol, startDate, endDate, context: 'useNewsData' }, 'Failed to fetch news data');
       } finally {
         setLoading(false);
       }

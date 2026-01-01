@@ -126,11 +126,11 @@ describe('Integration Tests', () => {
       const targetPE = 25; // Expecting P/E expansion
 
       const analystEstimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 5.5, epsHigh: 5.7, epsLow: 5.3, numberAnalysts: 15 },
-        { date: '2026-12-31', epsAvg: 6.2, epsHigh: 6.5, epsLow: 6.0, numberAnalysts: 15 },
-        { date: '2027-12-31', epsAvg: 7.0, epsHigh: 7.3, epsLow: 6.8, numberAnalysts: 12 },
-        { date: '2028-12-31', epsAvg: 7.9, epsHigh: 8.2, epsLow: 7.6, numberAnalysts: 10 },
-        { date: '2029-12-31', epsAvg: 8.9, epsHigh: 9.3, epsLow: 8.6, numberAnalysts: 8 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 5.5, epsHigh: 5.7, epsLow: 5.3, numAnalystsRevenue:15, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 6.2, epsHigh: 6.5, epsLow: 6.0, numAnalystsRevenue:15, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2027-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 7.0, epsHigh: 7.3, epsLow: 6.8, numAnalystsRevenue:12, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2028-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 7.9, epsHigh: 8.2, epsLow: 7.6, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2029-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 8.9, epsHigh: 9.3, epsLow: 8.6, numAnalystsRevenue:8, numAnalystsEps: 0 }
       ];
 
       // Calculate implied growth rate
@@ -178,8 +178,8 @@ describe('Integration Tests', () => {
       const targetPE = 18;
 
       const analystEstimates: AnalystEstimate_V3[] = [
-        { date: '2025-12-31', epsAvg: 3.3, epsHigh: 3.4, epsLow: 3.2, numberAnalysts: 10 },
-        { date: '2026-12-31', epsAvg: 3.6, epsHigh: 3.8, epsLow: 3.5, numberAnalysts: 8 }
+        { symbol: 'TEST', date: '2025-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 3.3, epsHigh: 3.4, epsLow: 3.2, numAnalystsRevenue:10, numAnalystsEps: 0 },
+        { symbol: 'TEST', date: '2026-12-31', revenueLow: 0, revenueHigh: 0, revenueAvg: 0, ebitdaLow: 0, ebitdaHigh: 0, ebitdaAvg: 0, ebitLow: 0, ebitHigh: 0, ebitAvg: 0, netIncomeLow: 0, netIncomeHigh: 0, netIncomeAvg: 0, sgaExpenseLow: 0, sgaExpenseHigh: 0, sgaExpenseAvg: 0, epsAvg: 3.6, epsHigh: 3.8, epsLow: 3.5, numAnalystsRevenue:8, numAnalystsEps: 0 }
         // Only 2 years of estimates
       ];
 
@@ -218,7 +218,6 @@ describe('Integration Tests', () => {
 
       // Arrange
       const portfolioValue = 500000;
-      const monthlyMortgage = 1500;
       const mortgageYears = 15;
       const portfolioReturn = 3; // 3% annual return (conservative, withdrawals will deplete it)
 
@@ -375,7 +374,6 @@ describe('Integration Tests', () => {
 
       // Arrange
       const initialMonthly = 500;
-      const years = 20;
       const returnRate = 8;
 
       // Model as separate periods with increasing contributions

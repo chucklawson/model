@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { transformToTableData, type TableRow } from './KeyMetricsDataTransformer';
+import { describe, it, expect, beforeEach as _beforeEach } from 'vitest';
+import { transformToTableData, type TableRow as _TableRow } from './KeyMetricsDataTransformer';
 import StatementAnalysisKeyMetricsData from '../StatementsData/StatementAnalysisKeyMetricsData';
 
 describe('KeyMetricsDataTransformer', () => {

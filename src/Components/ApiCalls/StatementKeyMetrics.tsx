@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
 import StatementAnalysisKeyMetricsData from '../../Lib/StatementsData/StatementAnalysisKeyMetricsData'
 import { useKeyMetrics } from '../../hooks/useKeyMetrics';
+import logger from '../../utils/logger';
 
 /*
 <StatementKeyMetrics stockSymbol={tickerToGet} period={period} onSetCurrentQuote={onSetCurrentQuote}/>
@@ -30,7 +31,7 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
 
     // Handle error state
     if (error) {
-      console.error('Key metrics fetch error:', error);
+      logger.error({ error, ticker: props.stockSymbol, period: props.period }, 'Key metrics fetch error in component');
       return <React.Fragment/>;
     }
 

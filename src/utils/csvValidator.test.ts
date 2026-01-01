@@ -622,30 +622,26 @@ describe('csvValidator', () => {
       {
         id: '1',
         ticker: 'AAPL',
-        companyName: 'Apple Inc',
         shares: 100,
         costPerShare: 150.50,
         totalCost: 15050,
         purchaseDate: '2024-01-15',
         portfolios: ['Tech'],
         baseYield: 0.5,
-        expectedFiveYearGrowth: 10,
         isDividend: false,
-        calculatePL: true,
+        calculateAccumulatedProfitLoss: true,
       },
       {
         id: '2',
         ticker: 'MSFT',
-        companyName: 'Microsoft',
         shares: 50.25,
         costPerShare: 380.75,
         totalCost: 19132.69,
         purchaseDate: '2024-02-01',
         portfolios: ['Tech'],
         baseYield: 1.2,
-        expectedFiveYearGrowth: 12,
         isDividend: false,
-        calculatePL: true,
+        calculateAccumulatedProfitLoss: true,
       },
     ];
 
@@ -772,16 +768,14 @@ describe('csvValidator', () => {
       {
         id: '1',
         ticker: 'AAPL',
-        companyName: 'Apple Inc',
         shares: 100,
         costPerShare: 150.50,
         totalCost: 15050,
         purchaseDate: '2024-01-15',
         portfolios: ['Tech'],
         baseYield: 0.5,
-        expectedFiveYearGrowth: 10,
         isDividend: false,
-        calculatePL: true,
+        calculateAccumulatedProfitLoss: true,
       },
     ];
 
@@ -1158,16 +1152,13 @@ describe('csvValidator', () => {
       {
         id: '1',
         symbol: 'AAPL',
-        companyName: 'Apple Inc',
         baseYield: 0.5,
-        expectedFiveYearGrowth: 10,
+        expectedFiveYearGrowth: 0,
       },
       {
         id: '2',
         symbol: 'MSFT',
-        companyName: 'Microsoft',
         baseYield: 1.2,
-        expectedFiveYearGrowth: 12,
       },
     ];
 

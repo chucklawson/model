@@ -13,6 +13,7 @@ import type {
   Ticker,
 } from '../types';
 import { getUniqueTickers, tickerExists } from './csvValidator';
+import logger from './logger';
 
 type Client = ReturnType<typeof generateClient<Schema>>;
 
@@ -67,7 +68,7 @@ export async function importCSVData(
         });
         result.portfoliosCreated.push(portfolioName);
       } catch (err) {
-        console.error(`Failed to create portfolio ${portfolioName}:`, err);
+        logger.error({ error: err, portfolioName }, 'Failed to create portfolio during CSV import');
       }
     }
 
@@ -98,7 +99,7 @@ export async function importCSVData(
             });
             result.tickersCreated++;
           } catch (err) {
-            console.error(`Failed to create ticker ${tickerSymbol}:`, err);
+            logger.error({ error: err, ticker: tickerSymbol }, 'Failed to create ticker during CSV import');
           }
         }
       }
@@ -152,7 +153,7 @@ export async function importCSVData(
           status: 'success',
         });
       } catch (err) {
-        console.error(`Failed to import lot for ${row.ticker}:`, err);
+        logger.error({ error: err, ticker: row.ticker, shares: row.shares }, 'Failed to import lot during CSV import');
         result.failed++;
         result.details.push({
           row,
@@ -164,7 +165,7 @@ export async function importCSVData(
 
     updateProgress('Import complete!');
   } catch (err) {
-    console.error('Import error:', err);
+    logger.error({ error: err, totalRows: validationResults.length }, 'CSV import failed');
     throw err;
   }
 

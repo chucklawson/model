@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TickerLot } from '../types';
 import type { DateRangePortfolioPerformance } from '../types/customRange';
 import { calculateDateRangePerformance } from '../utils/dateRangeCalculations';
+import logger from '../utils/logger';
 
 interface UseCustomRangeDataParams {
   lots: TickerLot[];
@@ -86,8 +87,9 @@ export function useCustomRangeData({
 
       setCustomRangeData(performance);
     } catch (err) {
-      console.error('Error calculating custom range performance:', err);
-      setError(err instanceof Error ? err : new Error('Failed to calculate custom range performance'));
+      const error = err instanceof Error ? err : new Error('Failed to calculate custom range performance');
+      logger.error({ error, startDate, endDate, lotCount: filteredLots.length }, 'Failed to calculate custom range performance');
+      setError(error);
     } finally {
       setLoading(false);
     }

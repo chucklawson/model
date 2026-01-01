@@ -2,6 +2,7 @@ import  React, { useEffect } from 'react';
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
 import type HistoricalDividendData from "../../Lib/DividendData/HistoricalDividendData.tsx";
 import { useDividendData } from '../../hooks/useDividendData';
+import logger from '../../utils/logger';
 
 /*
 <HistoricalDividendQuote stockSymbol={tickerToGet} onSetCurrentQuote={onSetCurrentQuote}/>
@@ -27,7 +28,7 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
 
     // Handle error state
     if (error) {
-      console.error('Dividend data fetch error:', error);
+      logger.error({ error, ticker: props.stockSymbol }, 'Dividend data fetch error in component');
       return <React.Fragment/>;
     }
 

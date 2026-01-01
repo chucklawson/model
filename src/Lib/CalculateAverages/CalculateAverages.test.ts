@@ -564,7 +564,7 @@ describe('CalculateAverages', () => {
 
     it('should reverse the order of entries', () => {
       const keyMetrics = createMockKeyMetrics(10, '2024-01-01');
-      const firstDateBefore = keyMetrics[0].date;
+      const _firstDateBefore = keyMetrics[0].date;
 
       const result = calculateAverages.getPriceToEarningsChartData(keyMetrics);
 
@@ -723,8 +723,8 @@ describe('CalculateAverages', () => {
           adjustedData,
           dailyResult!
         );
-        const rsiResult = calculateAverages.getRsiChartData(standardData, adjustedData);
-        const stochasticResult = calculateAverages.getStochasticChartData(
+        const _rsiResult = calculateAverages.getRsiChartData(standardData, adjustedData);
+        const _stochasticResult = calculateAverages.getStochasticChartData(
           standardData,
           adjustedData
         );

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type Quote_V3 from '../Lib/Quote_V3';
 import type HistoricalDividendData from '../Lib/DividendData/HistoricalDividendData';
 import { callFmpApi } from '../utils/fmpApiClient';
+import logger from '../utils/logger';
 
 interface UseDividendDataParams {
   stockSymbol: string;
@@ -51,7 +52,7 @@ export function useDividendData({
       } catch (err) {
         const error = err instanceof Error ? err : new Error('Failed to fetch dividend data');
         setError(error);
-        console.error('Dividend data fetch error:', error);
+        logger.error({ error, ticker: stockSymbol, context: 'useDividendData' }, 'Failed to fetch dividend data');
       } finally {
         setLoading(false);
       }
