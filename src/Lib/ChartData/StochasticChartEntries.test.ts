@@ -993,4 +993,21 @@ describe('StochasticChartEntries', () => {
       }
     });
   });
+
+  describe('StochasticChartData toString', () => {
+    it('should return formatted string representation', () => {
+      const stochData = new StochasticChartData('2024-01-15', 75.5, 72.3);
+      const result = stochData.toString();
+
+      expect(result).toBe('dateOfClose: 2024-01-15, fastSstochasticValue: 75.5, slowStochasticValue: 72.3');
+    });
+
+    it('should handle zero stochastic values', () => {
+      const stochData = new StochasticChartData('2024-01-15', 0, 0);
+      const result = stochData.toString();
+
+      expect(result).toContain('fastSstochasticValue: 0');
+      expect(result).toContain('slowStochasticValue: 0');
+    });
+  });
 });

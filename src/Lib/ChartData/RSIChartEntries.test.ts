@@ -1099,4 +1099,20 @@ describe('RSIChartEntries', () => {
       }
     });
   });
+
+  describe('RSIChartData toString', () => {
+    it('should return formatted string representation', () => {
+      const rsiData = new RSIChartData('2024-01-15', 150.50, 2.5, 1.5, 62.5);
+      const result = rsiData.toString();
+
+      expect(result).toBe('dateOfClose: 2024-01-15, close: 150.5, upwardMean: 2.5, downwardMean: 1.5, rsiValue: 62.5');
+    });
+
+    it('should handle zero RSI value', () => {
+      const rsiData = new RSIChartData('2024-01-15', 150.50, 0, 0, 0);
+      const result = rsiData.toString();
+
+      expect(result).toContain('rsiValue: 0');
+    });
+  });
 });

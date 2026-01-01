@@ -187,6 +187,18 @@ describe('localStorage', () => {
       // as it's a non-critical logging feature
     });
 
+    it('should log warning when version mismatch occurs', () => {
+      const data = { old: 'data' };
+      mockLocalStorage['test.key.v3'] = JSON.stringify({ version: 2, data });
+
+      const fallback = { new: 'fallback' };
+      loadFromLocalStorage('test.key', 3, fallback);
+
+      expect(console.warn).toHaveBeenCalledWith(
+        'localStorage version mismatch for test.key: expected 3, got 2'
+      );
+    });
+
     it('should load primitive number values', () => {
       mockLocalStorage['test.number.v1'] = JSON.stringify({ version: 1, data: 42 });
 

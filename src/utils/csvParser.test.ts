@@ -8,6 +8,7 @@ import {
   parseCSVLine,
   parsePortfolioField,
   parseCSVText,
+  parseCSVFile,
   validateFileSize,
   validateRowCount,
 } from './csvParser';
@@ -155,6 +156,13 @@ AAPL,100,150.50,1/5/2024,Tech`;
       const result = parseCSVText(csv);
       expect(result.rows[0].purchaseDate).toBe('2024-01-05');
     });
+
+    it('should return unrecognized date format as-is', () => {
+      const csv = `Ticker,Shares,Cost,Date,Portfolio
+AAPL,100,150.50,15-Jan-2024,Tech`;
+      const result = parseCSVText(csv);
+      expect(result.rows[0].purchaseDate).toBe('15-Jan-2024');
+    });
   });
 
   describe('parseCSVText - Column Normalization', () => {
@@ -283,6 +291,14 @@ AAPL,100,150.50,2024-01-15,Tech,TRUE,YES`;
       const result = parseCSVText(csv);
       expect(result.rows[0].calculatePL).toBe(true);
       expect(result.rows[0].isDividend).toBe(true);
+    });
+
+    it('should return undefined for unrecognized boolean values', () => {
+      const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL,IsDividend
+AAPL,100,150.50,2024-01-15,Tech,maybe,unknown`;
+      const result = parseCSVText(csv);
+      expect(result.rows[0].calculatePL).toBeUndefined();
+      expect(result.rows[0].isDividend).toBeUndefined();
     });
   });
 
@@ -488,6 +504,29 @@ AAPL,invalid,150.50,2024-01-15,Tech`;
       };
 
       expect(() => validateRowCount(data)).not.toThrow();
+    });
+  });
+
+  describe('parseCSVFile - async File parsing', () => {
+    it('should parse File object asynchronously', async () => {
+      const csvContent = `Ticker,Shares,Cost,Date,Portfolio
+AAPL,100,150.50,2024-01-15,Tech
+MSFT,50,380.25,2024-02-01,Growth`;
+
+      // Create a File-like object with text() method
+      const file = new File([csvContent], 'test.csv', { type: 'text/csv' });
+      // Add text() method for Node.js environment
+      Object.defineProperty(file, 'text', {
+        value: async () => csvContent,
+        writable: false,
+        configurable: true,
+      });
+
+      const result = await parseCSVFile(file);
+
+      expect(result.totalRows).toBe(2);
+      expect(result.rows[0].ticker).toBe('AAPL');
+      expect(result.rows[1].ticker).toBe('MSFT');
     });
   });
 

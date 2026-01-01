@@ -178,6 +178,27 @@ describe('MortgageCalculation', () => {
       expect(schedule[0].isPMIActive).toBe(true);
       expect(schedule[0].pmiPaid).toBeGreaterThan(0);
     });
+
+    // Edge case tests for calculateMonthlyPayment
+    it('should return 0 when principal is 0', () => {
+      const payment = calculateMonthlyPayment(0, 6.5, 30);
+      expect(payment).toBe(0);
+    });
+
+    it('should return 0 when principal is negative', () => {
+      const payment = calculateMonthlyPayment(-100000, 6.5, 30);
+      expect(payment).toBe(0);
+    });
+
+    it('should return 0 when loan term is 0', () => {
+      const payment = calculateMonthlyPayment(200000, 6.5, 0);
+      expect(payment).toBe(0);
+    });
+
+    it('should return 0 when loan term is negative', () => {
+      const payment = calculateMonthlyPayment(200000, 6.5, -5);
+      expect(payment).toBe(0);
+    });
   });
 
   describe('calculatePMI', () => {
@@ -1084,6 +1105,37 @@ describe('MortgageCalculation', () => {
 
       // Cumulative total should include regular + extra payments
       expect(lastPayment.cumulativeTotal).toBeGreaterThan(lastPayment.cumulativePrincipal);
+    });
+
+    it('should handle remaining balance defensive code (never goes negative)', () => {
+      // This test ensures the defensive code at line 185 works correctly
+      // Even with edge cases, remaining balance should never be negative
+      const inputs = {
+        loanAmount: 100000,
+        interestRate: 0.01, // Very low rate to minimize interest
+        loanTermYears: 30,
+        downPayment: 20,
+        propertyTax: 0,
+        homeInsurance: 0,
+        pmiRate: 0,
+        hoaFees: 0,
+      };
+      const extraPayments = [{
+        id: '1',
+        type: 'recurring-monthly' as const,
+        amount: 500, // Large extra payment relative to principal
+        startMonth: 1
+      }];
+
+      const schedule = generateAmortizationSchedule(inputs, extraPayments);
+
+      // Verify no payment has negative remaining balance
+      schedule.forEach((payment) => {
+        expect(payment.remainingBalance).toBeGreaterThanOrEqual(0);
+      });
+
+      // Last payment should have 0 balance
+      expect(schedule[schedule.length - 1].remainingBalance).toBe(0);
     });
   });
 
