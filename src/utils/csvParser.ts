@@ -39,9 +39,9 @@ const COLUMN_MAPPINGS: { [key: string]: string } = {
   portfolio: 'portfolios',
 
   // Calculate P/L column
-  calculatepl: 'calculatePL',
-  calculateaccumulatedprofitloss: 'calculatePL',
-  calculateprofitloss: 'calculatePL',
+  calculatepl: 'calculateAccumulatedProfitLoss',
+  calculateaccumulatedprofitloss: 'calculateAccumulatedProfitLoss',
+  calculateprofitloss: 'calculateAccumulatedProfitLoss',
 
   // Dividend flag column
   isdividend: 'isDividend',
@@ -211,7 +211,7 @@ function parseRow(
   // Parse optional fields
   const companyName = getValue('companyName') || undefined;
   const baseYield = getValue('baseYield') ? parseFloat(getValue('baseYield')) : undefined;
-  const calculatePL = parseBooleanField(getValue('calculatePL'));
+  const calculateAccumulatedProfitLoss = parseBooleanField(getValue('calculateAccumulatedProfitLoss'));
   const isDividend = parseBooleanField(getValue('isDividend'));
   const notes = getValue('notes') || undefined;
 
@@ -223,7 +223,7 @@ function parseRow(
     costPerShare,
     purchaseDate,
     portfolios,
-    calculatePL,
+    calculateAccumulatedProfitLoss,
     isDividend,
     notes,
     rowIndex,

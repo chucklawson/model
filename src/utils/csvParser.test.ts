@@ -239,7 +239,7 @@ AAPL,100,150.50,2024-01-15,Tech,2.5`;
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL,IsDividend
 AAPL,100,150.50,2024-01-15,Tech,true,false`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBe(true);
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBe(true);
       expect(result.rows[0].isDividend).toBe(false);
     });
 
@@ -247,7 +247,7 @@ AAPL,100,150.50,2024-01-15,Tech,true,false`;
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL
 AAPL,100,150.50,2024-01-15,Tech,yes`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBe(true);
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBe(true);
     });
 
     it('should parse "1" as true', () => {
@@ -261,7 +261,7 @@ AAPL,100,150.50,2024-01-15,Tech,1`;
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL
 AAPL,100,150.50,2024-01-15,Tech,false`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBe(false);
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBe(false);
     });
 
     it('should parse "no" as false', () => {
@@ -275,21 +275,21 @@ AAPL,100,150.50,2024-01-15,Tech,no`;
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL
 AAPL,100,150.50,2024-01-15,Tech,0`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBe(false);
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBe(false);
     });
 
     it('should parse empty boolean field as undefined', () => {
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL
 AAPL,100,150.50,2024-01-15,Tech,`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBeUndefined();
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBeUndefined();
     });
 
     it('should handle case-insensitive boolean values', () => {
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL,IsDividend
 AAPL,100,150.50,2024-01-15,Tech,TRUE,YES`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBe(true);
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBe(true);
       expect(result.rows[0].isDividend).toBe(true);
     });
 
@@ -297,7 +297,7 @@ AAPL,100,150.50,2024-01-15,Tech,TRUE,YES`;
       const csv = `Ticker,Shares,Cost,Date,Portfolio,CalculatePL,IsDividend
 AAPL,100,150.50,2024-01-15,Tech,maybe,unknown`;
       const result = parseCSVText(csv);
-      expect(result.rows[0].calculatePL).toBeUndefined();
+      expect(result.rows[0].calculateAccumulatedProfitLoss).toBeUndefined();
       expect(result.rows[0].isDividend).toBeUndefined();
     });
   });
