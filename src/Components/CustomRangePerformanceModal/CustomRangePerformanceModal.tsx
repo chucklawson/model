@@ -69,7 +69,7 @@ export default function CustomRangePerformanceModal({
       case '1y':
         start.setFullYear(end.getFullYear() - 1);
         break;
-      case 'max':
+      case 'max': {
         // Find the earliest purchase date from all lots
         const earliestDate = lots.reduce((earliest, lot) => {
           const lotDate = new Date(lot.purchaseDate);
@@ -83,6 +83,7 @@ export default function CustomRangePerformanceModal({
         // Fallback to 5 years ago if no lots
         start.setFullYear(end.getFullYear() - 5);
         break;
+      }
     }
 
     setStartDate(formatDate(start));

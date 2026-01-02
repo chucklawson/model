@@ -17,12 +17,6 @@ interface BuyLot {
   originalShares: number;
 }
 
-interface SellLot {
-  transaction: VanguardTransaction;
-  remainingShares: number;
-  originalShares: number;
-}
-
 // ===== MAIN MATCHING FUNCTION =====
 
 /**

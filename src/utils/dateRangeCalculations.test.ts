@@ -14,7 +14,6 @@ import {
 } from './dateRangeCalculations';
 import * as fmpApiClient from './fmpApiClient';
 import type { TickerLot } from '../types';
-import type { HistoricalPrice } from '../types/customRange';
 import logger from './logger';
 
 // Mock the API client

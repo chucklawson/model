@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // Mock dependencies - create singleton mock client inside the factory
-vi.mock('aws-amplify/data', async (importOriginal) => {
+vi.mock('aws-amplify/data', async (_importOriginal) => {
   const { vi } = await import('vitest');
 
   // Create mock functions that will be reused
@@ -32,7 +32,6 @@ vi.mock('aws-amplify/auth', () => ({
 }));
 
 // Import mocked modules
-import { generateClient } from 'aws-amplify/data';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { callFmpApi, getUserFmpApiKey, setUserFmpApiKey, deleteUserFmpApiKey } from './fmpApiClient';
 import type { FmpApiClientOptions } from './fmpApiClient';

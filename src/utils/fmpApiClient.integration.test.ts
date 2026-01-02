@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 /**
  * Integration tests for fmpApiClient
@@ -36,7 +36,7 @@ describe.skip('fmpApiClient Integration Tests', () => {
       }));
 
       // Import the module - this would have triggered the bug
-      const startTime = Date.now();
+      const _startTime = Date.now();
       const { getUserFmpApiKey } = await import('./fmpApiClient');
       const importTime = Date.now();
 

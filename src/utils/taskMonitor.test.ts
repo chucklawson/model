@@ -47,7 +47,7 @@ describe('TaskMonitor', () => {
     });
 
     it('should accept notifyAfterMs of 0', () => {
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: 'Instant Task',
         notifyAfterMs: 0,
       });
@@ -254,7 +254,7 @@ describe('TaskMonitor', () => {
 
   describe('edge cases', () => {
     it('should handle task name with special characters', async () => {
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: 'Task: Process & Export <data>',
         notifyAfterMs: 1000,
       });
@@ -268,7 +268,7 @@ describe('TaskMonitor', () => {
     });
 
     it('should handle empty task name', async () => {
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: '',
         notifyAfterMs: 1000,
       });
@@ -280,7 +280,7 @@ describe('TaskMonitor', () => {
 
     it('should handle very long task names', async () => {
       const longName = 'A'.repeat(500);
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: longName,
         notifyAfterMs: 1000,
       });
@@ -294,7 +294,7 @@ describe('TaskMonitor', () => {
     });
 
     it('should handle very short notify time', async () => {
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: 'Instant Task',
         notifyAfterMs: 1,
       });
@@ -305,7 +305,7 @@ describe('TaskMonitor', () => {
     });
 
     it('should handle very long notify time', async () => {
-      const monitor = new TaskMonitor({
+      const _monitor = new TaskMonitor({
         name: 'Long Wait Task',
         notifyAfterMs: 24 * 60 * 60 * 1000, // 24 hours
       });
@@ -350,9 +350,9 @@ describe('TaskMonitor', () => {
 
   describe('concurrent task monitors', () => {
     it('should handle multiple TaskMonitors simultaneously', async () => {
-      const monitor1 = new TaskMonitor({ name: 'Task 1', notifyAfterMs: 1000 });
-      const monitor2 = new TaskMonitor({ name: 'Task 2', notifyAfterMs: 2000 });
-      const monitor3 = new TaskMonitor({ name: 'Task 3', notifyAfterMs: 3000 });
+      const _monitor1 = new TaskMonitor({ name: 'Task 1', notifyAfterMs: 1000 });
+      const _monitor2 = new TaskMonitor({ name: 'Task 2', notifyAfterMs: 2000 });
+      const _monitor3 = new TaskMonitor({ name: 'Task 3', notifyAfterMs: 3000 });
 
       // Advance 1 second - only Task 1 should notify
       await vi.advanceTimersByTimeAsync(1000);
@@ -374,7 +374,7 @@ describe('TaskMonitor', () => {
 
     it('should handle one monitor completing while others continue', async () => {
       const monitor1 = new TaskMonitor({ name: 'Task 1', notifyAfterMs: 5000 });
-      const monitor2 = new TaskMonitor({ name: 'Task 2', notifyAfterMs: 5000 });
+      const _monitor2 = new TaskMonitor({ name: 'Task 2', notifyAfterMs: 5000 });
 
       // Complete monitor1 after 2 seconds
       vi.advanceTimersByTime(2 * 1000);

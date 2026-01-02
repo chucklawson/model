@@ -5,7 +5,6 @@
 
 import type { VanguardTransaction } from '../types';
 import type { Schema } from '../../amplify/data/resource';
-import type { SelectionSet } from 'aws-amplify/data';
 
 // Type for Amplify Data client
 export type AmplifyClient = ReturnType<typeof Schema.prototype.client>;

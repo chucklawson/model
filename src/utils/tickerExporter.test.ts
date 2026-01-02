@@ -212,7 +212,7 @@ describe('tickerExporter', () => {
       ];
 
       const result = generateTickerCSV('AAPL', lots);
-      const lines = result.split('\n');
+      const _lines = result.split('\n');
 
       expect(result).toContain('"Line 1\nLine 2\nLine 3"');
     });
@@ -542,11 +542,11 @@ describe('tickerExporter', () => {
   });
 
   describe('exportAllTickers', () => {
-    let createElementSpy: any;
+    let _createElementSpy: any;
     let createObjectURLSpy: any;
-    let revokeObjectURLSpy: any;
-    let appendChildSpy: any;
-    let removeChildSpy: any;
+    let _revokeObjectURLSpy: any;
+    let _appendChildSpy: any;
+    let _removeChildSpy: any;
     let mockLink: any;
 
     beforeEach(() => {
@@ -558,11 +558,11 @@ describe('tickerExporter', () => {
         style: {},
       };
 
-      createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockLink as any);
-      appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockLink as any);
-      removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockLink as any);
+      _createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockLink as any);
+      _appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockLink as any);
+      _removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockLink as any);
       createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-      revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+      _revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
     });
 
     afterEach(() => {

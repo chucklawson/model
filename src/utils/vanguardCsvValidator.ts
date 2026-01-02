@@ -243,7 +243,7 @@ function validateBuyTransaction(
   transaction: VanguardTransaction,
   rowNumber: number,
   errors: VanguardValidationError[],
-  warnings: VanguardValidationWarning[]
+  _warnings: VanguardValidationWarning[]
 ): void {
   // Shares should be positive for buys
   if (transaction.shares <= 0) {
@@ -273,7 +273,7 @@ function validateSellTransaction(
   transaction: VanguardTransaction,
   rowNumber: number,
   errors: VanguardValidationError[],
-  warnings: VanguardValidationWarning[]
+  _warnings: VanguardValidationWarning[]
 ): void {
   // Shares should be negative for sells
   if (transaction.shares >= 0) {
@@ -330,7 +330,7 @@ function isValidSymbol(symbol: string): boolean {
   if (symbol.toUpperCase() === 'CASH') return true;
 
   // 1-10 characters, alphanumeric with some special chars
-  return /^[A-Z0-9\.\-\s]{1,10}$/i.test(symbol);
+  return /^[A-Z0-9.-\s]{1,10}$/i.test(symbol);
 }
 
 /**

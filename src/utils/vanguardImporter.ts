@@ -9,7 +9,6 @@ import { matchTransactions } from './lotMatching';
 import { processDividends } from './dividendProcessor';
 import {
   generateFileHash,
-  generateFileHashFromFile,
   generateBatchId,
   checkDuplicateImport,
   filterDuplicateTransactions,
@@ -17,9 +16,6 @@ import {
 } from './importDeduplication';
 import type {
   VanguardTransaction,
-  MatchingMethod,
-  LotMatchingResult,
-  ProcessedDividend,
 } from '../types';
 import type { AmplifyClient } from './importDeduplication';
 

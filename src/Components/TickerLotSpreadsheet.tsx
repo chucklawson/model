@@ -131,7 +131,7 @@ export default function TickerLotSpreadsheet({
         );
       case 'ticker':
         return <span className="font-bold text-blue-600 text-lg">{lot.ticker}</span>;
-      case 'portfolio':
+      case 'portfolio': {
         const portfolioCount = lot.portfolios.length;
         const portfolioList = lot.portfolios.join(', ');
 
@@ -149,6 +149,7 @@ export default function TickerLotSpreadsheet({
             </div>
           </div>
         );
+      }
       case 'shares':
         return <span className="text-slate-700 font-semibold">{lot.shares.toLocaleString()}</span>;
       case 'costPerShare':

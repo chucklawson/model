@@ -10,8 +10,8 @@ function getThanksgivingDate(year: number): Date {
   const november = new Date(year, 10, 1); // Month is 0-indexed
 
   // Find first Thursday
-  let day = november.getDay();
-  let firstThursday = day === 4 ? 1 : (11 - day) % 7;
+  const day = november.getDay();
+  const firstThursday = day === 4 ? 1 : (11 - day) % 7;
 
   // 4th Thursday is 3 weeks after first Thursday
   const thanksgiving = new Date(year, 10, firstThursday + 21);

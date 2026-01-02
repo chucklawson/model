@@ -16,7 +16,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:unit": "vitest run --grep -i '(integration|e2e)'",
+    "test:unit": "vitest run",
     "test:integration": "vitest run src/utils/fmpApiClient.integration.test.ts",
     "test:lambda": "vitest run amplify/functions/",
     "test:e2e": "TEST_MODE=e2e vitest run --grep 'e2e'",

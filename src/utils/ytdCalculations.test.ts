@@ -12,7 +12,7 @@ import {
   fetchHistoricalPriceRange
 } from './ytdCalculations';
 import type { TickerLot } from '../types';
-import type { YTDTickerPerformance, YTDPortfolioPerformance, HistoricalPrice } from '../types/ytd';
+import type { YTDTickerPerformance, YTDPortfolioPerformance } from '../types/ytd';
 import * as dateRangeCalculations from './dateRangeCalculations';
 
 // Mock the dateRangeCalculations module

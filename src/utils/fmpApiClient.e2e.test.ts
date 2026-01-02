@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 
 /**
  * End-to-End Tests for FMP API Integration
@@ -24,12 +24,12 @@ describe('FMP API E2E Tests', () => {
   const describeE2E = isE2E ? describe : describe.skip;
 
   describeE2E('Full Integration Flow', () => {
-    let testUserId: string;
+    let _testUserId: string;
     let testApiKey: string;
 
     beforeAll(() => {
       // Set up test environment
-      testUserId = process.env.TEST_USER_ID || 'test-user-123';
+      _testUserId = process.env.TEST_USER_ID || 'test-user-123';
       testApiKey = process.env.FMP_API_KEY || 'test-api-key';
 
       // Verify required environment variables

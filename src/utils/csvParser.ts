@@ -90,7 +90,7 @@ export function parseCSVText(csvText: string): ParsedCSVData {
       const values = parseCSVLine(line);
       const row = parseRow(values, normalizedHeaders, i, line);
       rows.push(row);
-    } catch (error) {
+    } catch (_error) {
       // Include row with error for validation to catch
       rows.push({
         ticker: '',

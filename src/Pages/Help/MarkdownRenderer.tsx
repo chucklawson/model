@@ -34,7 +34,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
           rehypePlugins={[rehypeHighlight]}
           components={{
             // Make external links open in new tab
-            a: ({ node, ...props }) => {
+            a: ({ node: _node, ...props }) => {
               const href = props.href || '';
               const isExternal = href.startsWith('http://') || href.startsWith('https://');
               return (
@@ -46,7 +46,7 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
               );
             },
             // Responsive images
-            img: ({ node, ...props }) => (
+            img: ({ node: _node, ...props }) => (
               <img
                 {...props}
                 className="max-w-full h-auto rounded-lg shadow-md border border-slate-200"

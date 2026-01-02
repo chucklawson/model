@@ -3,7 +3,7 @@
 // CSV Importer Test Suite
 // ============================================
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { importCSVData, formatImportSummary } from './csvImporter';
 import logger from './logger';
 import type {
@@ -909,7 +909,7 @@ describe('csvImporter', () => {
           }),
         ];
 
-        const result = await importCSVData(
+        const _result = await importCSVData(
           validationResults,
           mockClient as any,
           mockExistingTickers,
