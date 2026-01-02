@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# Pre-commit hook for Model project
+# Runs linting and tests before allowing commit
+
+echo "🔍 Running pre-commit checks..."
+
+# Run linting
+echo "📝 Running ESLint..."
+npm run lint || {
+  echo "❌ Linting failed. Please fix errors before committing."
+  exit 1
+}
+
+# Run unit tests (excluding integration and e2e)
+echo "🧪 Running unit tests..."
+npm run test:unit || {
+  echo "❌ Unit tests failed. Please fix failing tests before committing."
+  exit 1
+}
+
+# Run Lambda function tests
+echo "⚡ Running Lambda tests..."
+npm run test:lambda || {
+  echo "❌ Lambda tests failed. Please fix failing tests before committing."
+  exit 1
+}
+
+echo "✅ All pre-commit checks passed!"

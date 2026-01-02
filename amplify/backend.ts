@@ -53,7 +53,7 @@ backend.fmpProxy.addEnvironment(
 );
 
 // Enable Function URL for FMP Proxy
-const fmpProxyUrl = backend.fmpProxy.resources.lambda.addFunctionUrl({
+backend.fmpProxy.resources.lambda.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
   cors: {
     allowedOrigins: ['*'],
@@ -63,7 +63,7 @@ const fmpProxyUrl = backend.fmpProxy.resources.lambda.addFunctionUrl({
 });
 
 // Enable Function URL for Send Notification Lambda
-const sendNotificationUrl = backend.sendNotification.resources.lambda.addFunctionUrl({
+backend.sendNotification.resources.lambda.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
   cors: {
     allowedOrigins: ['*'],

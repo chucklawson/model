@@ -63,7 +63,16 @@
       "Bash(do if [ ! -f \"src/utils/$base.test.ts\" ])",
       "Bash(then echo \"✗ src/utils/$base.ts\")",
       "Bash(tree:*)",
-      "Bash(npm outdated:*)"
+      "Bash(npm outdated:*)",
+      "Bash(npx tsx:*)",
+      "Bash(netstat:*)",
+      "Bash(wmic process where \"commandline like ''%ampx%sandbox%''\" get processid,commandline)",
+      "Bash(aws dynamodb scan:*)",
+      "Bash(aws lambda get-function:*)",
+      "Bash(aws dynamodb describe-table:*)",
+      "Bash(cp:*)",
+      "Bash(aws logs tail:*)",
+      "Bash(npx husky init)"
     ],
     "deny": [],
     "ask": []

@@ -1,14 +1,8 @@
 import type { Handler } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
-
-interface FmpProxyEvent {
-  endpoint: string;
-  queryParams?: Record<string, string>;
-  userId: string;
-}
 
 export const handler: Handler = async (event) => {
   try {
@@ -25,21 +19,40 @@ export const handler: Handler = async (event) => {
       const tableName = process.env.FMPAPIKEY_TABLE_NAME;
       const ownerField = `${userId}::${userId}`;
 
-      const result = await dynamoClient.send(new QueryCommand({
+      console.log('Fetching API key from DynamoDB:', {
+        tableName,
+        ownerField,
+        userId
+      });
+
+      const result = await dynamoClient.send(new ScanCommand({
         TableName: tableName,
-        KeyConditionExpression: 'owner = :owner',
+        FilterExpression: '#owner = :owner',
+        ExpressionAttributeNames: {
+          '#owner': 'owner'
+        },
         ExpressionAttributeValues: {
           ':owner': ownerField
         },
         Limit: 1
       }));
 
+      console.log('DynamoDB Scan result:', {
+        itemCount: result.Items?.length || 0,
+        items: result.Items
+      });
+
       if (result.Items && result.Items.length > 0 && result.Items[0].isActive) {
         apiKey = result.Items[0].apiKey;
+        console.log('Found active API key');
+      } else {
+        console.log('No active API key found in DynamoDB');
       }
     } catch (dbError) {
       console.error('Error fetching user API key, using fallback:', dbError);
     }
+
+    console.log('Final apiKey status:', apiKey ? 'Found' : 'Not found');
 
     if (!apiKey) {
       return errorResponse(403, 'No API key configured. Please add your FMP API key in settings.');
