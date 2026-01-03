@@ -205,7 +205,21 @@ export async function importVanguardCSV(
       warnings.push(`Skipped ${duplicates.length} duplicate transactions`);
     }
 
-    // ===== STAGE 6: IMPORT TRANSACTIONS =====
+    // ===== STAGE 6: PRE-LOAD EXISTING IDS =====
+    onProgress?.({
+      stage: 'importing-transactions',
+      current: 48,
+      total: 100,
+      message: 'Pre-loading existing transaction IDs...',
+    });
+
+    const existingTransactionIds = await preloadExistingTransactionIds(client);
+    const existingCompletedKeys = await preloadExistingCompletedTransactionKeys(client);
+    const existingDividendIds = await preloadExistingDividendTransactionIds(client);
+
+    console.log(`Pre-loaded ${existingTransactionIds.length} existing transaction IDs, ${existingCompletedKeys.length} completed transaction keys, ${existingDividendIds.length} dividend transaction IDs`);
+
+    // ===== STAGE 7: IMPORT TRANSACTIONS =====
     onProgress?.({
       stage: 'importing-transactions',
       current: 50,
@@ -214,39 +228,54 @@ export async function importVanguardCSV(
     });
 
     const importedTransactions: string[] = [];
+    let skippedDuplicateCount = 0;
 
     for (let i = 0; i < unique.length; i++) {
       const txn = unique[i];
 
       try {
-        const { data: transaction, errors: txnErrors } = await client.models.Transaction.create({
-          accountNumber: txn.accountNumber,
-          tradeDate: txn.tradeDate,
-          settlementDate: txn.settlementDate,
-          transactionType: txn.transactionType,
-          transactionDescription: txn.transactionDescription,
-          investmentName: txn.investmentName,
-          symbol: txn.symbol,
-          shares: txn.shares,
-          sharePrice: txn.sharePrice,
-          principalAmount: txn.principalAmount,
-          commissionsAndFees: txn.commissionsAndFees || 0,
-          netAmount: txn.netAmount,
-          accruedInterest: txn.accruedInterest,
-          accountType: txn.accountType,
-          importBatchId: batchId,
-          importDate: new Date().toISOString(),
-          sourceFile: fileName,
-          isMatched: false,
-          rawData: JSON.stringify(txn),
-        });
+        const txnId = generateTransactionId(txn);
 
-        if (txnErrors || !transaction) {
-          const errorDetails = txnErrors ? txnErrors.map(e => e.message).join(', ') : 'No transaction returned';
-          console.error('Transaction creation failed:', { symbol: txn.symbol, date: txn.tradeDate, errors: txnErrors });
-          errors.push(`Failed to import transaction: ${txn.symbol} on ${txn.tradeDate} - ${errorDetails}`);
+        // Binary search to check if this transaction already exists
+        if (binarySearch(existingTransactionIds, txnId)) {
+          // Already exists, skip without attempting database write
+          skippedDuplicateCount++;
+          importedTransactions.push(txnId);
         } else {
-          importedTransactions.push(transaction.id);
+          // Doesn't exist, create new transaction
+          const { data: transaction, errors: txnErrors } = await client.models.Transaction.create({
+            transactionId: txnId,
+            accountNumber: txn.accountNumber,
+            tradeDate: txn.tradeDate,
+            settlementDate: txn.settlementDate,
+            transactionType: txn.transactionType,
+            transactionDescription: txn.transactionDescription,
+            investmentName: txn.investmentName,
+            symbol: txn.symbol,
+            shares: txn.shares,
+            sharePrice: txn.sharePrice,
+            principalAmount: txn.principalAmount,
+            commissionsAndFees: txn.commissionsAndFees || 0,
+            netAmount: txn.netAmount,
+            accruedInterest: txn.accruedInterest,
+            accountType: txn.accountType,
+            importBatchId: batchId,
+            importDate: new Date().toISOString(),
+            sourceFile: fileName,
+            isMatched: false,
+            rawData: JSON.stringify(txn),
+          });
+
+          if (txnErrors || !transaction) {
+            const errorDetails = txnErrors ? txnErrors.map(e => e.message).join(', ') : 'No transaction returned';
+            console.error('Transaction creation failed:', { symbol: txn.symbol, date: txn.tradeDate, errors: txnErrors });
+            errors.push(`Failed to import transaction: ${txn.symbol} on ${txn.tradeDate} - ${errorDetails}`);
+          } else {
+            importedTransactions.push(transaction.transactionId);
+            // Add to our in-memory cache for subsequent checks within this import
+            existingTransactionIds.push(transaction.transactionId);
+            existingTransactionIds.sort(); // Keep sorted for binary search
+          }
         }
 
         // Update progress every 10 transactions
@@ -261,6 +290,11 @@ export async function importVanguardCSV(
       } catch (error) {
         errors.push(`Failed to import transaction: ${txn.symbol} on ${txn.tradeDate} - ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
+    }
+
+    if (skippedDuplicateCount > 0) {
+      console.log(`Skipped ${skippedDuplicateCount} duplicate transactions via binary search`);
+      warnings.push(`Skipped ${skippedDuplicateCount} duplicate transactions (already exist in database)`);
     }
 
     // ===== STAGE 7: MATCH TRANSACTIONS =====
@@ -296,23 +330,14 @@ export async function importVanguardCSV(
       try {
         const buyTxnId = generateTransactionId(match.buyTransaction);
         const sellTxnId = generateTransactionId(match.sellTransaction);
+        const compositeKey = `${buyTxnId}|${sellTxnId}`;
 
-        // Check if this completed transaction already exists
-        const { data: existing } = await client.models.CompletedTransaction.list({
-          filter: {
-            and: [
-              { buyTransactionId: { eq: buyTxnId } },
-              { sellTransactionId: { eq: sellTxnId } }
-            ]
-          }
-        });
-
-        if (existing && existing.length > 0) {
-          // Already exists, skip creation
-          completedTransactionIds.push(existing[0].id);
-          warnings.push(`Skipped duplicate completed transaction for ${match.buyTransaction.symbol} (${buyTxnId.substring(0, 20)}...)`);
+        // Binary search to check if this completed transaction already exists
+        if (binarySearch(existingCompletedKeys, compositeKey)) {
+          // Already exists, skip without attempting database write
+          completedTransactionIds.push(`${buyTxnId}-${sellTxnId}`);
         } else {
-          // Create new completed transaction
+          // Doesn't exist, create new completed transaction
           const { data: completed, errors: completedErrors } = await client.models.CompletedTransaction.create({
             symbol: match.buyTransaction.symbol,
             buyTransactionId: buyTxnId,
@@ -353,7 +378,10 @@ export async function importVanguardCSV(
             console.error('CompletedTransaction creation failed:', { symbol: match.buyTransaction.symbol, errors: completedErrors });
             errors.push(`Failed to create completed transaction for ${match.buyTransaction.symbol} - ${errorDetails}`);
           } else {
-            completedTransactionIds.push(completed.id);
+            completedTransactionIds.push(`${completed.buyTransactionId}-${completed.sellTransactionId}`);
+            // Add to our in-memory cache for subsequent checks within this import
+            existingCompletedKeys.push(`${completed.buyTransactionId}|${completed.sellTransactionId}`);
+            existingCompletedKeys.sort(); // Keep sorted for binary search
           }
         }
 
@@ -382,22 +410,17 @@ export async function importVanguardCSV(
     const dividends = processDividends(unique);
 
     // Import dividend transactions
+    let skippedDividendCount = 0;
     for (const div of dividends) {
       try {
         const txnId = generateTransactionId(div.originalTransaction);
 
-        // Check if this dividend transaction already exists
-        const { data: existing } = await client.models.DividendTransaction.list({
-          filter: {
-            transactionId: { eq: txnId }
-          }
-        });
-
-        if (existing && existing.length > 0) {
-          // Already exists, skip creation
-          warnings.push(`Skipped duplicate dividend for ${div.symbol} on ${div.payDate}`);
+        // Binary search to check if this dividend transaction already exists
+        if (binarySearch(existingDividendIds, txnId)) {
+          // Already exists, skip without attempting database write
+          skippedDividendCount++;
         } else {
-          // Create new dividend transaction
+          // Doesn't exist, create new dividend transaction
           const { data: dividend, errors: divErrors } = await client.models.DividendTransaction.create({
             transactionId: txnId,
             symbol: div.symbol,
@@ -417,12 +440,20 @@ export async function importVanguardCSV(
             const errorDetails = divErrors ? divErrors.map(e => e.message).join(', ') : 'No dividend returned';
             console.error('DividendTransaction creation failed:', { symbol: div.symbol, date: div.payDate, errors: divErrors });
             warnings.push(`Failed to import dividend for ${div.symbol} on ${div.payDate} - ${errorDetails}`);
+          } else {
+            // Add to our in-memory cache for subsequent checks within this import
+            existingDividendIds.push(dividend.transactionId);
+            existingDividendIds.sort(); // Keep sorted for binary search
           }
         }
       } catch (error) {
         console.error('DividendTransaction exception:', error);
         warnings.push(`Failed to import dividend for ${div.symbol} on ${div.payDate} - ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
+    }
+
+    if (skippedDividendCount > 0) {
+      console.log(`Skipped ${skippedDividendCount} duplicate dividend transactions via binary search`);
     }
 
     // ===== STAGE 10: CREATE IMPORT HISTORY =====
@@ -523,6 +554,101 @@ export async function importVanguardCSVFromFile(
  */
 function generateTransactionId(txn: VanguardTransaction): string {
   return `${txn.accountNumber}-${txn.tradeDate}-${txn.symbol}-${txn.transactionType}-${txn.shares}`;
+}
+
+/**
+ * Binary search to check if a key exists in sorted array
+ */
+function binarySearch(sortedArray: string[], target: string): boolean {
+  let left = 0;
+  let right = sortedArray.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (sortedArray[mid] === target) {
+      return true;
+    } else if (sortedArray[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  return false;
+}
+
+/**
+ * Pre-load all existing Transaction IDs from database
+ */
+async function preloadExistingTransactionIds(client: AmplifyClient): Promise<string[]> {
+  const ids: string[] = [];
+  let nextToken: string | null | undefined = undefined;
+
+  do {
+    const { data, nextToken: token } = await client.models.Transaction.list({
+      limit: 1000,
+      nextToken: nextToken as string | undefined,
+      selectionSet: ['transactionId'], // Only fetch the ID field
+    });
+
+    if (data) {
+      ids.push(...data.map(t => t.transactionId));
+    }
+
+    nextToken = token;
+  } while (nextToken);
+
+  // Sort for binary search
+  return ids.sort();
+}
+
+/**
+ * Pre-load all existing CompletedTransaction composite keys from database
+ */
+async function preloadExistingCompletedTransactionKeys(client: AmplifyClient): Promise<string[]> {
+  const keys: string[] = [];
+  let nextToken: string | null | undefined = undefined;
+
+  do {
+    const { data, nextToken: token } = await client.models.CompletedTransaction.list({
+      limit: 1000,
+      nextToken: nextToken as string | undefined,
+      selectionSet: ['buyTransactionId', 'sellTransactionId'], // Only fetch the key fields
+    });
+
+    if (data) {
+      keys.push(...data.map(t => `${t.buyTransactionId}|${t.sellTransactionId}`));
+    }
+
+    nextToken = token;
+  } while (nextToken);
+
+  // Sort for binary search
+  return keys.sort();
+}
+
+/**
+ * Pre-load all existing DividendTransaction IDs from database
+ */
+async function preloadExistingDividendTransactionIds(client: AmplifyClient): Promise<string[]> {
+  const ids: string[] = [];
+  let nextToken: string | null | undefined = undefined;
+
+  do {
+    const { data, nextToken: token } = await client.models.DividendTransaction.list({
+      limit: 1000,
+      nextToken: nextToken as string | undefined,
+      selectionSet: ['transactionId'], // Only fetch the ID field
+    });
+
+    if (data) {
+      ids.push(...data.map(t => t.transactionId));
+    }
+
+    nextToken = token;
+  } while (nextToken);
+
+  // Sort for binary search
+  return ids.sort();
 }
 
 /**

@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { Context, Callback } from 'aws-lambda';
 
 // Use vi.hoisted to create mocks that are available in the factory
 const { mockSend, mockScanCommand } = vi.hoisted(() => {
@@ -39,8 +40,23 @@ type TestEvent = {
   body?: string;
 };
 
-type TestContext = Record<string, never>;
-type TestCallback = Record<string, never>;
+// Mock Context and Callback for testing
+const createMockContext = (): Context => ({
+  callbackWaitsForEmptyEventLoop: true,
+  functionName: 'test-function',
+  functionVersion: '1',
+  invokedFunctionArn: 'arn:aws:lambda:us-east-2:123456789012:function:test-function',
+  memoryLimitInMB: '128',
+  awsRequestId: 'test-request-id',
+  logGroupName: '/aws/lambda/test-function',
+  logStreamName: '2024/01/01/[$LATEST]test',
+  getRemainingTimeInMillis: () => 30000,
+  done: () => {},
+  fail: () => {},
+  succeed: () => {},
+});
+
+const createMockCallback = (): Callback => vi.fn();
 
 describe('FMP Proxy Lambda Handler', () => {
   beforeEach(() => {
@@ -75,7 +91,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert - This would have caught the reserved keyword bug!
       expect(mockScanCommand).toHaveBeenCalledWith(
@@ -103,7 +119,7 @@ describe('FMP Proxy Lambda Handler', () => {
       mockSend.mockResolvedValue({ Items: [] });
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(mockScanCommand).toHaveBeenCalledWith(
@@ -127,7 +143,7 @@ describe('FMP Proxy Lambda Handler', () => {
       mockSend.mockResolvedValue({ Items: [] });
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(mockScanCommand).toHaveBeenCalledWith(
@@ -165,7 +181,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert - Should use DynamoDB key, not fallback
       expect(fetch).toHaveBeenCalledWith(
@@ -185,7 +201,7 @@ describe('FMP Proxy Lambda Handler', () => {
       mockSend.mockResolvedValue({ Items: [] });
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result).toEqual({
@@ -214,7 +230,7 @@ describe('FMP Proxy Lambda Handler', () => {
       });
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result).toEqual({
@@ -245,7 +261,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(fetch).toHaveBeenCalledWith(
@@ -280,7 +296,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(fetch).toHaveBeenCalledWith(
@@ -310,7 +326,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result).toEqual({
@@ -340,7 +356,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result.statusCode).toBe(404);
@@ -357,7 +373,7 @@ describe('FMP Proxy Lambda Handler', () => {
       };
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result).toEqual({
@@ -374,7 +390,7 @@ describe('FMP Proxy Lambda Handler', () => {
       };
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result).toEqual({
@@ -389,7 +405,7 @@ describe('FMP Proxy Lambda Handler', () => {
       const event = {};
 
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(result.statusCode).toBe(400);
@@ -412,7 +428,7 @@ describe('FMP Proxy Lambda Handler', () => {
 
       // Should fall back to empty key (no fallback set)
       // Act
-      const result = await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert - Should handle gracefully and return error
       expect(result.statusCode).toBe(403);
@@ -441,7 +457,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(fetch).toHaveBeenCalledWith(
@@ -469,7 +485,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       expect(fetch).toHaveBeenCalledWith(
@@ -501,7 +517,7 @@ describe('FMP Proxy Lambda Handler', () => {
       } as Response);
 
       // Act
-      await handler(event as TestEvent, {} as TestContext, {} as TestCallback);
+      await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
       const calledUrl = vi.mocked(fetch).mock.calls[0][0] as string;

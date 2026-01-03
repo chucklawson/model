@@ -50,6 +50,7 @@ const schema = a.schema({
   // Vanguard Transaction Import Models
   Transaction: a
     .model({
+      transactionId: a.string().required(), // Deterministic ID: accountNumber-tradeDate-symbol-type-shares
       accountNumber: a.string().required(),
       tradeDate: a.date().required(),
       settlementDate: a.date(),
@@ -71,6 +72,7 @@ const schema = a.schema({
       matchedTransactionId: a.string(),
       rawData: a.string(),
     })
+    .identifier(['transactionId'])
     .authorization((allow) => [allow.owner()])
     .secondaryIndexes((index) => [
       index('symbol'),
@@ -103,6 +105,7 @@ const schema = a.schema({
       completedDate: a.datetime().required(),
       notes: a.string(),
     })
+    .identifier(['buyTransactionId', 'sellTransactionId'])
     .authorization((allow) => [allow.owner()])
     .secondaryIndexes((index) => [
       index('symbol'),
@@ -158,6 +161,7 @@ const schema = a.schema({
       taxYear: a.integer().required(),
       accountNumber: a.string(),
     })
+    .identifier(['transactionId'])
     .authorization((allow) => [allow.owner()])
     .secondaryIndexes((index) => [
       index('symbol'),
