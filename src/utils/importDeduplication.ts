@@ -48,7 +48,7 @@ export async function generateFileHashFromFile(file: File): Promise<string> {
 export async function checkDuplicateImport(
   fileHash: string,
   client: AmplifyClient
-): Promise<any | null> {
+): Promise<{ fileHash: string; importDate: string } | null> {
   try {
     const { data: imports } = await client.models.ImportHistory.list({
       filter: {
@@ -204,7 +204,7 @@ export async function createImportHistory(
     matchingMethodUsed?: string;
   },
   client: AmplifyClient
-): Promise<any> {
+): Promise<Record<string, unknown>> {
   try {
     const { data: importHistory, errors } = await client.models.ImportHistory.create({
       batchId,
@@ -250,7 +250,7 @@ export async function updateImportHistory(
     errorsEncountered?: number;
   },
   client: AmplifyClient
-): Promise<any> {
+): Promise<Record<string, unknown>> {
   try {
     const { data: updated, errors } = await client.models.ImportHistory.update({
       id: importHistoryId,

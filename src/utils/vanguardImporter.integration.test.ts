@@ -22,16 +22,16 @@ Account Number,Trade Date,Settlement Date,Transaction Type,Transaction Descripti
 // ===== MOCK AMPLIFY CLIENT =====
 
 function createMockClient() {
-  const createdTransactions: any[] = [];
-  const createdCompletedTransactions: any[] = [];
-  const createdDividends: any[] = [];
-  const createdImportHistories: any[] = [];
+  const createdTransactions: Array<Record<string, unknown>> = [];
+  const createdCompletedTransactions: Array<Record<string, unknown>> = [];
+  const createdDividends: Array<Record<string, unknown>> = [];
+  const createdImportHistories: Array<Record<string, unknown>> = [];
 
   return {
     models: {
       ImportHistory: {
         list: vi.fn().mockResolvedValue({ data: [] }), // No existing imports
-        create: vi.fn().mockImplementation(async (data: any) => {
+        create: vi.fn().mockImplementation(async (data: Record<string, unknown>) => {
           const record = { id: `import-${Date.now()}`, ...data };
           createdImportHistories.push(record);
           return { data: record, errors: null };
@@ -39,21 +39,21 @@ function createMockClient() {
       },
       Transaction: {
         list: vi.fn().mockResolvedValue({ data: [] }), // No duplicates
-        create: vi.fn().mockImplementation(async (data: any) => {
+        create: vi.fn().mockImplementation(async (data: Record<string, unknown>) => {
           const record = { id: `txn-${createdTransactions.length}`, ...data };
           createdTransactions.push(record);
           return { data: record, errors: null };
         }),
       },
       CompletedTransaction: {
-        create: vi.fn().mockImplementation(async (data: any) => {
+        create: vi.fn().mockImplementation(async (data: Record<string, unknown>) => {
           const record = { id: `completed-${createdCompletedTransactions.length}`, ...data };
           createdCompletedTransactions.push(record);
           return { data: record, errors: null };
         }),
       },
       DividendTransaction: {
-        create: vi.fn().mockImplementation(async (data: any) => {
+        create: vi.fn().mockImplementation(async (data: Record<string, unknown>) => {
           const record = { id: `div-${createdDividends.length}`, ...data };
           createdDividends.push(record);
           return { data: record, errors: null };
@@ -66,13 +66,13 @@ function createMockClient() {
       dividends: createdDividends,
       importHistories: createdImportHistories,
     },
-  } as any;
+  };
 }
 
 // ===== INTEGRATION TESTS =====
 
 describe.skip('importVanguardCSV - Full Integration', () => {
-  let mockClient: any;
+  let mockClient: ReturnType<typeof createMockClient>;
   let progressUpdates: ImportProgress[];
 
   beforeEach(() => {

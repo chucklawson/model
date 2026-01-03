@@ -283,7 +283,7 @@ describe('csvImporter', () => {
 
       it('should handle portfolio creation errors gracefully', async () => {
         const mockClient = createMockClient();
-        mockClient._mockCreate.mockImplementation((data: any) => {
+        mockClient._mockCreate.mockImplementation((data: Record<string, unknown>) => {
           if (data.name === 'FailPortfolio') {
             return Promise.reject(new Error('Portfolio creation failed'));
           }
@@ -314,7 +314,7 @@ describe('csvImporter', () => {
       it('should sort portfolios to create alphabetically', async () => {
         const mockClient = createMockClient();
         const createdPortfolios: string[] = [];
-        mockClient._mockCreate.mockImplementation((data: any) => {
+        mockClient._mockCreate.mockImplementation((data: Record<string, unknown>) => {
           if (data.name) {
             createdPortfolios.push(data.name);
           }
@@ -448,7 +448,7 @@ describe('csvImporter', () => {
 
       it('should handle ticker creation errors gracefully', async () => {
         const mockClient = createMockClient();
-        mockClient._mockCreate.mockImplementation((data: any) => {
+        mockClient._mockCreate.mockImplementation((data: Record<string, unknown>) => {
           if (data.symbol === 'FAIL') {
             return Promise.reject(new Error('Ticker creation failed'));
           }
@@ -631,7 +631,7 @@ describe('csvImporter', () => {
     describe('Error Handling', () => {
       it('should handle lot creation errors and continue processing', async () => {
         const mockClient = createMockClient();
-        mockClient._mockCreate.mockImplementation((data: any) => {
+        mockClient._mockCreate.mockImplementation((data: Record<string, unknown>) => {
           if (data.ticker === 'FAIL') {
             return Promise.reject(new Error('Database error'));
           }

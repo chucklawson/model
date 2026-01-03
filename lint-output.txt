@@ -1,0 +1,372 @@
+
+> model@0.0.0 lint
+> eslint .
+
+
+D:\awsGitRepos\model\src\Components\ApiCalls\HistoricalDividendQuote.tsx
+  27:8  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\ApiCalls\StatementKeyMetrics.tsx
+  30:8  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\BasicTickerEvaluation\BasicTickerEvaluation.tsx
+  230:7  warning  React Hook useEffect has a missing dependency: 'getValuesBasedOnDate'. Either include it or remove the dependency array                                                                                                                                                                                                            react-hooks/exhaustive-deps
+  247:8  warning  React Hook useEffect has a missing dependency: 'totalCost'. Either include it or remove the dependency array. You can also do a functional update 'setTotalCost(t => ...)' if you only need 'totalCost' in the 'setTotalCost' call                                                                                                 react-hooks/exhaustive-deps
+  285:7  warning  React Hook useEffect has missing dependencies: 'props' and 'setRangeValues'. Either include them or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+  324:8  warning  React Hook useCallback has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useCallback call and refer to those specific props inside useCallback                   react-hooks/exhaustive-deps
+  424:8  warning  React Hook useCallback has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useCallback call and refer to those specific props inside useCallback                   react-hooks/exhaustive-deps
+  581:8  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect                         react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\CustomRangePerformanceModal\CustomRangeBarChart.tsx
+  55:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\CustomRangePerformanceModal\CustomRangeLineChart.tsx
+  48:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\CustomRangePerformanceModal\CustomRangePerformanceModal.tsx
+  110:6   warning  React Hook useEffect has a missing dependency: 'selectedPortfolios.length'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  188:57  warning  Unexpected any. Specify a different type                                                                                      @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\CustomRangePerformanceModal\CustomRangePieChart.tsx
+  56:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  75:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\CustomRangePerformanceModal\CustomRangeStackedAreaChart.tsx
+   51:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   91:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:51  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   96:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  109:40  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  151:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\DrawdownCalculatorModal\DrawdownCalculatorModal.tsx
+  101:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  147:85  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\DrawdownCharts\BalanceOverTimeChart.tsx
+  70:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\DrawdownCharts\CumulativeWithdrawalsChart.tsx
+  45:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\DrawdownCharts\DepletionScenariosChart.tsx
+  76:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\DrawdownCharts\InterestVsDrawdownsChart.tsx
+  44:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\GrowthVisualizationChart\GrowthVisualizationChart.tsx
+  26:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCalculatorModal\MortgageCalculatorModal.tsx
+  145:77  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  153:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  723:88  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCharts\CumulativePaymentsChart.tsx
+  66:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCharts\InvestmentComparisonChart.tsx
+   87:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCharts\PrincipalVsInterestChart.tsx
+  42:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCharts\RemainingBalanceChart.tsx
+  70:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\MortgageCharts\TotalInterestComparisonChart.tsx
+  59:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\PEGrowthCalculatorModal\PEGrowthCalculatorModal.tsx
+  119:54   warning  Unexpected any. Specify a different type                                                                                                    @typescript-eslint/no-explicit-any
+  119:103  warning  Unexpected any. Specify a different type                                                                                                    @typescript-eslint/no-explicit-any
+  353:6    warning  React Hook useEffect has a missing dependency: 'client.models.TickerLot'. Either include it or remove the dependency array                  react-hooks/exhaustive-deps
+  371:6    warning  React Hook useEffect has missing dependencies: 'fetchCompanyProfile' and 'fetchPEData'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\SatementInput\StatementInput.tsx
+  31:3  warning  React Hook useEffect has missing dependencies: 'props.containerBackGround' and 'props.runningStatement'. Either include them or remove the dependency array. If 'setContainerClassValues' needs the current value of 'props.containerBackGround', you can also switch to useReducer instead of useState and read 'props.containerBackGround' in the reducer  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\SimpleButton\SimpleButton.tsx
+  32:4  warning  React Hook useEffect has a missing dependency: 'props.backgroundColor'. Either include it or remove the dependency array. If 'setButtonClassValues' needs the current value of 'props.backgroundColor', you can also switch to useReducer instead of useState and read 'props.backgroundColor' in the reducer  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\StockQuote\StockQuote.tsx
+  34:8  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+  41:8  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\TickerButton\TickerButton.tsx
+  35:6  warning  React Hook useCallback has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useCallback call and refer to those specific props inside useCallback  react-hooks/exhaustive-deps
+  39:4  warning  React Hook useEffect has a missing dependency: 'props.backgroundColor'. Either include it or remove the dependency array. If 'setButtonClassValues' needs the current value of 'props.backgroundColor', you can also switch to useReducer instead of useState and read 'props.backgroundColor' in the reducer     react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\TickerInput\TickerInput.tsx
+  38:3  warning  React Hook useEffect has a missing dependency: 'initializeStartAndEndDates'. Either include it or remove the dependency array                                                                                                                                                                                                                             react-hooks/exhaustive-deps
+  59:8  warning  React Hook useEffect has missing dependencies: 'endDate', 'enteredValue', 'props', and 'startDate'. Either include them or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Components\TreasuryYieldsModal\TreasuryYieldsModal.tsx
+   47:6   warning  React Hook useEffect has a missing dependency: 'calculateAndSetDateRange'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  131:24  warning  Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+  333:40  warning  Unexpected any. Specify a different type                                                                                     @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\YTDPerformanceModal\YTDAllocationPieChart.tsx
+  56:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  75:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\YTDPerformanceModal\YTDBarChart.tsx
+  55:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  81:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\YTDPerformanceModal\YTDLineChart.tsx
+  48:47  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\YTDPerformanceModal\YTDPerformanceModal.tsx
+  50:6   warning  React Hook useEffect has a missing dependency: 'selectedPortfolios.length'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  97:57  warning  Unexpected any. Specify a different type                                                                                      @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Components\YTDPerformanceModal\YTDStackedAreaChart.tsx
+   51:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   91:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   93:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  104:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\AnnualProjectionCalculator.test.ts
+  265:301  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\CalculateAverages\CalculateAverages.test.ts
+  164:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  314:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  593:76  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  599:81  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  605:74  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\ChartData\BollingerBands.test.ts
+  631:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\ChartData\LWChartEntries.test.ts
+  237:52  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  246:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\ChartData\RSIChartEntries.test.ts
+  656:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\ChartData\StochasticChartEntries.test.ts
+  560:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\KeyMetricsData\KeyMetricsDataTransformer.test.ts
+   86:53  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   95:58  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  274:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  275:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  292:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  316:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  398:75  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  414:75  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  415:75  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  612:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  621:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  622:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\KeyMetricsData\KeyMetricsDataTransformer.ts
+  175:29  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\ProfitLoss\CalculateOverallProfitLoss.test.ts
+  279:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Lib\StatementsData\CollectStatementData.test.ts
+  103:54  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  111:59  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Pages\FlexiblePortfolio\FlexiblePortfolio.tsx
+  148:6  warning  React Hook useEffect has missing dependencies: 'client.models.Portfolio', 'client.models.Ticker', and 'client.models.TickerLot'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Pages\Help\Help.tsx
+  57:6  warning  React Hook useEffect has a missing dependency: 'markdownContent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Pages\Help\MarkdownRenderer.tsx
+  37:19  error  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  49:21  error  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\awsGitRepos\model\src\Pages\Research\Research.tsx
+  31:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\Pages\SummarySpreadSheet\SummarySpreadSheet.tsx
+  43:6  warning  React Hook useEffect has missing dependencies: 'classValuesLeft', 'headerValue', and 'updateTickerValue'. Either include them or remove the dependency array. You can also do a functional update 'setUpdateTickerValue(u => ...)' if you only need 'updateTickerValue' in the 'setUpdateTickerValue' call  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\Pages\Tickers\Tickers.tsx
+  153:6   warning  React Hook useEffect has missing dependencies: 'client.models.Portfolio', 'client.models.Ticker', 'client.models.TickerLot', 'initializeDefaultPortfolio', 'loadLots', 'loadPortfolios', and 'loadTickers'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  218:20  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  253:20  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  295:20  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\hooks\useCustomRangeData.ts
+  96:6  warning  React Hook useCallback has an unnecessary dependency: 'refetchCounter'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\hooks\useYTDData.ts
+  82:6  warning  React Hook useCallback has an unnecessary dependency: 'refetchCounter'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\awsGitRepos\model\src\test\setup.ts
+  37:6  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:6  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\csvImporter.test.ts
+   112:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   143:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   167:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   194:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   221:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   246:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   273:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   286:58  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   303:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   317:58  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   332:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   361:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   387:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   412:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   437:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   451:58  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   468:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   497:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   526:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   554:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   592:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   621:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   634:58  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   654:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   682:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   708:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   738:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   765:27  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   789:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   837:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   862:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   888:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   912:15  error    'result' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   914:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   947:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   972:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+   997:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  1032:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  1080:25  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\currentHoldingsCalculations.test.ts
+  607:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\dateRangeCalculations.test.ts
+  17:15  error  'HistoricalPrice' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\awsGitRepos\model\src\utils\fmpApiClient.e2e.test.ts
+    1:53  error    'vi' is defined but never used. Allowed unused vars must match /^_/u                   @typescript-eslint/no-unused-vars
+   27:9   error    'testUserId' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  128:45  warning  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  128:56  warning  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  128:67  warning  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  189:31  warning  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+  216:33  warning  Unexpected any. Specify a different type                                               @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\fmpApiClient.integration.test.ts
+  39:13  error  'startTime' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\awsGitRepos\model\src\utils\fmpApiClient.test.ts
+    4:36  error    'importOriginal' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+   14:14  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+   24:31  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+   35:10  error    'generateClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   41:38  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+   44:18  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  173:12  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  196:12  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  210:12  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+  415:12  warning  Unexpected any. Specify a different type                                          @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\importDeduplication.test.ts
+    6:36  error    'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  209:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  242:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  256:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  279:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  293:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  307:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  331:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  366:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  381:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  428:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  446:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  461:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  484:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  525:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  560:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+  589:10  warning  Unexpected any. Specify a different type                                      @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\importDeduplication.ts
+   51:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  207:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  253:12  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\localStorage.test.ts
+  400:20  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\lotMatching.ts
+  20:11  error  'SellLot' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\awsGitRepos\model\src\utils\sendNotification.test.ts
+  6:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  7:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  8:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  9:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\taskMonitor.test.ts
+  6:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\tickerExporter.test.ts
+  288:35   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  420:27   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  421:29   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  422:29   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  423:25   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  424:25   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  425:19   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  426:19   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  438:90   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  441:100  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  442:100  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  545:28   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  546:29   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  547:30   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  548:26   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  549:26   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  550:19   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  561:91   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  562:101  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  563:101  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  645:24   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  646:21   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  835:24   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  836:21   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\awsGitRepos\model\src\utils\vanguardCsvValidator.ts
+  246:3   error  'warnings' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  276:3   error  'warnings' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  333:19  error  Unnecessary escape character: \.                                            no-useless-escape
+
+D:\awsGitRepos\model\src\utils\vanguardImporter.integration.test.ts
+  25:30  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  28:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  42:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  49:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:57  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  69:8   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  75:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 233 problems (14 errors, 219 warnings)
+

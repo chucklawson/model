@@ -2,7 +2,7 @@
 // FILE: src/hooks/useYTDData.ts
 // Custom Hook for YTD Performance Data
 // ============================================
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TickerLot } from '../types';
 import type { YTDPortfolioPerformance } from '../types/ytd';

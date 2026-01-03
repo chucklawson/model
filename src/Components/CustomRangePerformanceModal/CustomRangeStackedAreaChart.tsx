@@ -48,7 +48,7 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
 
     // Transform daily data for stacked area chart
     const data = customRangeData.dailyPortfolioValues.map(day => {
-      const point: any = {
+      const point: Record<string, string | number> = {
         date: formatDateShort(day.date),
         fullDate: day.date
       };
@@ -88,12 +88,12 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload, label }: any) => {
+  const customTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; payload?: { fullDate?: string } }>; label?: string }) => {
     if (active && payload && payload.length) {
-      const total = payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0);
+      const total = payload.reduce((sum: number, entry: { value: number }) => sum + (entry.value || 0), 0);
 
       // Sort payload to match the stacking order (reversed to match visual bottom-to-top)
-      const sortedPayload = [...payload].sort((a: any, b: any) => {
+      const sortedPayload = [...payload].sort((a: { name: string }, b: { name: string }) => {
         const indexA = tickerKeys.indexOf(a.name);
         const indexB = tickerKeys.indexOf(b.name);
         return indexB - indexA;
@@ -106,7 +106,7 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
             Total: {formatCurrency(total)}
           </p>
           <div className="space-y-1">
-            {sortedPayload.map((entry: any, index: number) => (
+            {sortedPayload.map((entry: { name: string; value: number; color: string }, index: number) => (
               <p key={index} className="text-xs text-slate-600">
                 <span
                   className="inline-block w-3 h-3 rounded-sm mr-2"
@@ -148,7 +148,7 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
   }, [chartData, tickerKeys]);
 
   // Custom label renderer component
-  const CustomLabels = (props: any) => {
+  const CustomLabels = (props: { viewBox?: { width: number; height: number; x: number; y: number } }) => {
     const { viewBox } = props;
     if (!viewBox || labelPositions.length === 0) return null;
 

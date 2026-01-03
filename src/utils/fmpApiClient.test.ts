@@ -11,7 +11,7 @@ vi.mock('aws-amplify/data', async (_importOriginal) => {
   const mockDelete = vi.fn();
 
   // Store references globally so tests can access them
-  (global as any).__mockFmpApiKeyModel = {
+  (global as Record<string, unknown>).__mockFmpApiKeyModel = {
     list: mockList,
     create: mockCreate,
     update: mockUpdate,
@@ -21,7 +21,7 @@ vi.mock('aws-amplify/data', async (_importOriginal) => {
   return {
     generateClient: vi.fn(() => ({
       models: {
-        FmpApiKey: (global as any).__mockFmpApiKeyModel,
+        FmpApiKey: (global as Record<string, unknown>).__mockFmpApiKeyModel,
       },
     })),
   };
@@ -37,10 +37,10 @@ import { callFmpApi, getUserFmpApiKey, setUserFmpApiKey, deleteUserFmpApiKey } f
 import type { FmpApiClientOptions } from './fmpApiClient';
 
 // Get reference to the mock that was created in the vi.mock factory
-const mockAmplifyClient = (global as any).__mockFmpApiKeyModel;
+const mockAmplifyClient = (global as Record<string, unknown>).__mockFmpApiKeyModel;
 
 describe('fmpApiClient', () => {
-  let mockFetch: any;
+  let mockFetch: typeof global.fetch;
 
   beforeEach(() => {
     // Reset all mocks before each test

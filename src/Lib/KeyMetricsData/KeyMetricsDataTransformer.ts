@@ -172,7 +172,7 @@ function buildMetricRows(
  * Format value for display
  * Pattern from CollectStatementData.ts addOneRowElement()
  */
-function formatValue(value: any): string | number {
+function formatValue(value: string | number | null | undefined): string | number {
   // Handle undefined, null, or empty values
   if (value === undefined || value === null || value === '') {
     return '—';

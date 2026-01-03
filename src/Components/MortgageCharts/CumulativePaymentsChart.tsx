@@ -63,7 +63,7 @@ export default function CumulativePaymentsChart({
   });
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { label: string; cumulativePrincipal: number; cumulativeInterest: number; cumulativeTaxes: number; cumulativeInsurance: number; total: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

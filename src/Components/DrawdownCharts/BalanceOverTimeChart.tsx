@@ -67,7 +67,7 @@ export default function BalanceOverTimeChart({
   const sampledDepletionEntry = depletionMonth ? findClosestSampledPoint(depletionMonth) : null;
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { label: string; balance: number; cumulativeInterest: number; cumulativeDrawdowns: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

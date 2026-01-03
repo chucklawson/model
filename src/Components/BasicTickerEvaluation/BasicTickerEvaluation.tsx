@@ -227,6 +227,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     setEndDate(getValuesBasedOnDate.convertDateForDateInputPicker(tempDate));
         //setStartDate('2023-02-03');
         //setEndDate('2023-03-09');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     // request ticker data
@@ -244,6 +245,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         else {
             //console.log('Reset: updateTickerValue to false: ' + updateTickerValue);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tickerToGet, updateTickerValue]);
 
     /*
@@ -281,7 +283,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
         setRangeValues(currentQuote);
         props.onSetTodaysPercentageChange(currentQuote.changesPercentage, tempGain);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[currentQuote]);
     
 
@@ -321,6 +323,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
 
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.onSetHeader, props.baseHeader])
 
     useEffect(() => {  
@@ -421,6 +424,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setDataFetched(false);
             //console.log("selectTickerButtonHandler tickerIn: " + tickerIn);
         }, 300);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.onSetHeader, props.baseHeader, props.onSelectTickerButtonHandler])
 
     const calculateProfitLossButtonHandler = useCallback(() =>
@@ -578,6 +582,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     // Update parent with slope when it changes
     useEffect(() => {
         props.onSetSlope(slope);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slope, props.onSetSlope]);
 
     // Dynamically calculate graph width based on container size

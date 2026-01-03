@@ -45,7 +45,7 @@ export default function YTDLineChart({ ytdData }: YTDLineChartProps) {
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload }: any) => {
+  const customTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { fullDate: string; value: number; baseline: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const value = data.value;

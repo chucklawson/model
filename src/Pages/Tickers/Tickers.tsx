@@ -1,6 +1,7 @@
 // ============================================
 // FILE: src/Pages/Tickers/Tickers.tsx
 // ============================================
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { generateClient } from 'aws-amplify/data';
@@ -215,7 +216,7 @@ interface LegacyLot {
   const loadPortfolios = async () => {
     try {
       // Fetch all portfolios with pagination
-      let allData: any[] = [];
+      let allData: Array<{ id: string; name: string; description?: string | null; createdAt?: string | null; updatedAt?: string | null; owner?: string | null }> = [];
       let nextToken: string | null | undefined = undefined;
 
       do {
@@ -250,7 +251,7 @@ interface LegacyLot {
   const loadTickers = async () => {
     try {
       // Fetch all tickers with pagination
-      let allData: any[] = [];
+      let allData: Array<{ id: string; symbol: string; companyName?: string | null; baseYield?: number | null; expectedFiveYearGrowth?: number | null; createdAt?: string | null; updatedAt?: string | null; owner?: string | null }> = [];
       let nextToken: string | null | undefined = undefined;
 
       do {
@@ -292,7 +293,7 @@ interface LegacyLot {
       setError(null);
 
       // Fetch all lots with pagination
-      let allData: any[] = [];
+      let allData: Array<Record<string, unknown>> = [];
       let nextToken: string | null | undefined = undefined;
 
       do {

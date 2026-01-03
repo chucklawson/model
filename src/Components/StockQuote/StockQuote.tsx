@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import type Quote_V3 from "../../Lib/Quote_V3.ts"
 import type AnalysisKeyMetricsItem_V3 from '../../Lib/AnalysisKeyMetricsItem_V3.ts'

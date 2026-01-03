@@ -42,7 +42,7 @@ export default function CumulativeWithdrawalsChart({
   }));
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { label: string; cumulativeDrawdowns: number; percentOfOriginal: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

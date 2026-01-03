@@ -84,7 +84,7 @@ export default function InvestmentComparisonChart({
   const sampledMortgageSchedule = sampleScheduleForChart(mortgageSchedule, 120);
 
   // Sample investment schedule manually to match
-  const sampleInvestmentSchedule = (schedule: any[], maxPoints: number) => {
+  const sampleInvestmentSchedule = (schedule: Array<{ month: number; balance: number }>, maxPoints: number) => {
     if (schedule.length <= maxPoints) return schedule;
     const interval = Math.floor(schedule.length / maxPoints);
     const sampled = [];
@@ -137,7 +137,7 @@ export default function InvestmentComparisonChart({
     : null;
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload: { label: string } }> }) => {
     if (active && payload && payload.length >= 2) {
       const mortgageCost = payload[0].value;
       const investmentValue = payload[1].value;

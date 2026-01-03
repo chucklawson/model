@@ -142,7 +142,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
     setResults(null);
   };
 
-  const updateExtraPayment = (id: string, field: keyof ExtraPayment, value: any) => {
+  const updateExtraPayment = (id: string, field: keyof ExtraPayment, value: string | number) => {
     setExtraPayments(prev =>
       prev.map(p => (p.id === id ? { ...p, [field]: value } : p))
     );
@@ -150,7 +150,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
   };
 
   // Chart tabs
-  const chartTabs: { id: ChartTab; label: string; icon: any }[] = [
+  const chartTabs: { id: ChartTab; label: string; icon: React.ElementType }[] = [
     { id: 'principal-interest', label: 'Principal vs Interest', icon: PieChart },
     { id: 'balance', label: 'Remaining Balance', icon: TrendingDown },
     { id: 'comparison', label: 'Loan Term Comparison', icon: BarChart3 },
@@ -720,7 +720,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
                         <label className="text-sm font-semibold text-slate-700">Comparison Mode:</label>
                         <select
                           value={investmentComparisonMode}
-                          onChange={e => setInvestmentComparisonMode(e.target.value as any)}
+                          onChange={e => setInvestmentComparisonMode(e.target.value as 'lump-sum' | 'monthly-payment' | 'draw-down')}
                           className="px-3 py-2 border-2 border-slate-300 rounded-lg focus:border-blue-500 focus:outline-none text-sm bg-white"
                         >
                           <option value="lump-sum">Lump Sum Investment</option>

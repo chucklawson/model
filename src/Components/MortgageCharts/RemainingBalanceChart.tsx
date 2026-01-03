@@ -67,7 +67,7 @@ export default function RemainingBalanceChart({
   const sampledPmiMonth = pmiRemovalMonth ? findClosestSampledPoint(pmiRemovalMonth) : null;
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { label: string; balance: number; totalPaid: number; paidOffPercent: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

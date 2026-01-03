@@ -125,7 +125,7 @@ describe('FMP API E2E Tests', () => {
       // Import and invoke the Lambda handler
       const { handler } = await import('../../../amplify/functions/fmp-proxy/handler');
 
-      const result = await handler(event as any, {} as any, {} as any);
+      const result = await handler(event as never, {} as never, {} as never);
 
       // Should successfully query DynamoDB and proxy to FMP
       expect(result.statusCode).toBeOneOf([200, 403]); // 403 if no API key

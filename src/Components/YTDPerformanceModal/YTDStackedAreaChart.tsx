@@ -48,7 +48,7 @@ export default function YTDStackedAreaChart({ ytdData }: YTDStackedAreaChartProp
 
     // Transform daily data for stacked area chart
     const data = ytdData.dailyPortfolioValues.map(day => {
-      const point: any = {
+      const point: Record<string, string | number> = {
         date: formatDateShort(day.date),
         fullDate: day.date
       };
@@ -88,9 +88,9 @@ export default function YTDStackedAreaChart({ ytdData }: YTDStackedAreaChartProp
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload, label }: any) => {
+  const customTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; payload?: { fullDate?: string } }>; label?: string }) => {
     if (active && payload && payload.length) {
-      const total = payload.reduce((sum: number, entry: any) => sum + (entry.value || 0), 0);
+      const total = payload.reduce((sum: number, entry: { value: number }) => sum + (entry.value || 0), 0);
 
       return (
         <div className="bg-white border-2 border-emerald-600 rounded-lg p-3 shadow-lg max-w-xs">
@@ -100,8 +100,8 @@ export default function YTDStackedAreaChart({ ytdData }: YTDStackedAreaChartProp
           </p>
           <div className="space-y-1 max-h-48 overflow-y-auto">
             {payload
-              .sort((a: any, b: any) => b.value - a.value)
-              .map((entry: any, index: number) => (
+              .sort((a: { value: number }, b: { value: number }) => b.value - a.value)
+              .map((entry: { name: string; value: number; color: string }, index: number) => (
                 <p key={index} className="text-xs text-slate-600">
                   <span
                     className="inline-block w-3 h-3 rounded-sm mr-2"

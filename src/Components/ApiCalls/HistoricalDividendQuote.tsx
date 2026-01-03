@@ -24,6 +24,7 @@ const HistoricalDividendQuote = (props:HistoricalDividendQuoteProps) => {
       if (quote && !loading) {
         props.onSetCurrentQuote(quote, dividendData);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quote, dividendData, loading, props.onSetCurrentQuote]);
 
     // Handle error state

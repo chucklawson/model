@@ -41,7 +41,7 @@ export default function InterestVsDrawdownsChart({
   }));
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { label: string; interestEarned: number; totalDrawdown: number; netChange: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

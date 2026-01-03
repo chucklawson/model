@@ -53,7 +53,7 @@ export default function CustomRangePieChart({ customRangeData, onTickerClick }: 
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload }: any) => {
+  const customTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { percentage: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
 
@@ -72,13 +72,13 @@ export default function CustomRangePieChart({ customRangeData, onTickerClick }: 
     return null;
   };
 
-  const renderCustomLabel = (entry: any) => {
+  const renderCustomLabel = (entry: { name: string; percentage: number }) => {
     // Only show label if allocation is > 3%
     if (entry.percentage < 3) return '';
     return `${entry.name} ${entry.percentage.toFixed(1)}%`;
   };
 
-  const handlePieClick = (data: any) => {
+  const handlePieClick = (data: { name: string } | null) => {
     if (onTickerClick && data) {
       onTickerClick(data.name);
     }

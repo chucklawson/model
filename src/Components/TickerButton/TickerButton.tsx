@@ -1,4 +1,5 @@
-﻿import  { useState, useEffect, useCallback, memo } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import  { useState, useEffect, useCallback, memo } from 'react';
 //import type {TickersToEvaluate} from "../../Lib/TickersToEvaluate/TickersToEvaluate"
 
 

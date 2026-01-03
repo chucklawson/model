@@ -39,7 +39,7 @@ export default function PrincipalVsInterestChart({ schedule }: PrincipalVsIntere
   }));
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; payload?: { label?: string } }> }) => {
     if (active && payload && payload.length >= 2) {
       const principal = payload[0].value;
       const interest = payload[1].value;

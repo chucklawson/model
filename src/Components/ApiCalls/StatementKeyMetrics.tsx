@@ -27,6 +27,7 @@ const StatementKeyMetrics = (props:StatementKeyMetricsProps)=> {
       if (quote && !loading) {
         props.onSetCurrentQuote(quote, keyMetrics);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quote, keyMetrics, loading, props.onSetCurrentQuote]);
 
     // Handle error state

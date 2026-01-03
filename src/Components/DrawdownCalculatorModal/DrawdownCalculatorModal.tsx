@@ -98,7 +98,7 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
   };
 
   // Handle input changes
-  const updateInput = (field: keyof DrawdownInputs, value: any) => {
+  const updateInput = (field: keyof DrawdownInputs, value: number | { month: number; year: number }) => {
     setInputs(prev => ({ ...prev, [field]: value }));
     setResults(null); // Clear results when inputs change
   };
@@ -144,7 +144,7 @@ export default function DrawdownCalculatorModal({ onClose }: { onClose: () => vo
     setResults(null);
   };
 
-  const updateVariableDrawdown = (id: string, field: keyof VariableDrawdown, value: any) => {
+  const updateVariableDrawdown = (id: string, field: keyof VariableDrawdown, value: string | number) => {
     setVariableDrawdowns(prev =>
       prev.map(d => (d.id === id ? { ...d, [field]: value } : d))
     );

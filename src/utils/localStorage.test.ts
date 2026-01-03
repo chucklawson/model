@@ -397,7 +397,7 @@ describe('localStorage', () => {
     });
 
     it('should handle empty array', () => {
-      const empty: any[] = [];
+      const empty: unknown[] = [];
       saveToLocalStorage('empty.array', 1, empty);
 
       const result = loadFromLocalStorage('empty.array', 1, null);

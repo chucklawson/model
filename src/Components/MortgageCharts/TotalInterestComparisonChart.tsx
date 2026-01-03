@@ -56,7 +56,7 @@ export default function TotalInterestComparisonChart({
   });
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { term: string; totalPrincipal: number; totalInterest: number; totalCost: number; monthlySavings?: number } }> }) => {
     if (active && payload && payload.length >= 2) {
       const data = payload[0].payload;
       return (

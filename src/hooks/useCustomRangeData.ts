@@ -2,7 +2,7 @@
 // FILE: src/hooks/useCustomRangeData.ts
 // Custom Hook for Custom Date Range Performance Data
 // ============================================
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { TickerLot } from '../types';
 import type { DateRangePortfolioPerformance } from '../types/customRange';

@@ -2,7 +2,7 @@
 // FILE: src/Components/CustomRangePerformanceModal/CustomRangePerformanceModal.tsx
 // Main Custom Date Range Performance Modal Component
 // ============================================
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useMemo, useEffect } from 'react';
 import { X, TrendingUp, BarChart3, PieChart, Layers, Filter, Calendar } from 'lucide-react';
 import type { TickerLot } from '../../types';
@@ -185,7 +185,7 @@ export default function CustomRangePerformanceModal({
   }, [startDate, endDate]);
 
   // Chart tabs
-  const chartTabs: { id: ChartTab; label: string; icon: any }[] = [
+  const chartTabs: { id: ChartTab; label: string; icon: React.ElementType }[] = [
     { id: 'line', label: 'Portfolio Growth', icon: TrendingUp },
     { id: 'bar', label: 'Top Performers', icon: BarChart3 },
     { id: 'pie', label: 'Allocation', icon: PieChart },

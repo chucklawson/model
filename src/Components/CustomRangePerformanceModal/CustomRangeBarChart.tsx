@@ -52,7 +52,7 @@ export default function CustomRangeBarChart({ customRangeData, onTickerClick }: 
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload }: any) => {
+  const customTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { ticker: string; rangeGainPercent: number; rangeGainDollar: number; currentValue: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
 
@@ -78,7 +78,7 @@ export default function CustomRangeBarChart({ customRangeData, onTickerClick }: 
     return null;
   };
 
-  const handleBarClick = (data: any) => {
+  const handleBarClick = (data: { ticker: string } | null) => {
     if (onTickerClick && data) {
       onTickerClick(data.ticker);
     }

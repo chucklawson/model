@@ -23,7 +23,7 @@ export default function GrowthVisualizationChart({
   };
 
   // Custom tooltip with kid-friendly emojis
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { year: number; value: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as RuleOf72Projection;
       return (

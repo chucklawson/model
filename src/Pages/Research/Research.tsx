@@ -28,12 +28,12 @@ function Research() {
   useEffect(() => {
     const loadTickers = async () => {
       const client = generateClient<Schema>();
-      let allData: any[] = [];
+      let allData: Array<{ symbol?: string | null }> = [];
       let nextToken: string | null | undefined = undefined;
 
       try {
         do {
-          const response: any = await client.models.TickerLot.list({
+          const response = await client.models.TickerLot.list({
             limit: 1000,
             nextToken: nextToken || undefined,
           });

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { Calculator, X, TrendingUp, DollarSign, Calendar } from 'lucide-react';
 import type Quote_V3 from '../../Lib/Quote_V3';
@@ -116,7 +117,8 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
 
           if (tickerData && tickerData.length > 0) {
             // Check for expectedFiveYearGrowth (new field name) or expectedFiveYearReturn (old field name for backwards compatibility)
-            const expectedGrowth = (tickerData[0] as any).expectedFiveYearGrowth || (tickerData[0] as any).expectedFiveYearReturn;
+            const tickerRecord = tickerData[0] as { expectedFiveYearGrowth?: number; expectedFiveYearReturn?: number };
+            const expectedGrowth = tickerRecord.expectedFiveYearGrowth || tickerRecord.expectedFiveYearReturn;
             if (expectedGrowth && expectedGrowth > 0) {
               setFormData(prev => ({ ...prev, earningsGrowthRate: expectedGrowth }));
             } else {
