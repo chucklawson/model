@@ -134,9 +134,15 @@ function findCorrespondingReinvestment(
 
 /**
  * Generate a unique transaction ID for linking purposes
+ * Includes principalAmount to distinguish multiple same-day transactions with different amounts
  */
 function generateTransactionId(txn: VanguardTransaction): string {
-  return `${txn.accountNumber}-${txn.tradeDate}-${txn.symbol}-${txn.transactionType}-${txn.shares}`;
+  // Convert principalAmount to fixed decimal string, handle undefined
+  const principalAmt = txn.principalAmount !== undefined
+    ? txn.principalAmount.toFixed(2)
+    : 'undefined';
+
+  return `${txn.accountNumber}-${txn.tradeDate}-${txn.symbol}-${txn.transactionType}-${txn.shares}-${principalAmt}`;
 }
 
 // ===== SUMMARY FUNCTIONS =====

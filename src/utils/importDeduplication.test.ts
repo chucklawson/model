@@ -65,7 +65,7 @@ describe('generateTransactionKey', () => {
     };
 
     const key = generateTransactionKey(txn);
-    expect(key).toBe('12345|2024-01-01|AAPL|100|Buy');
+    expect(key).toBe('12345|2024-01-01|AAPL|100|Buy|undefined');
   });
 
   it('should generate different keys for different transactions', () => {
@@ -129,7 +129,7 @@ describe('generateTransactionKey', () => {
     };
 
     const key = generateTransactionKey(txn);
-    expect(key).toBe('12345|2024-01-01|AAPL|-100|Sell');
+    expect(key).toBe('12345|2024-01-01|AAPL|-100|Sell|undefined');
   });
 
   it('should handle fractional shares', () => {
@@ -143,7 +143,7 @@ describe('generateTransactionKey', () => {
     };
 
     const key = generateTransactionKey(txn);
-    expect(key).toBe('12345|2024-01-01|AAPL|100.5|Buy');
+    expect(key).toBe('12345|2024-01-01|AAPL|100.5|Buy|undefined');
   });
 });
 

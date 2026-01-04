@@ -2,7 +2,7 @@
 // Import Vanguard CSV Modal Component
 // ============================================
 import { useState, useRef } from 'react';
-import { Upload, ArrowLeft, X, FileText, TrendingUp } from 'lucide-react';
+import { Upload, ArrowLeft, X, FileText, TrendingUp, AlertTriangle } from 'lucide-react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
 import type {
@@ -15,6 +15,7 @@ import { validateVanguardCSV } from '../utils/vanguardCsvValidator';
 import { importVanguardCSV } from '../utils/vanguardImporter';
 import VanguardPreviewTable from './VanguardPreviewTable';
 import ImportProgressIndicator from './ImportProgressIndicator';
+import DuplicatesModal from './DuplicatesModal';
 
 interface ImportVanguardCSVModalProps {
   onClose: () => void;
@@ -44,6 +45,9 @@ export default function ImportVanguardCSVModal({
   });
   const [importStats, setImportStats] = useState<ImportStats | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [showDuplicatesModal, setShowDuplicatesModal] = useState(false);
 
   const handleFileSelect = async (file: File) => {
     setError(null);
@@ -130,6 +134,86 @@ export default function ImportVanguardCSVModal({
     onClose();
   };
 
+  const handleClearAllData = async () => {
+    setIsClearing(true);
+    setError(null);
+
+    try {
+      // Helper function to get all records with pagination
+      const getAllRecords = async <T,>(
+        listFn: (params: { limit: number; nextToken?: string }) => Promise<{ data: T[]; nextToken?: string | null }>
+      ): Promise<T[]> => {
+        const allRecords: T[] = [];
+        let nextToken: string | null | undefined = undefined;
+
+        do {
+          const result = await listFn({
+            limit: 1000,
+            nextToken: nextToken as string | undefined
+          });
+
+          if (result.data) {
+            allRecords.push(...result.data);
+          }
+
+          nextToken = result.nextToken;
+        } while (nextToken);
+
+        return allRecords;
+      };
+
+      // Get all records with pagination
+      const [transactions, completedTransactions, dividends] = await Promise.all([
+        getAllRecords((params) => client.models.Transaction.list(params)),
+        getAllRecords((params) => client.models.CompletedTransaction.list(params)),
+        getAllRecords((params) => client.models.DividendTransaction.list(params)),
+      ]);
+
+      console.log(`Found ${transactions.length} transactions, ${completedTransactions.length} completed, ${dividends.length} dividends`);
+
+      // Delete all records in batches
+      const deletePromises = [];
+
+      // Delete transactions
+      for (const txn of transactions) {
+        deletePromises.push(
+          client.models.Transaction.delete({ transactionId: txn.transactionId })
+        );
+      }
+
+      // Delete completed transactions
+      for (const ct of completedTransactions) {
+        deletePromises.push(
+          client.models.CompletedTransaction.delete({
+            buyTransactionId: ct.buyTransactionId,
+            sellTransactionId: ct.sellTransactionId,
+          })
+        );
+      }
+
+      // Delete dividends
+      for (const div of dividends) {
+        deletePromises.push(
+          client.models.DividendTransaction.delete({ transactionId: div.transactionId })
+        );
+      }
+
+      console.log(`Deleting ${deletePromises.length} total records...`);
+      await Promise.all(deletePromises);
+
+      // Refresh data
+      await onImportComplete();
+
+      setShowClearConfirmation(false);
+      alert(`Successfully cleared all Vanguard data:\n- ${transactions.length} transactions\n- ${completedTransactions.length} completed transactions\n- ${dividends.length} dividends`);
+    } catch (err) {
+      console.error('Failed to clear data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to clear Vanguard data');
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 overflow-auto">
       <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
@@ -204,6 +288,57 @@ export default function ImportVanguardCSVModal({
                   <li className="list-disc">Dividend payments and reinvestments</li>
                   <li className="list-disc">Tax year classifications (short-term vs long-term)</li>
                 </ul>
+              </div>
+
+              {/* Clear All Data Section */}
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <h4 className="font-semibold text-red-800 mb-2">Data Management</h4>
+                <p className="text-sm text-red-700 mb-3">
+                  Clear all imported Vanguard data from the database. This will delete all transactions, completed transactions, and dividends.
+                </p>
+                <button
+                  onClick={() => setShowClearConfirmation(true)}
+                  disabled={isClearing}
+                  className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-4 py-2 rounded-lg font-semibold transition-colors text-sm"
+                >
+                  {isClearing ? 'Clearing...' : 'Clear All Vanguard Data'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Clear Confirmation Dialog */}
+          {showClearConfirmation && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[60]">
+              <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                <h3 className="text-xl font-bold text-red-800 mb-3">Are you sure?</h3>
+                <p className="text-slate-700 mb-6">
+                  This will permanently delete <strong>all Vanguard data</strong> from the database, including:
+                </p>
+                <ul className="text-sm text-slate-600 space-y-1 ml-6 mb-6">
+                  <li className="list-disc">All transactions</li>
+                  <li className="list-disc">All completed (matched) transactions</li>
+                  <li className="list-disc">All dividend records</li>
+                </ul>
+                <p className="text-red-700 font-semibold mb-6">
+                  This action cannot be undone!
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowClearConfirmation(false)}
+                    disabled={isClearing}
+                    className="flex-1 bg-slate-500 hover:bg-slate-600 disabled:bg-slate-400 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleClearAllData}
+                    disabled={isClearing}
+                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                  >
+                    {isClearing ? 'Clearing...' : 'Yes, Delete All'}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -361,6 +496,15 @@ export default function ImportVanguardCSVModal({
                       <div className="font-medium">...and {importStats.warnings.length - 10} more</div>
                     )}
                   </div>
+                  {importStats.csvDuplicatePairs && importStats.csvDuplicatePairs.length > 0 && (
+                    <button
+                      onClick={() => setShowDuplicatesModal(true)}
+                      className="mt-3 flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium transition-colors"
+                    >
+                      <AlertTriangle size={18} />
+                      Show Duplicates ({importStats.csvDuplicatePairs.length})
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -382,6 +526,14 @@ export default function ImportVanguardCSVModal({
           )}
         </div>
       </div>
+
+      {/* Duplicates Modal */}
+      {showDuplicatesModal && importStats?.csvDuplicatePairs && importStats.csvDuplicatePairs.length > 0 && (
+        <DuplicatesModal
+          duplicatePairs={importStats.csvDuplicatePairs}
+          onClose={() => setShowDuplicatesModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -73,14 +73,72 @@ export async function checkDuplicateImport(
 // ===== TRANSACTION-LEVEL DEDUPLICATION =====
 
 /**
+ * Represents a pair of transactions where one is a duplicate of the other
+ */
+export interface DuplicatePair {
+  original: VanguardTransaction;  // The first occurrence (kept)
+  duplicate: VanguardTransaction; // The duplicate occurrence (removed)
+}
+
+/**
  * Generate unique key for a transaction
  * Used for duplicate detection
+ * Includes principalAmount to distinguish multiple same-day transactions with different amounts
  *
  * @param txn - Vanguard transaction
  * @returns Unique transaction key
  */
 export function generateTransactionKey(txn: VanguardTransaction): string {
-  return `${txn.accountNumber}|${txn.tradeDate}|${txn.symbol}|${txn.shares}|${txn.transactionType}`;
+  // Convert principalAmount to fixed decimal string, handle undefined
+  const principalAmt = txn.principalAmount !== undefined
+    ? txn.principalAmount.toFixed(2)
+    : 'undefined';
+
+  return `${txn.accountNumber}|${txn.tradeDate}|${txn.symbol}|${txn.shares}|${txn.transactionType}|${principalAmt}`;
+}
+
+/**
+ * Remove duplicate transactions within the CSV data itself
+ * This ensures we only keep the first occurrence of each transaction
+ *
+ * @param transactions - Array of transactions from CSV
+ * @returns Object with deduplicated transactions and duplicates found
+ */
+export function deduplicateInternalTransactions(
+  transactions: VanguardTransaction[]
+): {
+  deduplicated: VanguardTransaction[];
+  duplicates: VanguardTransaction[];
+  duplicateCount: number;
+  duplicatePairs: DuplicatePair[];
+} {
+  const seen = new Map<string, VanguardTransaction>();
+  const duplicates: VanguardTransaction[] = [];
+  const duplicatePairs: DuplicatePair[] = [];
+
+  transactions.forEach(txn => {
+    const key = generateTransactionKey(txn);
+
+    if (!seen.has(key)) {
+      // First occurrence - keep it
+      seen.set(key, txn);
+    } else {
+      // Duplicate within CSV - track it
+      const original = seen.get(key)!;
+      duplicates.push(txn);
+      duplicatePairs.push({
+        original,
+        duplicate: txn,
+      });
+    }
+  });
+
+  return {
+    deduplicated: Array.from(seen.values()),
+    duplicates,
+    duplicateCount: duplicates.length,
+    duplicatePairs,
+  };
 }
 
 /**
