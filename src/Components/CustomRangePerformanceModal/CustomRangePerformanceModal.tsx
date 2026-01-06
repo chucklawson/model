@@ -44,9 +44,11 @@ export default function CustomRangePerformanceModal({
   const defaultDates = getDefaultDateRange();
   const [startDate, setStartDate] = useState<string>(defaultDates.start);
   const [endDate, setEndDate] = useState<string>(defaultDates.end);
+  const [activePreset, setActivePreset] = useState<'ytd' | '1m' | '3m' | '6m' | '9m' | '1y' | 'max' | null>('1y');
 
   // Preset date range handlers
   const applyPreset = (preset: 'ytd' | '1m' | '3m' | '6m' | '9m' | '1y' | 'max') => {
+    setActivePreset(preset);
     const end = new Date();
     const start = new Date();
 
@@ -229,43 +231,71 @@ export default function CustomRangePerformanceModal({
             <div className="mb-4 flex flex-wrap gap-2">
               <button
                 onClick={() => applyPreset('ytd')}
-                className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === 'ytd'
+                    ? 'bg-emerald-700 text-white ring-4 ring-emerald-300 shadow-lg'
+                    : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                }`}
               >
                 Year to Date
               </button>
               <button
                 onClick={() => applyPreset('1m')}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === '1m'
+                    ? 'bg-blue-700 text-white ring-4 ring-blue-300 shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 1 Month
               </button>
               <button
                 onClick={() => applyPreset('3m')}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === '3m'
+                    ? 'bg-blue-700 text-white ring-4 ring-blue-300 shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 3 Months
               </button>
               <button
                 onClick={() => applyPreset('6m')}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === '6m'
+                    ? 'bg-blue-700 text-white ring-4 ring-blue-300 shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 6 Months
               </button>
               <button
                 onClick={() => applyPreset('9m')}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === '9m'
+                    ? 'bg-blue-700 text-white ring-4 ring-blue-300 shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 9 Months
               </button>
               <button
                 onClick={() => applyPreset('1y')}
-                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === '1y'
+                    ? 'bg-blue-700 text-white ring-4 ring-blue-300 shadow-lg'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 1 Year
               </button>
               <button
                 onClick={() => applyPreset('max')}
-                className="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition-all"
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                  activePreset === 'max'
+                    ? 'bg-purple-700 text-white ring-4 ring-purple-300 shadow-lg'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
               >
                 All Time
               </button>
@@ -279,7 +309,10 @@ export default function CustomRangePerformanceModal({
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setActivePreset(null);
+                  }}
                   max={endDate}
                   className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
@@ -291,7 +324,10 @@ export default function CustomRangePerformanceModal({
                 <input
                   type="date"
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setActivePreset(null);
+                  }}
                   min={startDate}
                   max={formatDate(new Date())}
                   className="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"

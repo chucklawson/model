@@ -77,12 +77,12 @@ function validateHolding(
     });
   }
 
-  // Shares must be positive
+  // Shares must be positive fix this
   if (holding.shares <= 0) {
     errors.push({
       row: rowNumber,
       field: 'shares',
-      message: 'Shares must be greater than 0',
+      message: 'Shares must be greater than 0' + ', rowNumber: ' + rowNumber.toString(),
       value: holding.shares,
     });
   }
@@ -171,17 +171,17 @@ function validateTransaction(
       errors.push({
         row: rowNumber,
         field: 'settlementDate',
-        message: 'Settlement date is not in valid format (YYYY-MM-DD)',
+        message: 'Settlement date is not in valid format (YYYY-MM-DD), rowNumber',
         value: transaction.settlementDate,
       });
     }
 
     // Settlement should be >= trade date
-    if (transaction.tradeDate && transaction.settlementDate < transaction.tradeDate) {
+    if (((transaction.tradeDate && transaction.settlementDate < transaction.tradeDate)) && ((transaction.transactionType!== 'Dividend'))) {
       errors.push({
         row: rowNumber,
         field: 'settlementDate',
-        message: 'Settlement date cannot be before trade date',
+        message: 'Settlement date cannot be before trade date' + ", Transaction Type: " + transaction.transactionType + rowNumber.toString() + "tradeDate " + transaction.tradeDate +"Settelement date: " + transaction.settlementDate,
         value: transaction.settlementDate,
       });
     }
@@ -250,7 +250,7 @@ function validateBuyTransaction(
     errors.push({
       row: rowNumber,
       field: 'shares',
-      message: 'Shares must be positive for buy transactions',
+      message: 'Shares must be positive for buy transactions' + ', rowNumber: ' + rowNumber.toString(),
       value: transaction.shares,
     });
   }
@@ -325,12 +325,13 @@ function isValidSymbol(symbol: string): boolean {
   if (!symbol) return false;
 
   // Allow: letters, numbers, hyphens, periods, spaces
-  // Special case: "null" for bonds with CUSIP
+  // Special case: "null" for bonds with CUSIP1
+
   if (symbol.toLowerCase() === 'null') return true;
   if (symbol.toUpperCase() === 'CASH') return true;
 
   // 1-10 characters, alphanumeric with some special chars
-  return /^[A-Z0-9.-\s]{1,10}$/i.test(symbol);
+return /^[A-Z0-9.-\s]{1,10}$/i.test(symbol);
 }
 
 /**

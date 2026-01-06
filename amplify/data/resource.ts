@@ -8,7 +8,7 @@ and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
   Portfolio: a
-    .model({
+.model({
       name: a.string().required(),
       description: a.string(),
     })

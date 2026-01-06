@@ -72,7 +72,8 @@
       "Bash(aws dynamodb describe-table:*)",
       "Bash(cp:*)",
       "Bash(aws logs tail:*)",
-      "Bash(npx husky init)"
+      "Bash(npx husky init)",
+      "Bash(if exist \"node_modules\\\\.vite\" rd /s /q \"node_modules\\\\.vite\")"
     ],
     "deny": [],
     "ask": []

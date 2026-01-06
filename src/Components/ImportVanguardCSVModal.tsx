@@ -2,7 +2,7 @@
 // Import Vanguard CSV Modal Component
 // ============================================
 import { useState, useRef } from 'react';
-import { Upload, ArrowLeft, X, FileText, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Upload, ArrowLeft, X, FileText, TrendingUp, AlertTriangle, FileDown } from 'lucide-react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../amplify/data/resource';
 import type {
@@ -13,6 +13,7 @@ import type { ImportStats, ImportProgress } from '../utils/vanguardImporter';
 import { parseVanguardCSV } from '../utils/vanguardCsvParser';
 import { validateVanguardCSV } from '../utils/vanguardCsvValidator';
 import { importVanguardCSV } from '../utils/vanguardImporter';
+import { convertVanguardPdfToCsv } from '../utils/vanguardPdfParserBrowser';
 import VanguardPreviewTable from './VanguardPreviewTable';
 import ImportProgressIndicator from './ImportProgressIndicator';
 import DuplicatesModal from './DuplicatesModal';
@@ -30,6 +31,7 @@ export default function ImportVanguardCSVModal({
 }: ImportVanguardCSVModalProps) {
   const client = generateClient<Schema>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const [currentStep, setCurrentStep] = useState<ImportStep>('upload');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -48,6 +50,12 @@ export default function ImportVanguardCSVModal({
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [showDuplicatesModal, setShowDuplicatesModal] = useState(false);
+
+  // PDF conversion state
+  const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null);
+  const [outputCsvFilename, setOutputCsvFilename] = useState<string>('');
+  const [isConverting, setIsConverting] = useState(false);
+  const [conversionError, setConversionError] = useState<string | null>(null);
 
   const handleFileSelect = async (file: File) => {
     setError(null);
@@ -132,6 +140,62 @@ export default function ImportVanguardCSVModal({
       return;
     }
     onClose();
+  };
+
+  const handlePdfFileSelect = (file: File) => {
+    setConversionError(null);
+
+    // Validate file size (max 100MB for PDF files)
+    const maxSize = 100 * 1024 * 1024; // 100MB
+    if (file.size > maxSize) {
+      setConversionError(`PDF file size (${(file.size / 1024 / 1024).toFixed(1)}MB) exceeds the 100MB limit`);
+      return;
+    }
+
+    setSelectedPdfFile(file);
+
+    // Generate default output filename from PDF filename
+    const defaultFilename = file.name.replace(/\.pdf$/i, '.csv');
+    setOutputCsvFilename(defaultFilename);
+  };
+
+  const handleConvertPdf = async () => {
+    if (!selectedPdfFile) return;
+
+    setIsConverting(true);
+    setConversionError(null);
+
+    try {
+      // Convert PDF to CSV
+      const csvContent = await convertVanguardPdfToCsv(selectedPdfFile);
+
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', outputCsvFilename || 'vanguard-transactions.csv');
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+
+      // Reset PDF conversion state
+      setSelectedPdfFile(null);
+      setOutputCsvFilename('');
+
+      // Show success message
+      alert(`PDF converted successfully!\nDownloaded as: ${outputCsvFilename || 'vanguard-transactions.csv'}`);
+    } catch (err) {
+      console.error('PDF conversion failed:', err);
+      setConversionError(err instanceof Error ? err.message : 'Failed to convert PDF');
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   const handleClearAllData = async () => {
@@ -288,6 +352,81 @@ export default function ImportVanguardCSVModal({
                   <li className="list-disc">Dividend payments and reinvestments</li>
                   <li className="list-disc">Tax year classifications (short-term vs long-term)</li>
                 </ul>
+              </div>
+
+              {/* PDF to CSV Conversion Section */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                  <FileDown size={18} />
+                  Convert PDF to CSV
+                </h4>
+                <p className="text-sm text-blue-700 mb-4">
+                  Have a Vanguard PDF transaction report? Convert it to CSV format before importing.
+                </p>
+
+                {conversionError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                    <p className="text-red-800 text-sm">{conversionError}</p>
+                  </div>
+                )}
+
+                <div className="space-y-3">
+                  {/* PDF File Picker */}
+                  <div>
+                    <label className="block text-sm font-medium text-blue-800 mb-2">
+                      Select PDF File
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        ref={pdfInputRef}
+                        type="file"
+                        accept=".pdf"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handlePdfFileSelect(file);
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => pdfInputRef.current?.click()}
+                        className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center justify-center gap-2"
+                      >
+                        <Upload size={16} />
+                        {selectedPdfFile ? selectedPdfFile.name : 'Choose PDF File'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Output Filename Input */}
+                  {selectedPdfFile && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-blue-800 mb-2">
+                          Output CSV Filename
+                        </label>
+                        <input
+                          type="text"
+                          value={outputCsvFilename}
+                          onChange={(e) => setOutputCsvFilename(e.target.value)}
+                          placeholder="vanguard-transactions.csv"
+                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                      </div>
+
+                      {/* Convert Button */}
+                      <button
+                        onClick={handleConvertPdf}
+                        disabled={isConverting || !outputCsvFilename}
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                      >
+                        <FileDown size={18} />
+                        {isConverting ? 'Converting...' : 'Convert & Download CSV'}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Clear All Data Section */}
