@@ -16,6 +16,14 @@ export default function PortfolioFilter({
   selectedPortfolios,
   onChange,
 }: Props) {
+  // Deduplicate portfolios by name (keep first occurrence)
+  const uniquePortfolios = portfolios.reduce((acc, portfolio) => {
+    if (!acc.some(p => p.name === portfolio.name)) {
+      acc.push(portfolio);
+    }
+    return acc;
+  }, [] as Portfolio[]);
+
   const isAllSelected = selectedPortfolios.length === 0;
 
   const handleAllClick = () => {
@@ -61,7 +69,7 @@ export default function PortfolioFilter({
         </button>
 
         {/* Individual portfolio buttons */}
-        {portfolios.map((portfolio) => {
+        {[...uniquePortfolios].sort((a, b) => a.name.localeCompare(b.name)).map((portfolio) => {
           const isSelected = selectedPortfolios.includes(portfolio.name);
 
           return (

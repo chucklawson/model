@@ -73,7 +73,8 @@
       "Bash(cp:*)",
       "Bash(aws logs tail:*)",
       "Bash(npx husky init)",
-      "Bash(if exist \"node_modules\\\\.vite\" rd /s /q \"node_modules\\\\.vite\")"
+      "Bash(if exist \"node_modules\\\\.vite\" rd /s /q \"node_modules\\\\.vite\")",
+      "Bash(aws dynamodb delete-item:*)"
     ],
     "deny": [],
     "ask": []
