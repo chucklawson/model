@@ -66,13 +66,16 @@ export default function PortfolioManager({ portfolios, onClose }: Props) {
 
       if (!confirm(confirmMsg)) return;
 
+      // Find a fallback portfolio (first available that isn't being deleted)
+      const fallbackPortfolio = portfolios.find(p => p.name !== portfolioName);
+
       // Remove this portfolio from all lots that have it
       for (const lot of lotsInPortfolio) {
         const updatedPortfolios = lot.portfolios.filter(p => p !== portfolioName);
 
-        // If lot would have no portfolios, assign to Default
-        if (updatedPortfolios.length === 0) {
-          updatedPortfolios.push('Default');
+        // If lot would have no portfolios, assign to first available portfolio
+        if (updatedPortfolios.length === 0 && fallbackPortfolio) {
+          updatedPortfolios.push(fallbackPortfolio.name);
         }
 
         await client.models.TickerLot.update({

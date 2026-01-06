@@ -91,7 +91,7 @@ interface LegacyLot {
             shares: item.shares,
             costPerShare: item.costPerShare,
             purchaseDate: item.purchaseDate,
-            portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
+            portfolios: (item.portfolios ?? []).filter((p: string | null): p is string => p !== null),
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
             isDividend: item.isDividend ?? false,
             baseYield: item.baseYield ?? 0,
@@ -176,15 +176,23 @@ interface LegacyLot {
 
   const initializeDefaultPortfolio = async () => {
     try {
-      const { data } = await client.models.Portfolio.list();
-      const defaultExists = data.some(p => p && p.name === 'Default');
+      const { data: portfolioList } = await client.models.Portfolio.list();
+      const hasAnyPortfolios = portfolioList.length > 0;
 
-      if (!defaultExists) {
+      // Only create Default portfolio if NO portfolios exist at all
+      // If user deleted Default but has other portfolios, respect their choice
+      if (!hasAnyPortfolios) {
         await client.models.Portfolio.create({
           name: 'Default',
           description: 'Default portfolio for existing lots',
         });
+        // Refresh portfolio list after creating Default
+        const { data: refreshedList } = await client.models.Portfolio.list();
+        portfolioList.push(...refreshedList);
       }
+
+      // Get first available portfolio as fallback for migration
+      const fallbackPortfolioName = portfolioList.length > 0 ? portfolioList[0].name : 'Default';
 
       // Migrate existing lots to portfolios array format
       const { data: lots } = await client.models.TickerLot.list();
@@ -195,7 +203,7 @@ interface LegacyLot {
           if (!lot.portfolios && !legacyLot.portfolio) {
             await client.models.TickerLot.update({
               id: lot.id,
-              portfolios: ['Default'],
+              portfolios: [fallbackPortfolioName],
             });
           }
           // Case 2: Lot has old 'portfolio' string field (needs migration)
