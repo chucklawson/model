@@ -125,6 +125,3 @@ export interface ImportResult {
 
 // YTD Performance Types
 export type { YTDTickerPerformance, YTDPortfolioPerformance, HistoricalPrice } from './ytd';
-
-// Vanguard Transaction Import Types
-export * from './transaction';

@@ -27,7 +27,7 @@ import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
-import ImportVanguardCSVModal from '../../Components/ImportVanguardCSVModal';
+import VanguardTextImportModal from '../../Components/VanguardTextImportModal';
 import CustomRangePerformanceModal from '../../Components/CustomRangePerformanceModal/CustomRangePerformanceModal';
 import { useAfterHoursData } from '../../hooks/useAfterHoursData';
 import logger from '../../utils/logger';
@@ -52,7 +52,7 @@ interface LegacyLot {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [showPortfolioManager, setShowPortfolioManager] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [showVanguardImportModal, setShowVanguardImportModal] = useState(false);
+  const [showVanguardTextModal, setShowVanguardTextModal] = useState(false);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
 
   // Portfolio filter state (persists to localStorage)
@@ -558,11 +558,11 @@ interface LegacyLot {
                   Import CSV
                 </button>
                 <button
-                  onClick={() => setShowVanguardImportModal(true)}
-                  className="bg-white bg-opacity-20 text-purple-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
+                  onClick={() => setShowVanguardTextModal(true)}
+                  className="bg-white bg-opacity-20 text-purple-600 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <TrendingUp size={16} />
-                  Import Vanguard
+                  Vanguard
                 </button>
                 <button
                   onClick={handleExportTickers}
@@ -774,16 +774,10 @@ interface LegacyLot {
         />
       )}
 
-      {/* Import Vanguard CSV Modal */}
-      {showVanguardImportModal && (
-        <ImportVanguardCSVModal
-          onClose={() => setShowVanguardImportModal(false)}
-          onImportComplete={async () => {
-            await loadLots();
-            await loadTickers();
-            await loadPortfolios();
-            // Don't close modal here - let user see results and click "Done"
-          }}
+      {/* Vanguard Text Import Modal */}
+      {showVanguardTextModal && (
+        <VanguardTextImportModal
+          onClose={() => setShowVanguardTextModal(false)}
         />
       )}
 
