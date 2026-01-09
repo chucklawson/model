@@ -47,10 +47,7 @@ backend.fmpProxy.addEnvironment(
   'FMPAPIKEY_TABLE_NAME',
   backend.data.resources.tables['FmpApiKey'].tableName
 );
-backend.fmpProxy.addEnvironment(
-  'FMP_FALLBACK_API_KEY',
-  process.env.FMP_API_KEY || ''
-);
+// Note: No fallback API key - users must provide their own keys
 
 // Enable Function URL for FMP Proxy
 backend.fmpProxy.resources.lambda.addFunctionUrl({

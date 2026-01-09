@@ -62,7 +62,6 @@ describe('FMP Proxy Lambda Handler', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.FMPAPIKEY_TABLE_NAME = 'FmpApiKey-test-table';
-    process.env.FMP_FALLBACK_API_KEY = '';
   });
 
   describe('DynamoDB Query Construction', () => {
@@ -207,7 +206,7 @@ describe('FMP Proxy Lambda Handler', () => {
       expect(result).toEqual({
         statusCode: 403,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'No API key configured. Please add your FMP API key in settings.' }),
+        body: JSON.stringify({ error: 'FMP API key required. Please add your own API key in Settings to use FMP features.' }),
       });
     });
 
@@ -236,15 +235,12 @@ describe('FMP Proxy Lambda Handler', () => {
       expect(result).toEqual({
         statusCode: 403,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'No API key configured. Please add your FMP API key in settings.' }),
+        body: JSON.stringify({ error: 'FMP API key required. Please add your own API key in Settings to use FMP features.' }),
       });
     });
 
-    it('should use fallback API key when DynamoDB query fails', async () => {
+    it('should return error when DynamoDB query fails', async () => {
       // Arrange
-      const fallbackKey = 'fallback-api-key';
-      process.env.FMP_FALLBACK_API_KEY = fallbackKey;
-
       const event = {
         body: JSON.stringify({
           endpoint: '/api/v3/quote/AAPL',
@@ -254,19 +250,16 @@ describe('FMP Proxy Lambda Handler', () => {
 
       mockSend.mockRejectedValue(new Error('DynamoDB error'));
 
-      vi.mocked(fetch).mockResolvedValue({
-        ok: true,
-        json: async () => ({ symbol: 'AAPL' }),
-        status: 200,
-      } as Response);
-
       // Act
-      await handler(event as TestEvent, createMockContext(), createMockCallback());
+      const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
       // Assert
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining(`apikey=${fallbackKey}`),
-      );
+      expect(result).toEqual({
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Failed to retrieve API key from database' }),
+      });
+      expect(fetch).not.toHaveBeenCalled();
     });
   });
 
@@ -426,12 +419,12 @@ describe('FMP Proxy Lambda Handler', () => {
         message: 'Invalid FilterExpression: Attribute name is a reserved keyword; reserved keyword: owner',
       });
 
-      // Should fall back to empty key (no fallback set)
       // Act
       const result = await handler(event as TestEvent, createMockContext(), createMockCallback());
 
-      // Assert - Should handle gracefully and return error
-      expect(result.statusCode).toBe(403);
+      // Assert - Database errors now return 500 instead of falling back
+      expect(result.statusCode).toBe(500);
+      expect(result.body).toBe(JSON.stringify({ error: 'Failed to retrieve API key from database' }));
     });
   });
 

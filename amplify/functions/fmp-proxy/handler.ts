@@ -12,8 +12,8 @@ export const handler: Handler = async (event) => {
       return errorResponse(400, 'Endpoint is required');
     }
 
-    // Fetch user's API key
-    let apiKey = process.env.FMP_FALLBACK_API_KEY || '';
+    // Fetch user's API key (no fallback - user must provide their own key)
+    let apiKey = '';
 
     try {
       const tableName = process.env.FMPAPIKEY_TABLE_NAME;
@@ -49,13 +49,14 @@ export const handler: Handler = async (event) => {
         console.log('No active API key found in DynamoDB');
       }
     } catch (dbError) {
-      console.error('Error fetching user API key, using fallback:', dbError);
+      console.error('Error fetching user API key:', dbError);
+      return errorResponse(500, 'Failed to retrieve API key from database');
     }
 
     console.log('Final apiKey status:', apiKey ? 'Found' : 'Not found');
 
     if (!apiKey) {
-      return errorResponse(403, 'No API key configured. Please add your FMP API key in settings.');
+      return errorResponse(403, 'FMP API key required. Please add your own API key in Settings to use FMP features.');
     }
 
     // Proxy request to FMP

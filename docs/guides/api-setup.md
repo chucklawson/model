@@ -11,22 +11,21 @@ The Investment Portfolio Manager uses the Financial Modeling Prep (FMP) API to p
 - Stock news and market information
 - Dividend data
 
-While the application may have a fallback shared API key, **we strongly recommend getting your own free API key** for reliable, uninterrupted access.
+**A personal API key is required** to use FMP features in the Investment Portfolio Manager.
 
 ## Why Do I Need an API Key?
 
-**Benefits of Your Own API Key:**
-- ✅ Guaranteed access to market data
+**Your own API key provides:**
+- ✅ Access to market data and FMP features
 - ✅ 250 free requests per day (sufficient for most users)
 - ✅ No rate limit conflicts with other users
 - ✅ Faster, more reliable data fetching
-- ✅ Access to all features
+- ✅ Full access to all features
 
-**Limitations Without API Key:**
-- ❌ Shared fallback key may hit rate limits
-- ❌ Slower performance during peak usage
-- ❌ Some features may not work
-- ❌ No guarantee of data availability
+**Without an API key:**
+- ❌ FMP features will not work
+- ❌ Cannot access stock quotes, company data, or financial metrics
+- ❌ Portfolio analysis features will be unavailable
 
 ## Step-by-Step: Getting Your Free API Key
 
@@ -206,7 +205,7 @@ Yes! You can:
 
 ### Do:
 - ✅ Keep your API key private
-- ✅ Use your own key instead of shared fallback
+- ✅ Configure your key in Settings to access FMP features
 - ✅ Monitor your usage in FMP dashboard
 - ✅ Regenerate your key if you suspect it's compromised
 - ✅ Check your email for FMP notifications about usage
@@ -216,19 +215,6 @@ Yes! You can:
 - ❌ Use the same key across multiple applications
 - ❌ Store your key in unsecured locations
 - ❌ Ignore rate limit warnings
-
-## Fallback Shared Key Behavior
-
-If you don't configure your own API key, the application may use a shared fallback key.
-
-**Limitations:**
-- Shared among all users without personal keys
-- High risk of hitting rate limits during peak hours
-- No guaranteed availability
-- Slower performance
-- May stop working at any time
-
-**We strongly recommend getting your own free API key to avoid these issues.**
 
 ## Advanced: Monitoring Your Usage
 

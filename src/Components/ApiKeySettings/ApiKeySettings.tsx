@@ -55,7 +55,7 @@ export default function ApiKeySettings() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure? You will fall back to the shared key.')) {
+    if (!confirm('Are you sure? Without an API key, you will not be able to use FMP features.')) {
       return;
     }
 
@@ -68,7 +68,7 @@ export default function ApiKeySettings() {
       setActualApiKey('');
       setHasExistingKey(false);
       setShowKey(false);
-      setMessage({ type: 'success', text: 'API key removed. Using fallback key.' });
+      setMessage({ type: 'success', text: 'API key removed. You will need to add a key to use FMP features.' });
     } catch (error) {
       setMessage({
         type: 'error',
@@ -175,8 +175,16 @@ export default function ApiKeySettings() {
         </div>
 
         <div className="bg-blue-50 border border-blue-300 rounded-lg p-3 text-sm text-blue-800">
-          <strong>Note:</strong> Your API key is stored securely server-side. Without your own key,
-          the app uses a shared fallback key.
+          <strong>Required:</strong> Your API key is stored securely server-side and is required to use
+          Financial Modeling Prep features. Get a free key from{' '}
+          <a
+            href="https://financialmodelingprep.com/developer/docs/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            financialmodelingprep.com
+          </a>.
         </div>
       </div>
     </div>

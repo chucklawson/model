@@ -36,11 +36,7 @@ To access real-time stock quotes and company data, you'll need to configure a Fi
 
 **Free Tier Limits:** 250 requests per day (sufficient for most users)
 
-### Option B: Use Shared Key (Limited)
-
-If you skip this step, the application may use a fallback shared API key, but this has strict rate limits and may not work reliably for all users.
-
-**For full functionality, we strongly recommend getting your own free API key.**
+**Note:** An API key is required to use FMP features. Without it, stock quotes, company data, and financial metrics will not be available.
 
 See the [API Setup Guide](../guides/api-setup.md) for detailed instructions.
 
