@@ -557,13 +557,14 @@ interface LegacyLot {
                   <Upload size={16} />
                   Import CSV
                 </button>
-                <button
+                {/* Vanguard tab temporarily hidden - code preserved for future use */}
+                {/* <button
                   onClick={() => setShowVanguardTextModal(true)}
                   className="bg-white bg-opacity-20 text-purple-600 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
                   <TrendingUp size={16} />
                   Vanguard
-                </button>
+                </button> */}
                 <button
                   onClick={handleExportTickers}
                   className="bg-white bg-opacity-20 text-green-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"

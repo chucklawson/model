@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/243</span>
+                <span class='fraction'>0/245</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/68</span>
+                <span class='fraction'>0/67</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/229</span>
+                <span class='fraction'>0/232</span>
             </div>
         
             
@@ -857,7 +857,15 @@
 <a name='L792'></a><a href='#L792'>792</a>
 <a name='L793'></a><a href='#L793'>793</a>
 <a name='L794'></a><a href='#L794'>794</a>
-<a name='L795'></a><a href='#L795'>795</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L795'></a><a href='#L795'>795</a>
+<a name='L796'></a><a href='#L796'>796</a>
+<a name='L797'></a><a href='#L797'>797</a>
+<a name='L798'></a><a href='#L798'>798</a>
+<a name='L799'></a><a href='#L799'>799</a>
+<a name='L800'></a><a href='#L800'>800</a>
+<a name='L801'></a><a href='#L801'>801</a>
+<a name='L802'></a><a href='#L802'>802</a>
+<a name='L803'></a><a href='#L803'>803</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1038,12 +1046,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1744,7 +1760,7 @@ interface LegacyLot {
             shares: item.shares,
             costPerShare: item.costPerShare,
             purchaseDate: item.purchaseDate,
-            portfolios: (item.portfolios ?? ['Default']).filter(<span class="fstat-no" title="function not covered" >(p</span>: string | null): p is string =&gt; <span class="cstat-no" title="statement not covered" >p !== null)</span>,
+            portfolios: (item.portfolios ?? []).filter(<span class="fstat-no" title="function not covered" >(p</span>: string | null): p is string =&gt; <span class="cstat-no" title="statement not covered" >p !== null)</span>,
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
             isDividend: item.isDividend ?? false,
             baseYield: item.baseYield ?? 0,
@@ -1829,15 +1845,23 @@ interface LegacyLot {
 &nbsp;
   const initializeDefaultPortfolio = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async () =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const { data } = <span class="cstat-no" title="statement not covered" >await client.models.Portfolio.list();</span>
-      const defaultExists = <span class="cstat-no" title="statement not covered" >data.some(<span class="fstat-no" title="function not covered" >p =&gt; <span class="cstat-no" title="statement not covered" >p</span> &amp;&amp; p.name === 'Default')</span>;</span>
+      const { data: portfolioList } = <span class="cstat-no" title="statement not covered" >await client.models.Portfolio.list();</span>
+      const hasAnyPortfolios = <span class="cstat-no" title="statement not covered" >portfolioList.length &gt; 0;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      if (!defaultExists) {</span>
+      // Only create Default portfolio if NO portfolios exist at all
+      // If user deleted Default but has other portfolios, respect their choice
+<span class="cstat-no" title="statement not covered" >      if (!hasAnyPortfolios) {</span>
 <span class="cstat-no" title="statement not covered" >        await client.models.Portfolio.create({</span>
           name: 'Default',
           description: 'Default portfolio for existing lots',
         });
+        // Refresh portfolio list after creating Default
+        const { data: refreshedList } = <span class="cstat-no" title="statement not covered" >await client.models.Portfolio.list();</span>
+<span class="cstat-no" title="statement not covered" >        portfolioList.push(...refreshedList);</span>
       }
+&nbsp;
+      // Get first available portfolio as fallback for migration
+      const fallbackPortfolioName = <span class="cstat-no" title="statement not covered" >portfolioList.length &gt; 0 ? portfolioList[0].name : 'Default';</span>
 &nbsp;
       // Migrate existing lots to portfolios array format
       const { data: lots } = <span class="cstat-no" title="statement not covered" >await client.models.TickerLot.list();</span>
@@ -1848,7 +1872,7 @@ interface LegacyLot {
 <span class="cstat-no" title="statement not covered" >          if (!lot.portfolios &amp;&amp; !legacyLot.portfolio) {</span>
 <span class="cstat-no" title="statement not covered" >            await client.models.TickerLot.update({</span>
               id: lot.id,
-              portfolios: ['Default'],
+              portfolios: [fallbackPortfolioName],
             });
 <span class="cstat-no" title="statement not covered" >          }</span>
           // Case 2: Lot has old 'portfolio' string field (needs migration)
@@ -2452,7 +2476,7 @@ export default Tickers;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-03T19:53:13.964Z
+                at 2026-01-07T20:49:33.483Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

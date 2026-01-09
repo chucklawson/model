@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
@@ -156,7 +156,15 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,6 +180,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -219,7 +235,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -267,6 +283,14 @@ export default function <span class="fstat-no" title="function not covered" >Por
   selectedPortfolios,
   onChange,
 }: Props) {
+  // Deduplicate portfolios by name (keep first occurrence)
+  const uniquePortfolios = <span class="cstat-no" title="statement not covered" >portfolios.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, portfolio) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!acc.some(<span class="fstat-no" title="function not covered" >p =&gt; <span class="cstat-no" title="statement not covered" >p</span>.name === portfolio.name)</span>) {</span>
+<span class="cstat-no" title="statement not covered" >      acc.push(portfolio);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return acc;</span>
+  }, [] as Portfolio[]);
+&nbsp;
   const isAllSelected = <span class="cstat-no" title="statement not covered" >selectedPortfolios.length === 0;</span>
 &nbsp;
   const handleAllClick = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
@@ -312,7 +336,7 @@ export default function <span class="fstat-no" title="function not covered" >Por
         &lt;/button&gt;
 &nbsp;
         {/* Individual portfolio buttons */}
-        {portfolios.map(<span class="fstat-no" title="function not covered" >(p</span>ortfolio) =&gt; {
+        {[...uniquePortfolios].sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >a.name.localeCompare(b.name))</span>.map(<span class="fstat-no" title="function not covered" >(p</span>ortfolio) =&gt; {
           const isSelected = <span class="cstat-no" title="statement not covered" >selectedPortfolios.includes(portfolio.name);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >          return (</span>
@@ -349,7 +373,7 @@ export default function <span class="fstat-no" title="function not covered" >Por
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-03T19:53:15.299Z
+                at 2026-01-07T20:49:35.944Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

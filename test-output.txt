@@ -1,0 +1,89 @@
+Reading PDF file: D:\Market\VanguardTransactions\Realized Summary _ Vanguard_2025.pdf
+Parsing PDF with new tab-separated table parser...
+
+=== PARSING RESULTS ===
+Account numbers found: [ '68411173', '83097193', '10743464', '16780581' ]
+Total lots parsed: 174
+
+=== FIRST 5 LOTS ===
+
+[Lot 1]
+  Account: 68411173
+  Symbol: DIA
+  Investment: SPDR DOW JONES INDUSTRIAL AVERAGE ETF
+  Date Sold: 
+  Date Acquired: 08/15/2023
+  Event: Sell
+  Cost Basis Method: First in, first out (FIFO)
+  Quantity: 3.0000
+  Total Cost: $1,063.95
+  Proceeds: $1,351.64
+  Short Term Gain: —
+  Long Term Gain: $287.69
+  Total Gain: $287.69
+
+[Lot 2]
+  Account: 68411173
+  Symbol: DIA
+  Investment: SPDR DOW JONES INDUSTRIAL AVERAGE ETF
+  Date Sold: 
+  Date Acquired: 08/28/2023
+  Event: Sell
+  Cost Basis Method: First in, first out (FIFO)
+  Quantity: 4.0000
+  Total Cost: $1,422.20
+  Proceeds: $1,802.19
+  Short Term Gain: —
+  Long Term Gain: $379.99
+  Total Gain: $379.99
+
+[Lot 3]
+  Account: 68411173
+  Symbol: DIA
+  Investment: SPDR DOW JONES INDUSTRIAL AVERAGE ETF
+  Date Sold: 
+  Date Acquired: 08/29/2023
+  Event: Sell
+  Cost Basis Method: First in, first out (FIFO)
+  Quantity: 8.0000
+  Total Cost: $2,839.04
+  Proceeds: $3,604.38
+  Short Term Gain: —
+  Long Term Gain: $765.34
+  Total Gain: $765.34
+
+[Lot 4]
+  Account: 68411173
+  Symbol: DIA
+  Investment: SPDR DOW JONES INDUSTRIAL AVERAGE ETF
+  Date Sold: 
+  Date Acquired: 02/08/2024
+  Event: Sell
+  Cost Basis Method: First in, first out (FIFO)
+  Quantity: 5.0000
+  Total Cost: $1,982.60
+  Proceeds: $2,252.74
+  Short Term Gain: —
+  Long Term Gain: —
+  Total Gain: $270.14
+
+[Lot 5]
+  Account: 68411173
+  Symbol: DIA
+  Investment: SPDR DOW JONES INDUSTRIAL AVERAGE ETF
+  Date Sold: 
+  Date Acquired: 04/11/2024
+  Event: Sell
+  Cost Basis Method: First in, first out (FIFO)
+  Quantity: 5.0000
+  Total Cost: $2,036.03
+  Proceeds: $2,252.74
+  Short Term Gain: —
+  Long Term Gain: —
+  Total Gain: $216.71
+
+=== CSV PREVIEW (first 3 lots) ===
+Account Number,Ticker Symbol,Investment Name,Date Acquired,Date Sold,Cost Basis Method,Event,Quantity,Total Cost,Proceeds,Short Term Capital Gain,Long Term Capital Gain,Total Capital Gain/Loss
+68411173,DIA,SPDR DOW JONES INDUSTRIAL AVERAGE ETF,08/15/2023,,First in, first out (FIFO),Sell,3.0000,$1,063.95,$1,351.64,—,$287.69,$287.69
+68411173,DIA,SPDR DOW JONES INDUSTRIAL AVERAGE ETF,08/28/2023,,First in, first out (FIFO),Sell,4.0000,$1,422.20,$1,802.19,—,$379.99,$379.99
+68411173,DIA,SPDR DOW JONES INDUSTRIAL AVERAGE ETF,08/29/2023,,First in, first out (FIFO),Sell,8.0000,$2,839.04,$3,604.38,—,$765.34,$765.34

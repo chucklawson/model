@@ -69,6 +69,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
     "aws-cdk-lib": "^2.204.0",
+    "baseline-browser-mapping": "^2.9.13",
     "constructs": "^10.4.2",
     "esbuild": "^0.25.11",
     "eslint": "^9.36.0",
