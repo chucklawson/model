@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Calculator, Sparkles, Home, TrendingDown } from 'lucide-react';
+import { Calculator, Sparkles, Home, TrendingDown, Building } from 'lucide-react';
 import PEGrowthCalculatorModal from '../../Components/PEGrowthCalculatorModal/PEGrowthCalculatorModal';
 import RuleOf72CalculatorModal from '../../Components/RuleOf72CalculatorModal/RuleOf72CalculatorModal';
 import MortgageCalculatorModal from '../../Components/MortgageCalculatorModal/MortgageCalculatorModal';
 import DrawdownCalculatorModal from '../../Components/DrawdownCalculatorModal/DrawdownCalculatorModal';
+import BankMetricsCalculatorModal from '../../Components/BankMetricsCalculatorModal/BankMetricsCalculatorModal';
 
 function Calculators() {
   const [showPEGrowthModal, setShowPEGrowthModal] = useState(false);
   const [showRuleOf72Modal, setShowRuleOf72Modal] = useState(false);
   const [showMortgageModal, setShowMortgageModal] = useState(false);
   const [showDrawdownModal, setShowDrawdownModal] = useState(false);
+  const [showBankMetricsModal, setShowBankMetricsModal] = useState(false);
 
   useEffect(() => {
     document.title = "Calculators";
@@ -171,6 +173,41 @@ function Calculators() {
           </button>
         </div>
 
+        {/* Bank Metrics Calculator Card */}
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border-2 border-transparent hover:border-orange-500">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-orange-100 p-3 rounded-lg">
+              <Building className="text-orange-600" size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800">Bank Metrics</h3>
+              <span className="text-xs text-orange-600 font-semibold">FINANCIAL ANALYSIS</span>
+            </div>
+          </div>
+
+          <p className="text-slate-600 mb-4 text-sm leading-relaxed">
+            Analyze key financial metrics for banking institutions including profitability,
+            efficiency, asset quality, and capital adequacy ratios.
+          </p>
+
+          <ul className="text-xs text-slate-500 mb-6 space-y-1">
+            <li>• 10 bank-specific metrics</li>
+            <li>• Financial portfolio tickers only</li>
+            <li>• Annual and quarterly data</li>
+            <li>• Industry-standard ratios</li>
+          </ul>
+
+          <button
+            onClick={() => setShowBankMetricsModal(true)}
+            className="w-full px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white
+                       rounded-lg font-bold hover:from-orange-700 hover:to-amber-700
+                       transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <Building size={20} />
+            Launch Calculator
+          </button>
+        </div>
+
       </div>
 
       {/* Modals */}
@@ -188,6 +225,10 @@ function Calculators() {
 
       {showDrawdownModal && (
         <DrawdownCalculatorModal onClose={() => setShowDrawdownModal(false)} />
+      )}
+
+      {showBankMetricsModal && (
+        <BankMetricsCalculatorModal onClose={() => setShowBankMetricsModal(false)} />
       )}
     </div>
   );
