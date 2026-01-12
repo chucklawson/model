@@ -50,6 +50,7 @@ interface MetricCardProps {
   description: string;
   historyData?: Array<{ date: string; value: number }>;
   trendDirection?: 'higher-is-better' | 'lower-is-better' | 'neutral';
+  sectorAverage?: number;
 }
 
 function MetricCard({
@@ -58,7 +59,8 @@ function MetricCard({
   format,
   description,
   historyData = [],
-  trendDirection = 'higher-is-better'
+  trendDirection = 'higher-is-better',
+  sectorAverage
 }: MetricCardProps) {
   const isAvailable = value !== 'N/A' && value !== undefined;
   const displayValue = !isAvailable
@@ -66,6 +68,36 @@ function MetricCard({
     : format === 'percentage'
       ? `${value.toFixed(2)}%`
       : value.toFixed(2);
+
+  // Sector comparison
+  const hasSectorData = isAvailable && sectorAverage !== undefined;
+  let comparisonText = '';
+  let comparisonColor = '';
+  let comparisonIcon = '';
+
+  if (hasSectorData && typeof value === 'number') {
+    const isAboveAverage = trendDirection === 'higher-is-better'
+      ? value > sectorAverage
+      : trendDirection === 'lower-is-better'
+        ? value < sectorAverage
+        : value === sectorAverage;
+
+    if (trendDirection === 'neutral') {
+      comparisonText = value > sectorAverage ? 'Above Average' : value < sectorAverage ? 'Below Average' : 'At Average';
+      comparisonColor = 'text-slate-600';
+      comparisonIcon = value > sectorAverage ? '↑' : value < sectorAverage ? '↓' : '→';
+    } else {
+      comparisonText = isAboveAverage ? 'Above Average' : 'Below Average';
+      comparisonColor = isAboveAverage ? 'text-green-600' : 'text-red-600';
+      comparisonIcon = isAboveAverage ? '↑' : '↓';
+    }
+  }
+
+  const sectorDisplayValue = sectorAverage !== undefined
+    ? format === 'percentage'
+      ? `${sectorAverage.toFixed(2)}%`
+      : sectorAverage.toFixed(2)
+    : '';
 
   // Determine trend color
   const hasHistory = historyData && historyData.length >= 2;
@@ -132,6 +164,11 @@ function MetricCard({
         <div className="bg-white border-2 border-slate-300 rounded-lg p-2 shadow-lg">
           <p className="text-xs font-bold text-slate-800">{data.date}</p>
           <p className="text-sm font-semibold text-slate-700">{formattedValue}</p>
+          {hasSectorData && (
+            <p className="text-xs text-slate-500 mt-1">
+              Sector: {sectorDisplayValue}
+            </p>
+          )}
         </div>
       );
     }
@@ -141,11 +178,24 @@ function MetricCard({
   return (
     <div className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <p className="text-sm font-bold text-slate-700 mb-1">{label}</p>
-      <p className={`text-3xl font-bold mb-2 ${
+      <p className={`text-3xl font-bold mb-1 ${
         isAvailable ? 'text-blue-600' : 'text-slate-400'
       }`}>
         {displayValue}
       </p>
+
+      {/* Sector Comparison */}
+      {hasSectorData && (
+        <div className="mb-2">
+          <p className="text-xs text-slate-500">
+            Sector Avg: {sectorDisplayValue}
+          </p>
+          <p className={`text-xs font-semibold ${comparisonColor} flex items-center gap-1`}>
+            <span>{comparisonIcon}</span>
+            <span>{comparisonText}</span>
+          </p>
+        </div>
+      )}
 
       {/* Mini Area Chart */}
       {hasHistory && (() => {
@@ -202,6 +252,20 @@ function MetricCard({
     </div>
   );
 }
+
+// Banking sector benchmark averages (based on US banking industry standards)
+const SECTOR_BENCHMARKS = {
+  roa: 1.05, // Return on Assets - typical for healthy banks
+  roe: 10.5, // Return on Equity
+  nim: 3.2, // Net Interest Margin
+  efficiencyRatio: 55.0, // Efficiency Ratio (lower is better)
+  netProfitMargin: 25.0, // Net Profit Margin
+  nplRatio: 0.8, // Non-Performing Loan Ratio (lower is better)
+  loanToAssets: 65.0, // Loan-to-Assets Ratio
+  currentRatio: 0.30, // Current Ratio
+  car: 13.0, // Capital Adequacy Ratio (Tier 1)
+  debtToEquity: 1.2, // Debt-to-Equity Ratio (lower is better)
+};
 
 export default function BankMetricsCalculatorModal({ onClose }: { onClose: () => void }) {
   const client = generateClient<Schema>();
@@ -661,6 +725,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Measures net income relative to total assets"
                     historyData={metrics.roaHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.roa}
                   />
                   <MetricCard
                     label="Return on Equity (ROE)"
@@ -669,6 +734,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Compares net income to shareholder equity"
                     historyData={metrics.roeHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.roe}
                   />
                   <MetricCard
                     label="Net Interest Margin (NIM)"
@@ -677,6 +743,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Interest income minus interest expense, as % of earning assets"
                     historyData={metrics.nimHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.nim}
                   />
                   <MetricCard
                     label="Efficiency Ratio"
@@ -685,6 +752,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Operating expenses as a percentage of revenue"
                     historyData={metrics.efficiencyRatioHistory}
                     trendDirection="lower-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.efficiencyRatio}
                   />
                   <MetricCard
                     label="Net Profit Margin"
@@ -693,6 +761,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Revenue remaining after all expenses and taxes"
                     historyData={metrics.netProfitMarginHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.netProfitMargin}
                   />
                 </div>
               </div>
@@ -711,6 +780,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Ratio of non-performing loans to total loans"
                     historyData={metrics.nplRatioHistory}
                     trendDirection="lower-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.nplRatio}
                   />
                   <MetricCard
                     label="Loan-to-Assets Ratio"
@@ -719,6 +789,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Proportion of assets tied up in loans"
                     historyData={metrics.loanToAssetsHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.loanToAssets}
                   />
                 </div>
               </div>
@@ -737,6 +808,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Ability to cover short-term liabilities with short-term assets"
                     historyData={metrics.currentRatioHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.currentRatio}
                   />
                   <MetricCard
                     label="Capital Adequacy Ratio (CAR)"
@@ -745,6 +817,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Capital relative to risk-weighted assets"
                     historyData={metrics.carHistory}
                     trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.car}
                   />
                   <MetricCard
                     label="Debt-to-Equity Ratio"
@@ -753,6 +826,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     description="Total debt compared to shareholder equity"
                     historyData={metrics.debtToEquityHistory}
                     trendDirection="lower-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.debtToEquity}
                   />
                 </div>
               </div>
