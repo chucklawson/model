@@ -164,30 +164,33 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
   const [availableTickers, setAvailableTickers] = useState<string[]>([]);
   const [companyName, setCompanyName] = useState<string>('');
 
-  // Fetch Financial portfolio tickers on mount
+  // Subscribe to real-time ticker updates and filter Financial portfolio
   useEffect(() => {
-    const fetchFinancialTickers = async () => {
-      try {
-        const { data: lots } = await client.models.TickerLot.list();
-
-        // Filter lots where portfolios array includes "Financial"
-        const financialLots = lots.filter(lot =>
-          lot.portfolios && lot.portfolios.includes('Financial')
-        );
+    const subscription = client.models.TickerLot.observeQuery().subscribe({
+      next: ({ items }) => {
+        // Filter lots where portfolios array includes "Financial" (case-insensitive, trimmed)
+        const financialLots = items.filter(lot => {
+          if (!lot.portfolios || !Array.isArray(lot.portfolios)) return false;
+          return lot.portfolios.some(p =>
+            p && typeof p === 'string' && p.trim().toLowerCase() === 'financial'
+          );
+        });
 
         // Extract unique ticker symbols
         const uniqueTickers = Array.from(
-          new Set(financialLots.map(lot => lot.ticker))
+          new Set(financialLots.map(lot => lot.ticker).filter(Boolean))
         ).sort();
 
         setAvailableTickers(uniqueTickers);
-      } catch (err) {
+      },
+      error: (err) => {
         console.error('Error fetching Financial tickers:', err);
         setError('Failed to load Financial portfolio tickers');
       }
-    };
+    });
 
-    fetchFinancialTickers();
+    // Cleanup subscription on unmount
+    return () => subscription.unsubscribe();
   }, []);
 
   const calculateEfficiencyRatio = (opex: number, revenue: number): number | undefined => {
