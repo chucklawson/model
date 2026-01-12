@@ -7,6 +7,7 @@ import { fetchFDICMetrics, hasFDICMapping } from '../../utils/fdicApiClient';
 import {
   AreaChart,
   Area,
+  Line,
   ResponsiveContainer,
   Tooltip
 } from 'recharts';
@@ -69,8 +70,13 @@ function MetricCard({
   // Determine trend color
   const hasHistory = historyData && historyData.length >= 2;
   let trendColor = '#3b82f6'; // default blue
+  let trendLineColor = '#3b82f6'; // trend line color
+
+  // Calculate linear regression for trend line
+  let trendLineData: Array<{ date: string; trend: number }> = [];
 
   if (hasHistory) {
+    // Simple first-to-last comparison for area fill color
     const firstValue = historyData[0].value;
     const lastValue = historyData[historyData.length - 1].value;
     const isImproving = trendDirection === 'higher-is-better'
@@ -80,6 +86,35 @@ function MetricCard({
         : true; // neutral
 
     trendColor = trendDirection === 'neutral' ? '#3b82f6' : (isImproving ? '#10b981' : '#ef4444');
+
+    // Calculate linear regression slope across all points
+    const n = historyData.length;
+    const sumX = (n * (n - 1)) / 2; // Sum of indices 0,1,2...n-1
+    const sumY = historyData.reduce((acc, point) => acc + point.value, 0);
+    const sumXY = historyData.reduce((acc, point, idx) => acc + idx * point.value, 0);
+    const sumX2 = (n * (n - 1) * (2 * n - 1)) / 6; // Sum of squares of indices
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    // Determine trend line color based on slope
+    const isTrendingUp = slope > 0;
+    const isTrendGood = trendDirection === 'higher-is-better'
+      ? isTrendingUp
+      : trendDirection === 'lower-is-better'
+        ? !isTrendingUp
+        : true; // neutral
+
+    // Darker green (#059669) for good trends, darker red (#dc2626) for bad trends
+    trendLineColor = trendDirection === 'neutral'
+      ? '#3b82f6'
+      : (isTrendGood ? '#059669' : '#dc2626');
+
+    // Generate trend line data points
+    trendLineData = historyData.map((point, idx) => ({
+      date: point.date,
+      trend: slope * idx + intercept
+    }));
   }
 
   // Create valid gradient ID by sanitizing label
@@ -113,32 +148,49 @@ function MetricCard({
       </p>
 
       {/* Mini Area Chart */}
-      {hasHistory && (
-        <div className="mt-3 mb-2">
-          <ResponsiveContainer width="100%" height={80}>
-            <AreaChart data={historyData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
-              <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={trendColor} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={trendColor} stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <Tooltip content={<CustomTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke={trendColor}
-                strokeWidth={2}
-                fill={`url(#${gradientId})`}
-                isAnimationActive={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-          <p className="text-xs text-slate-400 text-center mt-1">
-            Last {historyData.length} periods
-          </p>
-        </div>
-      )}
+      {hasHistory && (() => {
+        // Merge history data with trend line data
+        const chartData = historyData.map((point, idx) => ({
+          ...point,
+          trend: trendLineData[idx]?.trend
+        }));
+
+        return (
+          <div className="mt-3 mb-2">
+            <ResponsiveContainer width="100%" height={80}>
+              <AreaChart data={chartData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+                <defs>
+                  <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={trendColor} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={trendColor} stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke={trendColor}
+                  strokeWidth={2}
+                  fill={`url(#${gradientId})`}
+                  dot={{ fill: trendColor, r: 3 }}
+                  isAnimationActive={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="trend"
+                  stroke={trendLineColor}
+                  strokeWidth={2}
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+            <p className="text-xs text-slate-400 text-center mt-1">
+              Last {historyData.length} periods
+            </p>
+          </div>
+        );
+      })()}
 
       <p className="text-xs text-slate-500 leading-relaxed">{description}</p>
       {!isAvailable && (
@@ -665,7 +717,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     format="percentage"
                     description="Proportion of assets tied up in loans"
                     historyData={metrics.loanToAssetsHistory}
-                    trendDirection="neutral"
+                    trendDirection="higher-is-better"
                   />
                 </div>
               </div>

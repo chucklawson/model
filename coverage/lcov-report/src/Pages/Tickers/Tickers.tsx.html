@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/245</span>
+                <span class='fraction'>0/241</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/67</span>
+                <span class='fraction'>0/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/232</span>
+                <span class='fraction'>0/228</span>
             </div>
         
             
@@ -860,12 +860,7 @@
 <a name='L795'></a><a href='#L795'>795</a>
 <a name='L796'></a><a href='#L796'>796</a>
 <a name='L797'></a><a href='#L797'>797</a>
-<a name='L798'></a><a href='#L798'>798</a>
-<a name='L799'></a><a href='#L799'>799</a>
-<a name='L800'></a><a href='#L800'>800</a>
-<a name='L801'></a><a href='#L801'>801</a>
-<a name='L802'></a><a href='#L802'>802</a>
-<a name='L803'></a><a href='#L803'>803</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L798'></a><a href='#L798'>798</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1425,7 +1420,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1439,6 +1434,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1637,20 +1633,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1696,7 +1686,7 @@ import TickerDetailModal from '../../Components/TickerDetailModal';
 import NewTickerModal from '../../Components/NewTickerModal';
 import PortfolioManager from '../../Components/PortfolioManager';
 import ImportCSVModal from '../../Components/ImportCSVModal';
-import ImportVanguardCSVModal from '../../Components/ImportVanguardCSVModal';
+import VanguardTextImportModal from '../../Components/VanguardTextImportModal';
 import CustomRangePerformanceModal from '../../Components/CustomRangePerformanceModal/CustomRangePerformanceModal';
 import { useAfterHoursData } from '../../hooks/useAfterHoursData';
 import logger from '../../utils/logger';
@@ -1721,7 +1711,7 @@ interface LegacyLot {
   const [portfolios, setPortfolios<span class="cstat-no" title="statement not covered" >] = useState&lt;Portfolio[]&gt;([]);</span>
   const [showPortfolioManager, setShowPortfolioManager<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
   const [showImportModal, setShowImportModal<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
-  const [showVanguardImportModal, setShowVanguardImportModal<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
+  const [showVanguardTextModal, setShowVanguardTextModal<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
   const [showPerformanceModal, setShowPerformanceModal<span class="cstat-no" title="statement not covered" >] = useState(false);</span>
 &nbsp;
   // Portfolio filter state (persists to localStorage)
@@ -2226,13 +2216,14 @@ interface LegacyLot {
                   &lt;Upload size={16} /&gt;
                   Import CSV
                 &lt;/button&gt;
-                &lt;button
-                  onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etShowVanguardImportModal(true)}</span>
-                  className="bg-white bg-opacity-20 text-purple-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
+                {/* Vanguard tab temporarily hidden - code preserved for future use */}
+                {/* &lt;button
+                  onClick={() =&gt; setShowVanguardTextModal(true)}
+                  className="bg-white bg-opacity-20 text-purple-600 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 &gt;
                   &lt;TrendingUp size={16} /&gt;
-                  Import Vanguard
-                &lt;/button&gt;
+                  Vanguard
+                &lt;/button&gt; */}
                 &lt;button
                   onClick={handleExportTickers}
                   className="bg-white bg-opacity-20 text-green-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
@@ -2443,16 +2434,10 @@ interface LegacyLot {
         /&gt;
       )}
 &nbsp;
-      {/* Import Vanguard CSV Modal */}
-      {showVanguardImportModal &amp;&amp; (
-        &lt;ImportVanguardCSVModal
-          onClose={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etShowVanguardImportModal(false)}</span>
-          onImportComplete={<span class="fstat-no" title="function not covered" >async () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            await loadLots();</span>
-<span class="cstat-no" title="statement not covered" >            await loadTickers();</span>
-<span class="cstat-no" title="statement not covered" >            await loadPortfolios();</span>
-            // Don't close modal here - let user see results and click "Done"
-          }}
+      {/* Vanguard Text Import Modal */}
+      {showVanguardTextModal &amp;&amp; (
+        &lt;VanguardTextImportModal
+          onClose={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etShowVanguardTextModal(false)}</span>
         /&gt;
       )}
 &nbsp;
@@ -2476,7 +2461,7 @@ export default Tickers;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-07T20:49:35.944Z
+                at 2026-01-11T16:02:37.674Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

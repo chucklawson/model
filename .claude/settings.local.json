@@ -75,7 +75,11 @@
       "Bash(npx husky init)",
       "Bash(if exist \"node_modules\\\\.vite\" rd /s /q \"node_modules\\\\.vite\")",
       "Bash(aws dynamodb delete-item:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(xargs:*)",
+      "Bash(timeout 10 tail:*)",
+      "WebFetch(domain:banks.data.fdic.gov)",
+      "WebFetch(domain:api.fdic.gov)"
     ],
     "deny": [],
     "ask": []
