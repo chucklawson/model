@@ -180,6 +180,7 @@ function MetricCard({
                   dataKey="trend"
                   stroke={trendLineColor}
                   strokeWidth={2}
+                  strokeDasharray="5 5"
                   dot={false}
                   isAnimationActive={false}
                 />
