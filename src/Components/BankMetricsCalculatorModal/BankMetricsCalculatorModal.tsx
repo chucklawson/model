@@ -244,6 +244,14 @@ function MetricCard({
       })()}
 
       <p className="text-xs text-slate-500 leading-relaxed">{description}</p>
+      {/* Objective indicator */}
+      {trendDirection !== 'neutral' && (
+        <p className="text-xs font-semibold mt-2" style={{
+          color: trendDirection === 'higher-is-better' ? '#059669' : '#dc2626'
+        }}>
+          Objective: {trendDirection === 'higher-is-better' ? 'Rising ↑' : 'Decreasing ↓'}
+        </p>
+      )}
       {!isAvailable && (
         <p className="text-xs text-orange-600 mt-2 font-semibold">
           Data not available
