@@ -177,22 +177,15 @@ interface LegacyLot {
   const initializeDefaultPortfolio = async () => {
     try {
       const { data: portfolioList } = await client.models.Portfolio.list();
-      const hasAnyPortfolios = portfolioList.length > 0;
-
-      // Only create Default portfolio if NO portfolios exist at all
-      // If user deleted Default but has other portfolios, respect their choice
-      if (!hasAnyPortfolios) {
-        await client.models.Portfolio.create({
-          name: 'Default',
-          description: 'Default portfolio for existing lots',
-        });
-        // Refresh portfolio list after creating Default
-        const { data: refreshedList } = await client.models.Portfolio.list();
-        portfolioList.push(...refreshedList);
-      }
 
       // Get first available portfolio as fallback for migration
-      const fallbackPortfolioName = portfolioList.length > 0 ? portfolioList[0].name : 'Default';
+      // Don't create a Default portfolio - user should create portfolios as needed
+      if (portfolioList.length === 0) {
+        logger.info('No portfolios exist. User should create portfolios before adding tickers.');
+        return;
+      }
+
+      const fallbackPortfolioName = portfolioList[0].name;
 
       // Migrate existing lots to portfolios array format
       const { data: lots } = await client.models.TickerLot.list();
@@ -328,7 +321,7 @@ interface LegacyLot {
           shares: item.shares,
           costPerShare: item.costPerShare,
           purchaseDate: item.purchaseDate,
-          portfolios: (item.portfolios ?? ['Default']).filter((p: string | null): p is string => p !== null),
+          portfolios: (item.portfolios ?? []).filter((p: string | null): p is string => p !== null),
           calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
           isDividend: item.isDividend ?? false,
           baseYield: item.baseYield ?? 0,
