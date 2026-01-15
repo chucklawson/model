@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Building, X, TrendingUp, Shield, Droplet } from 'lucide-react';
+import { Building, X, TrendingUp, Shield, Droplet, Award, Star, CheckCircle, AlertCircle } from 'lucide-react';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '../../../amplify/data/resource';
 import { callFmpApi } from '../../utils/fmpApiClient';
@@ -29,6 +29,9 @@ interface BankMetricsData {
   currentRatio?: number;
   car?: number | 'N/A';
   debtToEquity?: number;
+  rotce?: number;
+  tbvps?: number;
+  cte1?: number | 'N/A';
 
   // Historical data (for charts)
   roaHistory?: Array<{ date: string; value: number }>;
@@ -41,6 +44,36 @@ interface BankMetricsData {
   debtToEquityHistory?: Array<{ date: string; value: number }>;
   nplRatioHistory?: Array<{ date: string; value: number }>;
   carHistory?: Array<{ date: string; value: number }>;
+  rotceHistory?: Array<{ date: string; value: number }>;
+  tbvpsHistory?: Array<{ date: string; value: number }>;
+  cte1History?: Array<{ date: string; value: number }>;
+}
+
+interface BankRecommendation {
+  // Overall scores
+  finalScore: number;                    // 0-100
+  stars: number;                         // 1-5
+  recommendation: 'Buy' | 'Hold' | 'Sell';
+  confidence: 'High' | 'Medium' | 'Low'; // Confidence in recommendation
+
+  // Component scores
+  safetyScore: number;                   // 0-25 points
+  profitabilityScore: number;            // 0-25 points
+  trendScore: number;                    // 0-50 points
+
+  // Performance metrics
+  metricsAboveAverage: number;
+  metricsBelowAverage: number;
+
+  // Insights
+  strengths: string[];                   // Top 3 performing metrics
+  concerns: string[];                    // Bottom 3 performing metrics
+
+  // Target price
+  targetPrice: number | null;            // Analyst consensus target
+  currentPrice: number;
+  upside: number;                        // Percentage upside/downside
+  targetSource: string;                  // Source of target (e.g., "Analyst Consensus")
 }
 
 interface MetricCardProps {
@@ -273,7 +306,135 @@ const SECTOR_BENCHMARKS = {
   currentRatio: 0.30, // Current Ratio
   car: 13.0, // Capital Adequacy Ratio (Tier 1)
   debtToEquity: 1.2, // Debt-to-Equity Ratio (lower is better)
+  rotce: 15.0, // Return on Tangible Common Equity
+  tbvps: 55.0, // Tangible Book Value Per Share
+  cte1: 12.0, // Common Equity Tier 1 Ratio
 };
+
+interface RecommendationSummaryCardProps {
+  recommendation: BankRecommendation;
+}
+
+function RecommendationSummaryCard({ recommendation }: RecommendationSummaryCardProps) {
+  const { finalScore, stars, recommendation: rec, confidence, safetyScore, profitabilityScore,
+          trendScore, metricsAboveAverage, metricsBelowAverage, strengths, concerns} = recommendation;
+
+  // Recommendation styling
+  const recStyles = {
+    'Buy': { bg: 'bg-green-600', text: 'text-white', border: 'border-green-400' },
+    'Hold': { bg: 'bg-yellow-600', text: 'text-white', border: 'border-yellow-400' },
+    'Sell': { bg: 'bg-red-600', text: 'text-white', border: 'border-red-400' }
+  };
+
+  const style = recStyles[rec];
+
+  // Star display
+  const renderStars = () => {
+    return (
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map(i => (
+          <Star
+            key={i}
+            size={32}
+            fill={i <= stars ? '#f59e0b' : 'none'}
+            color={i <= stars ? '#f59e0b' : '#d1d5db'}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-6 rounded-xl border-3 border-orange-400 shadow-lg mb-6">
+
+      {/* Top Row: Stars + Recommendation Badge + Score */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          {renderStars()}
+          <div>
+            <div className={`px-5 py-2 ${style.bg} ${style.text} rounded-full font-bold text-xl shadow-md`}>
+              {rec.toUpperCase()}
+            </div>
+            <p className={`text-xs mt-1 text-center font-semibold ${
+              confidence === 'High' ? 'text-green-700' : confidence === 'Medium' ? 'text-yellow-700' : 'text-red-700'
+            }`}>
+              {confidence} Confidence
+            </p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-sm text-slate-600 font-semibold">Overall Score</p>
+          <p className="text-4xl font-bold text-orange-600">{finalScore}<span className="text-2xl text-slate-500">/100</span></p>
+        </div>
+      </div>
+
+      {/* Score Breakdown */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="bg-white p-3 rounded-lg shadow-sm">
+          <p className="text-xs text-slate-600 mb-1">Safety</p>
+          <p className="text-xl font-bold text-blue-600">{safetyScore}<span className="text-sm text-slate-500">/25</span></p>
+          <p className="text-xs text-slate-500">CAR, CET1, NPL, D/E</p>
+        </div>
+        <div className="bg-white p-3 rounded-lg shadow-sm">
+          <p className="text-xs text-slate-600 mb-1">Profitability</p>
+          <p className="text-xl font-bold text-green-600">{profitabilityScore}<span className="text-sm text-slate-500">/25</span></p>
+          <p className="text-xs text-slate-500">ROA, ROE, ROTCE, NIM</p>
+        </div>
+        <div className="bg-white p-3 rounded-lg shadow-sm">
+          <p className="text-xs text-slate-600 mb-1">Trend Momentum</p>
+          <p className="text-xl font-bold text-purple-600">{trendScore}<span className="text-sm text-slate-500">/50</span></p>
+          <p className="text-xs text-slate-500">Improving trends</p>
+        </div>
+      </div>
+
+      {/* Metrics Summary */}
+      <div className="bg-white p-3 rounded-lg shadow-sm mb-4">
+        <p className="text-sm font-semibold text-slate-700 mb-2">Performance vs Sector</p>
+        <div className="flex items-center gap-2">
+          {metricsAboveAverage >= metricsBelowAverage ? (
+            <TrendingUp size={20} className="text-green-600" />
+          ) : (
+            <TrendingUp size={20} className="text-red-600 rotate-180" />
+          )}
+          <p className="text-sm text-slate-700">
+            <span className={`font-bold ${metricsAboveAverage >= metricsBelowAverage ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsAboveAverage} of {metricsAboveAverage + metricsBelowAverage}
+            </span> metrics above sector average
+          </p>
+        </div>
+      </div>
+
+      {/* Strengths and Concerns */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {strengths.length > 0 && (
+          <div>
+            <p className="text-xs font-bold text-green-700 mb-2 flex items-center gap-1">
+              <CheckCircle size={16} /> KEY STRENGTHS
+            </p>
+            <ul className="text-xs text-slate-700 space-y-1">
+              {strengths.map((s, i) => (
+                <li key={i}>• {s}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {concerns.length > 0 && (
+          <div>
+            <p className="text-xs font-bold text-red-700 mb-2 flex items-center gap-1">
+              <AlertCircle size={16} /> AREAS OF CONCERN
+            </p>
+            <ul className="text-xs text-slate-700 space-y-1">
+              {concerns.map((c, i) => (
+                <li key={i}>• {c}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
 
 export default function BankMetricsCalculatorModal({ onClose }: { onClose: () => void }) {
   const client = generateClient<Schema>();
@@ -288,6 +449,7 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
   const [error, setError] = useState<string | null>(null);
   const [availableTickers, setAvailableTickers] = useState<string[]>([]);
   const [companyName, setCompanyName] = useState<string>('');
+  const [recommendation, setRecommendation] = useState<BankRecommendation | null>(null);
 
   // Subscribe to real-time ticker updates and filter Financial portfolio
   useEffect(() => {
@@ -376,11 +538,322 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
     return (netIncome / revenue) * 100;
   };
 
+  const calculateROTCE = (
+    netIncome: number,
+    totalEquity: number,
+    goodwill: number,
+    intangibleAssets: number,
+    preferredStock: number
+  ): number | undefined => {
+    // ROTCE = Net Income / Tangible Common Equity × 100
+    // Tangible Common Equity = Total Equity - Goodwill - Intangible Assets - Preferred Stock
+    if (!netIncome || !totalEquity || totalEquity <= 0) return undefined;
+
+    const tangibleCommonEquity = totalEquity - (goodwill || 0) - (intangibleAssets || 0) - (preferredStock || 0);
+    if (tangibleCommonEquity <= 0) return undefined;
+
+    return (netIncome / tangibleCommonEquity) * 100;
+  };
+
+  const calculateTBVPS = (
+    totalEquity: number,
+    goodwill: number,
+    intangibleAssets: number,
+    preferredStock: number,
+    commonShares: number
+  ): number | undefined => {
+    // TBVPS = Tangible Book Value / Common Shares Outstanding
+    // Tangible Book Value = Total Equity - Goodwill - Intangible Assets - Preferred Stock
+    if (!totalEquity || !commonShares || commonShares <= 0) return undefined;
+
+    const tangibleBookValue = totalEquity - (goodwill || 0) - (intangibleAssets || 0) - (preferredStock || 0);
+
+    return tangibleBookValue / commonShares;
+  };
+
+  const scoreMetric = (
+    value: number | 'N/A' | undefined,
+    benchmark: number,
+    trendDirection: 'higher-is-better' | 'lower-is-better',
+    historyData?: Array<{ date: string; value: number }>
+  ): { baseScore: number; trendMultiplier: number; trend: 'improving' | 'declining' | 'neutral' } => {
+    // Handle N/A or missing data
+    if (value === 'N/A' || value === undefined) {
+      return { baseScore: 5, trendMultiplier: 1.0, trend: 'neutral' };
+    }
+
+    // Calculate percentage difference from benchmark
+    const percentDiff = ((value - benchmark) / benchmark) * 100;
+
+    // Determine if "better" based on trend direction
+    const effectiveDiff = trendDirection === 'lower-is-better' ? -percentDiff : percentDiff;
+
+    // Score 0-10 based on performance vs benchmark
+    let baseScore: number;
+    if (effectiveDiff > 20) baseScore = 10;
+    else if (effectiveDiff > 10) baseScore = 8;
+    else if (effectiveDiff > 0) baseScore = 6;
+    else if (effectiveDiff > -10) baseScore = 4;
+    else if (effectiveDiff > -20) baseScore = 2;
+    else baseScore = 0;
+
+    // Calculate trend multiplier from historical data
+    let trendMultiplier = 1.0;
+    let trend: 'improving' | 'declining' | 'neutral' = 'neutral';
+
+    if (historyData && historyData.length >= 3) {
+      // Linear regression slope (reuse logic from MetricCard)
+      const n = historyData.length;
+      const sumX = (n * (n - 1)) / 2;
+      const sumY = historyData.reduce((acc, point) => acc + point.value, 0);
+      const sumXY = historyData.reduce((acc, point, idx) => acc + idx * point.value, 0);
+      const sumX2 = (n * (n - 1) * (2 * n - 1)) / 6;
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+
+      // Determine if trend is improving
+      const isImproving = (trendDirection === 'higher-is-better' && slope > 0) ||
+                         (trendDirection === 'lower-is-better' && slope < 0);
+
+      if (isImproving && Math.abs(slope) > 0.01) {
+        trendMultiplier = 1.3; // 30% bonus for improving trend
+        trend = 'improving';
+      } else if (!isImproving && Math.abs(slope) > 0.01) {
+        trendMultiplier = 0.7; // 30% penalty for declining trend
+        trend = 'declining';
+      }
+    }
+
+    return { baseScore, trendMultiplier, trend };
+  };
+
+  const calculateRecommendation = (
+    metrics: BankMetricsData,
+    currentPrice: number
+  ): BankRecommendation => {
+    // === SAFETY METRICS (25% of total score) ===
+    const safetyMetrics = [
+      {
+        name: 'CAR',
+        value: metrics.car,
+        benchmark: SECTOR_BENCHMARKS.car,
+        direction: 'higher-is-better' as const,
+        history: metrics.carHistory,
+        weight: 6.25 // 25% / 4 metrics
+      },
+      {
+        name: 'CET1',
+        value: metrics.cte1,
+        benchmark: SECTOR_BENCHMARKS.cte1,
+        direction: 'higher-is-better' as const,
+        history: metrics.cte1History,
+        weight: 6.25
+      },
+      {
+        name: 'NPL Ratio',
+        value: metrics.nplRatio,
+        benchmark: SECTOR_BENCHMARKS.nplRatio,
+        direction: 'lower-is-better' as const,
+        history: metrics.nplRatioHistory,
+        weight: 6.25
+      },
+      {
+        name: 'Debt-to-Equity',
+        value: metrics.debtToEquity,
+        benchmark: SECTOR_BENCHMARKS.debtToEquity,
+        direction: 'lower-is-better' as const,
+        history: metrics.debtToEquityHistory,
+        weight: 6.25
+      }
+    ];
+
+    // === PROFITABILITY METRICS (25% of total score) ===
+    const profitabilityMetrics = [
+      {
+        name: 'ROA',
+        value: metrics.roa,
+        benchmark: SECTOR_BENCHMARKS.roa,
+        direction: 'higher-is-better' as const,
+        history: metrics.roaHistory,
+        weight: 5.0 // 25% / 5 metrics
+      },
+      {
+        name: 'ROE',
+        value: metrics.roe,
+        benchmark: SECTOR_BENCHMARKS.roe,
+        direction: 'higher-is-better' as const,
+        history: metrics.roeHistory,
+        weight: 5.0
+      },
+      {
+        name: 'ROTCE',
+        value: metrics.rotce,
+        benchmark: SECTOR_BENCHMARKS.rotce,
+        direction: 'higher-is-better' as const,
+        history: metrics.rotceHistory,
+        weight: 5.0
+      },
+      {
+        name: 'NIM',
+        value: metrics.nim,
+        benchmark: SECTOR_BENCHMARKS.nim,
+        direction: 'higher-is-better' as const,
+        history: metrics.nimHistory,
+        weight: 5.0
+      },
+      {
+        name: 'Net Profit Margin',
+        value: metrics.netProfitMargin,
+        benchmark: SECTOR_BENCHMARKS.netProfitMargin,
+        direction: 'higher-is-better' as const,
+        history: metrics.netProfitMarginHistory,
+        weight: 5.0
+      }
+    ];
+
+    // === CALCULATE SCORES ===
+    let safetyScore = 0;
+    let profitabilityScore = 0;
+    let aboveAvgCount = 0;
+    let belowAvgCount = 0;
+
+    const allMetricScores: Array<{ name: string; score: number; trend: string; value: any }> = [];
+
+    // Score safety metrics
+    for (const metric of safetyMetrics) {
+      const result = scoreMetric(metric.value, metric.benchmark, metric.direction, metric.history);
+      const weightedScore = (result.baseScore / 10) * metric.weight;
+      safetyScore += weightedScore;
+
+      allMetricScores.push({
+        name: metric.name,
+        score: result.baseScore,
+        trend: result.trend,
+        value: metric.value
+      });
+
+      // Count metrics above/below average
+      if (metric.value !== 'N/A' && metric.value !== undefined) {
+        const isAbove = metric.direction === 'higher-is-better'
+          ? metric.value > metric.benchmark
+          : metric.value < metric.benchmark;
+        if (isAbove) aboveAvgCount++;
+        else belowAvgCount++;
+      }
+    }
+
+    // Score profitability metrics
+    for (const metric of profitabilityMetrics) {
+      const result = scoreMetric(metric.value, metric.benchmark, metric.direction, metric.history);
+      const weightedScore = (result.baseScore / 10) * metric.weight;
+      profitabilityScore += weightedScore;
+
+      allMetricScores.push({
+        name: metric.name,
+        score: result.baseScore,
+        trend: result.trend,
+        value: metric.value
+      });
+
+      // Count metrics above/below average
+      if (metric.value !== 'N/A' && metric.value !== undefined) {
+        const isAbove = metric.direction === 'higher-is-better'
+          ? metric.value > metric.benchmark
+          : metric.value < metric.benchmark;
+        if (isAbove) aboveAvgCount++;
+        else belowAvgCount++;
+      }
+    }
+
+    // === TREND MOMENTUM SCORE (50% of total) ===
+    // Average trend multiplier across all metrics with history
+    const metricsWithTrend = [...safetyMetrics, ...profitabilityMetrics].filter(m => m.history && m.history.length >= 3);
+    let avgTrendMultiplier = 1.0;
+
+    if (metricsWithTrend.length > 0) {
+      const trendSum = metricsWithTrend.reduce((sum, metric) => {
+        const result = scoreMetric(metric.value, metric.benchmark, metric.direction, metric.history);
+        return sum + result.trendMultiplier;
+      }, 0);
+      avgTrendMultiplier = trendSum / metricsWithTrend.length;
+    }
+
+    // Convert trend multiplier to 0-50 point score
+    // 1.3 (strong improving) = 50 points
+    // 1.0 (neutral) = 25 points
+    // 0.7 (declining) = 0 points
+    const trendScore = ((avgTrendMultiplier - 0.7) / 0.6) * 50;
+
+    // === FINAL SCORE (0-100) ===
+    const finalScore = Math.min(100, Math.max(0, safetyScore + profitabilityScore + trendScore));
+
+    // === DETERMINE STARS AND RECOMMENDATION ===
+    let stars: number;
+    let recommendation: 'Buy' | 'Hold' | 'Sell';
+
+    if (finalScore >= 70) {
+      stars = finalScore >= 85 ? 5 : 4;
+      recommendation = 'Buy';
+    } else if (finalScore >= 45) {
+      stars = 3;
+      recommendation = 'Hold';
+    } else {
+      stars = finalScore >= 30 ? 2 : 1;
+      recommendation = 'Sell';
+    }
+
+    // === IDENTIFY STRENGTHS AND CONCERNS ===
+    const sortedMetrics = [...allMetricScores].sort((a, b) => b.score - a.score);
+    const strengths = sortedMetrics.slice(0, 3)
+      .filter(m => m.score >= 6 && m.value !== 'N/A')
+      .map(m => {
+        const trendIcon = m.trend === 'improving' ? ' ↑' : m.trend === 'declining' ? ' ↓' : '';
+        return `${m.name}${trendIcon}`;
+      });
+
+    const concerns = sortedMetrics.slice(-3)
+      .reverse()
+      .filter(m => m.score < 6 && m.value !== 'N/A')
+      .map(m => {
+        const trendIcon = m.trend === 'improving' ? ' ↑' : m.trend === 'declining' ? ' ↓' : '';
+        return `${m.name}${trendIcon}`;
+      });
+
+    // === DETERMINE CONFIDENCE LEVEL ===
+    let confidence: 'High' | 'Medium' | 'Low';
+    if (finalScore >= 70) confidence = 'High';
+    else if (finalScore >= 50) confidence = 'Medium';
+    else confidence = 'Low';
+
+    // Target price removed - not displayed in UI
+    const targetPrice = null;
+    const targetSource = 'Not Displayed';
+    const upside = 0;
+
+    return {
+      finalScore: Math.round(finalScore),
+      stars,
+      recommendation,
+      confidence,
+      safetyScore: Math.round(safetyScore),
+      profitabilityScore: Math.round(profitabilityScore),
+      trendScore: Math.round(trendScore),
+      metricsAboveAverage: aboveAvgCount,
+      metricsBelowAverage: belowAvgCount,
+      strengths: strengths.slice(0, 3),
+      concerns: concerns.slice(0, 3),
+      targetPrice,
+      currentPrice,
+      upside: Math.round(upside * 10) / 10, // Round to 1 decimal
+      targetSource
+    };
+  };
+
   const handleCalculate = async () => {
     setError(null);
     setLoading(true);
     setMetrics(null);
     setCompanyName('');
+    setRecommendation(null);
 
     try {
       // Validate ticker is from Financial portfolio
@@ -460,6 +933,26 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
         latestIncome?.netIncome,
         latestIncome?.revenue
       );
+
+      // Calculate Club Metrics
+      const rotce = calculateROTCE(
+        latestIncome?.netIncome,
+        latestBalance?.totalStockholdersEquity,
+        latestBalance?.goodwill,
+        latestBalance?.intangibleAssets,
+        latestBalance?.preferredStock
+      );
+
+      const tbvps = calculateTBVPS(
+        latestBalance?.totalStockholdersEquity,
+        latestBalance?.goodwill,
+        latestBalance?.intangibleAssets,
+        latestBalance?.preferredStock,
+        latestBalance?.commonStock || quote?.sharesOutstanding
+      );
+
+      // CTE1 from FDIC data (Common Equity Tier 1 Ratio)
+      const cte1 = fdicData.commonEquityTier1Ratio ?? 'N/A';
 
       // Build historical data for charts
       const roaHistory = keyMetrics
@@ -552,6 +1045,39 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
         .filter((item): item is { date: string; value: number } => item !== null)
         .reverse();
 
+      // Club Metrics History
+      const rotceHistory = incomeStatements
+        .map((income, idx) => {
+          const date = income?.date || balanceSheets[idx]?.date;
+          const value = calculateROTCE(
+            income?.netIncome,
+            balanceSheets[idx]?.totalStockholdersEquity,
+            balanceSheets[idx]?.goodwill,
+            balanceSheets[idx]?.intangibleAssets,
+            balanceSheets[idx]?.preferredStock
+          );
+          return date && value !== undefined ? { date, value } : null;
+        })
+        .filter((item): item is { date: string; value: number } => item !== null)
+        .reverse();
+
+      const tbvpsHistory = balanceSheets
+        .map((balance) => {
+          const date = balance?.date;
+          const value = calculateTBVPS(
+            balance?.totalStockholdersEquity,
+            balance?.goodwill,
+            balance?.intangibleAssets,
+            balance?.preferredStock,
+            balance?.commonStock || quote?.sharesOutstanding
+          );
+          return date && value !== undefined ? { date, value } : null;
+        })
+        .filter((item): item is { date: string; value: number } => item !== null)
+        .reverse();
+
+      const cte1History = fdicData.cte1History;
+
       // Build metrics object
       const calculatedMetrics: BankMetricsData = {
         // Current values
@@ -565,6 +1091,9 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
         loanToAssets,
         nplRatio: fdicData.nplRatio ?? 'N/A',
         car: fdicData.capitalAdequacyRatio ?? fdicData.tier1CapitalRatio ?? 'N/A',
+        rotce,
+        tbvps,
+        cte1,
 
         // Historical data for charts
         roaHistory,
@@ -576,10 +1105,18 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
         currentRatioHistory,
         debtToEquityHistory,
         nplRatioHistory: fdicData.nplRatioHistory,
-        carHistory: fdicData.carHistory
+        carHistory: fdicData.carHistory,
+        rotceHistory,
+        tbvpsHistory,
+        cte1History
       };
 
       setMetrics(calculatedMetrics);
+
+      // Calculate recommendation
+      const currentPrice = quote?.price || 0;
+      const bankRecommendation = calculateRecommendation(calculatedMetrics, currentPrice);
+      setRecommendation(bankRecommendation);
     } catch (err) {
       console.error('Error calculating bank metrics:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch bank metrics. Please try again.');
@@ -719,6 +1256,11 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                 </div>
               )}
 
+              {/* Recommendation Summary Card */}
+              {recommendation && (
+                <RecommendationSummaryCard recommendation={recommendation} />
+              )}
+
               {/* Section 1: Profitability & Efficiency */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-300">
                 <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -835,6 +1377,43 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
                     historyData={metrics.debtToEquityHistory}
                     trendDirection="lower-is-better"
                     sectorAverage={SECTOR_BENCHMARKS.debtToEquity}
+                  />
+                </div>
+              </div>
+
+              {/* Section 4: Club Metrics */}
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-300">
+                <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <Award size={24} className="text-amber-600" />
+                  Club Metrics
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <MetricCard
+                    label="Return on Tangible Common Equity (ROTCE)"
+                    value={metrics.rotce}
+                    format="percentage"
+                    description="Net income relative to tangible common equity"
+                    historyData={metrics.rotceHistory}
+                    trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.rotce}
+                  />
+                  <MetricCard
+                    label="Tangible Book Value Per Share (TBVPS)"
+                    value={metrics.tbvps}
+                    format="ratio"
+                    description="Tangible book value divided by common shares outstanding"
+                    historyData={metrics.tbvpsHistory}
+                    trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.tbvps}
+                  />
+                  <MetricCard
+                    label="Common Equity Tier 1 Ratio (CET1)"
+                    value={metrics.cte1}
+                    format="percentage"
+                    description="Common equity tier 1 capital relative to risk-weighted assets"
+                    historyData={metrics.cte1History}
+                    trendDirection="higher-is-better"
+                    sectorAverage={SECTOR_BENCHMARKS.cte1}
                   />
                 </div>
               </div>

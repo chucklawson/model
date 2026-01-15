@@ -38,11 +38,13 @@ export interface FDICMetrics {
   nplRatio?: number | 'N/A';
   capitalAdequacyRatio?: number | 'N/A';
   tier1CapitalRatio?: number | 'N/A';
+  commonEquityTier1Ratio?: number | 'N/A';
   institutionName?: string;
   cert?: number;
   reportDate?: string;
   nplRatioHistory?: Array<{ date: string; value: number }>;
   carHistory?: Array<{ date: string; value: number }>;
+  cte1History?: Array<{ date: string; value: number }>;
 }
 
 /**
@@ -58,7 +60,8 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
       return {
         nplRatio: 'N/A',
         capitalAdequacyRatio: 'N/A',
-        tier1CapitalRatio: 'N/A'
+        tier1CapitalRatio: 'N/A',
+        commonEquityTier1Ratio: 'N/A'
       };
     }
 
@@ -73,7 +76,8 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
       return {
         nplRatio: 'N/A',
         capitalAdequacyRatio: 'N/A',
-        tier1CapitalRatio: 'N/A'
+        tier1CapitalRatio: 'N/A',
+        commonEquityTier1Ratio: 'N/A'
       };
     }
 
@@ -83,7 +87,8 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
       return {
         nplRatio: 'N/A',
         capitalAdequacyRatio: 'N/A',
-        tier1CapitalRatio: 'N/A'
+        tier1CapitalRatio: 'N/A',
+        commonEquityTier1Ratio: 'N/A'
       };
     }
 
@@ -92,9 +97,12 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
 
     // Fetch financial data for the institution (last 10 periods for historical charts)
     // NPL ratio fields (looking for percentage versions with AAJ, AJR, R suffixes)
-    // Capital ratio fields: RBC1AAJ (Tier 1 leverage), RBCRWAJ (Total risk-based capital)
+    // Capital ratio fields: RBC1AAJ (Tier 1 leverage), RBCRWAJ (Total risk-based capital), RBCT1AAJ (Tier 1 risk-based)
+    // CET1 components: Multiple possible field names
+    //   - EQCS, RBCCET1 (Common Equity Tier 1 Capital)
+    //   - RWAJX, RWAAJ, A223, RWAJ (Risk-Weighted Assets - trying multiple field names)
     // Request ratio/percentage versions of fields
-    const financialUrl = `https://banks.data.fdic.gov/api/financials?filters=CERT:${cert}&fields=CERT,REPDTE,NTLNLSR,NCLNLSR,P9ASSETR,NTLNLSQ,RBC1AAJ,RBCRWAJ,RBCT1AAJ&sort_by=REPDTE&sort_order=DESC&limit=10&offset=0&format=json&download=false&filename=data_file`;
+    const financialUrl = `https://banks.data.fdic.gov/api/financials?filters=CERT:${cert}&fields=CERT,REPDTE,NTLNLSR,NCLNLSR,P9ASSETR,NTLNLSQ,RBC1AAJ,RBCRWAJ,RBCT1AAJ,EQCS,RBCCET1,RWAJX,RWAAJ,A223,RWAJ&sort_by=REPDTE&sort_order=DESC&limit=10&offset=0&format=json&download=false&filename=data_file`;
 
     const financialResponse = await fetch(financialUrl);
 
@@ -142,10 +150,42 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
       return undefined;
     };
 
+    // Helper function to calculate CET1 (Common Equity Tier 1 Ratio) from components
+    const extractCET1 = (metrics: any): number | undefined => {
+      // Try to calculate from components: CET1 Ratio = Common Equity Tier 1 Capital / Risk-Weighted Assets × 100
+
+      // Try to get Common Equity Tier 1 Capital from multiple field names
+      let cet1Capital: number | undefined;
+      if (metrics.EQCS) cet1Capital = parseFloat(metrics.EQCS);
+      else if (metrics.RBCCET1) cet1Capital = parseFloat(metrics.RBCCET1);
+
+      // Try to get Risk-Weighted Assets from multiple field names
+      let riskWeightedAssets: number | undefined;
+      if (metrics.RWAJX) riskWeightedAssets = parseFloat(metrics.RWAJX);
+      else if (metrics.RWAAJ) riskWeightedAssets = parseFloat(metrics.RWAAJ);
+      else if (metrics.RWAJ) riskWeightedAssets = parseFloat(metrics.RWAJ);
+      else if (metrics.A223) riskWeightedAssets = parseFloat(metrics.A223);
+
+      // Calculate CET1 Ratio = Common Equity Tier 1 Capital / Risk-Weighted Assets × 100
+      if (cet1Capital !== undefined && riskWeightedAssets !== undefined && riskWeightedAssets > 0) {
+        const ratio = (cet1Capital / riskWeightedAssets) * 100;
+        if (!isNaN(ratio)) return ratio;
+      }
+
+      // Fallback: Try Tier 1 Risk-Based Capital Ratio (similar to CET1)
+      if (metrics.RBCT1AAJ) {
+        const value = parseFloat(metrics.RBCT1AAJ);
+        if (!isNaN(value)) return value;
+      }
+
+      return undefined;
+    };
+
     // Extract current values
     const nplRatio = extractNPL(latestMetrics);
     const tier1Ratio = latestMetrics.RBC1AAJ ? parseFloat(latestMetrics.RBC1AAJ) : undefined;
     const totalCapitalRatio = latestMetrics.RBCRWAJ ? parseFloat(latestMetrics.RBCRWAJ) : undefined;
+    const cet1Ratio = extractCET1(latestMetrics);
 
     // Build historical data arrays (FDIC returns newest first, we reverse to oldest->newest)
     const nplRatioHistory = financialData.data
@@ -166,15 +206,26 @@ export async function fetchFDICMetrics(ticker: string): Promise<FDICMetrics> {
       .filter((item: any): item is { date: string; value: number } => item !== null)
       .reverse();
 
+    const cte1History = financialData.data
+      .map((record: any) => {
+        const date = record.data.REPDTE;
+        const value = extractCET1(record.data);
+        return date && value !== undefined ? { date, value } : null;
+      })
+      .filter((item: any): item is { date: string; value: number } => item !== null)
+      .reverse();
+
     return {
       nplRatio: nplRatio !== undefined ? nplRatio : 'N/A',
       tier1CapitalRatio: tier1Ratio !== undefined ? tier1Ratio : 'N/A',
       capitalAdequacyRatio: totalCapitalRatio !== undefined ? totalCapitalRatio : 'N/A',
+      commonEquityTier1Ratio: cet1Ratio !== undefined ? cet1Ratio : 'N/A',
       institutionName: institution.data.NAME,
       cert,
       reportDate: latestMetrics.REPDTE,
       nplRatioHistory,
-      carHistory
+      carHistory,
+      cte1History
     };
 
   } catch (error) {
