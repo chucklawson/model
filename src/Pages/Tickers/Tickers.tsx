@@ -178,6 +178,24 @@ interface LegacyLot {
     try {
       const { data: portfolioList } = await client.models.Portfolio.list();
 
+      // Delete any empty "Default" portfolios (legacy cleanup)
+      const defaultPortfolio = portfolioList.find(p => p.name === 'Default');
+      if (defaultPortfolio) {
+        const { data: lots } = await client.models.TickerLot.list();
+        const lotsInDefault = lots.filter(lot =>
+          lot.portfolios && lot.portfolios.includes('Default')
+        );
+
+        // If Default portfolio is empty and there are other portfolios, delete it
+        if (lotsInDefault.length === 0 && portfolioList.length > 1) {
+          await client.models.Portfolio.delete({ id: defaultPortfolio.id });
+          logger.info('Deleted empty Default portfolio');
+          // Remove from local list
+          const index = portfolioList.indexOf(defaultPortfolio);
+          if (index > -1) portfolioList.splice(index, 1);
+        }
+      }
+
       // Get first available portfolio as fallback for migration
       // Don't create a Default portfolio - user should create portfolios as needed
       if (portfolioList.length === 0) {
