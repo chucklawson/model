@@ -868,15 +868,15 @@ export default function BankMetricsCalculatorModal({ onClose }: { onClose: () =>
         callFmpApi({ endpoint: `/api/v3/quote/${formData.ticker}` }),
         callFmpApi({
           endpoint: `/api/v3/key-metrics/${formData.ticker}`,
-          queryParams: { period: formData.period, limit: 10 }
+          queryParams: { period: formData.period, limit: '10' }
         }),
         callFmpApi({
           endpoint: `/api/v3/income-statement/${formData.ticker}`,
-          queryParams: { period: formData.period, limit: 10 }
+          queryParams: { period: formData.period, limit: '10' }
         }),
         callFmpApi({
           endpoint: `/api/v3/balance-sheet-statement/${formData.ticker}`,
-          queryParams: { period: formData.period, limit: 10 }
+          queryParams: { period: formData.period, limit: '10' }
         }),
         // Fetch FDIC regulatory data (US banks only)
         fetchFDICMetrics(formData.ticker)

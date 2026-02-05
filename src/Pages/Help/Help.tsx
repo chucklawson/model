@@ -7,9 +7,20 @@ import MarkdownRenderer from './MarkdownRenderer';
 // Import markdown files as raw text
 import overviewMd from '../../../docs/README.md?raw';
 import quickStartMd from '../../../docs/getting-started/quick-start-guide.md?raw';
+import firstTimeSetupMd from '../../../docs/getting-started/first-time-setup.md?raw';
+import portfolioManagementMd from '../../../docs/features/portfolio-management.md?raw';
+import researchToolsMd from '../../../docs/features/research-tools.md?raw';
+import calculatorsMd from '../../../docs/features/calculators.md?raw';
+import keyMetricsMd from '../../../docs/features/key-metrics.md?raw';
+import flexiblePortfolioMd from '../../../docs/features/flexible-portfolio.md?raw';
+import historicalDividendsMd from '../../../docs/features/historical-dividends.md?raw';
 import apiSetupMd from '../../../docs/guides/api-setup.md?raw';
 import csvImportMd from '../../../docs/guides/csv-import.md?raw';
-import portfolioManagementMd from '../../../docs/features/portfolio-management.md?raw';
+import portfolioOrganizationMd from '../../../docs/guides/portfolio-management.md?raw';
+import exportDataMd from '../../../docs/guides/export-data.md?raw';
+import csvFormatMd from '../../../docs/reference/csv-format.md?raw';
+import troubleshootingMd from '../../../docs/reference/troubleshooting.md?raw';
+import keyboardShortcutsMd from '../../../docs/reference/keyboard-shortcuts.md?raw';
 
 export default function Help() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,21 +34,20 @@ export default function Help() {
   const markdownContent: Record<string, string> = {
     'overview': overviewMd,
     'getting-started/quick-start-guide': quickStartMd,
-    'getting-started/first-time-setup': '# First-Time Setup\n\nContent coming soon...',
-    'getting-started/installation': '# Installation\n\nContent coming soon...',
+    'getting-started/first-time-setup': firstTimeSetupMd,
     'features/portfolio-management': portfolioManagementMd,
-    'features/research-tools': '# Research Tools\n\nContent coming soon...',
-    'features/calculators': '# Calculators\n\nContent coming soon...',
-    'features/key-metrics': '# Key Metrics\n\nContent coming soon...',
-    'features/flexible-portfolio': '# Portfolio Visualization\n\nContent coming soon...',
-    'features/historical-dividends': '# Historical Dividends\n\nContent coming soon...',
+    'features/research-tools': researchToolsMd,
+    'features/calculators': calculatorsMd,
+    'features/key-metrics': keyMetricsMd,
+    'features/flexible-portfolio': flexiblePortfolioMd,
+    'features/historical-dividends': historicalDividendsMd,
     'guides/api-setup': apiSetupMd,
     'guides/csv-import': csvImportMd,
-    'guides/portfolio-management': '# Portfolio Organization\n\nContent coming soon...',
-    'guides/export-data': '# Export Data\n\nContent coming soon...',
-    'reference/csv-format': '# CSV Format Specification\n\nContent coming soon...',
-    'reference/troubleshooting': '# Troubleshooting\n\nContent coming soon...',
-    'reference/keyboard-shortcuts': '# Keyboard Shortcuts\n\nContent coming soon...',
+    'guides/portfolio-management': portfolioOrganizationMd,
+    'guides/export-data': exportDataMd,
+    'reference/csv-format': csvFormatMd,
+    'reference/troubleshooting': troubleshootingMd,
+    'reference/keyboard-shortcuts': keyboardShortcutsMd,
   };
 
   useEffect(() => {

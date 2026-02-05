@@ -28,7 +28,6 @@ export default function HelpSidebar({ activeSection, onSectionChange }: HelpSide
         { id: 'overview', label: 'Overview' },
         { id: 'getting-started/quick-start-guide', label: 'Quick Start Guide' },
         { id: 'getting-started/first-time-setup', label: 'First-Time Setup' },
-        { id: 'getting-started/installation', label: 'Installation' },
       ],
     },
     {
@@ -77,7 +76,7 @@ export default function HelpSidebar({ activeSection, onSectionChange }: HelpSide
   const groupTitleToId = (title: string) => title.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl p-4 sticky top-6">
+    <div className="bg-white rounded-2xl shadow-2xl p-4 sticky top-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
       <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
         Documentation
       </h2>
