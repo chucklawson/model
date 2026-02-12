@@ -183,6 +183,22 @@ The Custom Range modal offers the same four chart types as YTD:
 
 All charts function the same as their YTD equivalents but use data from the selected date range.
 
+### Gain / Loss by Stock (Bar Chart)
+
+Below the main chart area (visible on all tabs), an additional bar chart displays the dollar gain or loss for every stock in your portfolio over the selected date range.
+
+- **One bar per stock**, sorted alphabetically by ticker symbol
+- **Green bars** for gains, **red bars** for losses
+- **Reference line** at $0 for quick visual separation of winners and losers
+- **Dynamic height** - the chart grows taller as more tickers are included
+
+**Tooltip (hover over a bar):**
+- Ticker symbol
+- Total gain/loss in dollars and percentage for the selected range
+- **Portfolio breakdown** - lists each portfolio that owns the stock along with that portfolio's proportional share of the gain/loss
+
+This chart provides a quick way to see which individual stocks are driving your portfolio's performance and how those gains or losses are distributed across your portfolios.
+
 ---
 
 ## Technical Indicators

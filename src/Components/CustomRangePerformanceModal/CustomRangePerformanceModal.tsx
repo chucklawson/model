@@ -12,6 +12,7 @@ import CustomRangeLineChart from './CustomRangeLineChart';
 import CustomRangeBarChart from './CustomRangeBarChart';
 import CustomRangePieChart from './CustomRangePieChart';
 import CustomRangeStackedAreaChart from './CustomRangeStackedAreaChart';
+import CustomRangeStockGainLossChart from './CustomRangeStockGainLossChart';
 
 type ChartTab = 'line' | 'bar' | 'pie' | 'area';
 
@@ -550,6 +551,13 @@ export default function CustomRangePerformanceModal({
                 )}
                 {activeChart === 'area' && <CustomRangeStackedAreaChart customRangeData={customRangeData} />}
               </div>
+
+              {/* Stock Gain/Loss Bar Chart */}
+              <CustomRangeStockGainLossChart
+                customRangeData={customRangeData}
+                lots={lots}
+                selectedPortfolios={selectedPortfolios}
+              />
 
               {/* Data Quality Warnings */}
               {customRangeData.tickers.some(t => t.hasWarning) && (

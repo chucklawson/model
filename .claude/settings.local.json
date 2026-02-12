@@ -79,7 +79,12 @@
       "Bash(xargs:*)",
       "Bash(timeout 10 tail:*)",
       "WebFetch(domain:banks.data.fdic.gov)",
-      "WebFetch(domain:api.fdic.gov)"
+      "WebFetch(domain:api.fdic.gov)",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''D:\\\\awsGitRepos\\\\model\\\\docs'' -Recurse -File | Select-Object -ExpandProperty FullName\")",
+      "Bash(git diff:*)",
+      "Bash(powershell:*)",
+      "Bash(git reset:*)",
+      "Bash(cmd /c \"del /f D:\\\\awsGitRepos\\\\model\\\\nul\")"
     ],
     "deny": [],
     "ask": []
