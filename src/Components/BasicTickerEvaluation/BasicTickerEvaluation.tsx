@@ -612,22 +612,31 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         const plValue = rest.substring(0, commaIdx);
         const remainder = rest.substring(commaIdx + 2);
         const [beforeToday, todayValue] = remainder.split('Today:');
+        const firstLine = beforeToday.replace(/, $/, '');
         return (
           <>
-            <span className='text-black'>{beforePL}, P/L: </span>
-            <span className={plValue.includes('-') ? 'text-red-600' : 'text-green-600'}>{plValue}</span>
-            <span className='text-black'>, {beforeToday}Today:</span>
-            <span className={todayValue?.includes('-') ? 'text-red-600' : 'text-green-600'}>{todayValue}</span>
+            <div>
+              <span className='text-black'>{beforePL}, P/L: </span>
+              <span className={plValue.includes('-') ? 'text-red-600' : 'text-green-600'}>{plValue}</span>
+              <span className='text-black'>, {firstLine}</span>
+            </div>
+            <div>
+              <span className='text-black'>Today: </span>
+              <span className={todayValue?.includes('-') ? 'text-red-600' : 'text-green-600'}>{todayValue}</span>
+            </div>
           </>
         );
       }
       if (calculatedTotalProfitLoss.includes('Today:')) {
         return (
           <>
-            <span className='text-black'>{calculatedTotalProfitLoss.split('Today:')[0]}</span>
-            <span className={calculatedTotalProfitLoss.split('Today:')[1].includes('-') ? 'text-red-600' : 'text-green-600'}>
-              Today:{calculatedTotalProfitLoss.split('Today:')[1]}
-            </span>
+            <div><span className='text-black'>{calculatedTotalProfitLoss.split('Today:')[0]}</span></div>
+            <div>
+              <span className='text-black'>Today: </span>
+              <span className={calculatedTotalProfitLoss.split('Today:')[1].includes('-') ? 'text-red-600' : 'text-green-600'}>
+                {calculatedTotalProfitLoss.split('Today:')[1]}
+              </span>
+            </div>
           </>
         );
       }
@@ -665,7 +674,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             onBuysChange={buysChangeHandler}
         />
 
-        <div className='text-1xl text-gray-600 font-bold underline h-5 justify-start mt-3'>
+        <div className='text-1xl text-gray-600 font-bold underline justify-start mt-3'>
 
         <SimpleButton calculateProfitLossButtonHandler={calculateProfitLossButtonHandler} backgroundColor={props.buttonBackgroundColor} buttonCaption='cumulative profit/loss'/>
           {renderProfitLossDisplay()}

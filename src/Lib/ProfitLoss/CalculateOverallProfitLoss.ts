@@ -109,10 +109,9 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
 
     const currentDaysProfitLoss=(totalValue-totalPreviousValue)
 
-  //console.log("currentDaysProfitLoss: " + currentDaysProfitLoss)
+    const todayGainPercentage = totalPreviousValue !== 0 ? ((currentDaysProfitLoss / totalPreviousValue) * 100.0) : 0;
 
-    //setCalculatedTotalProfitLoss("$" + (totalValue-totalCost).toFixed(2) + ", Invested: $"+ totalCost.toFixed(2)+ ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2))
-  return ("Invested: $"+ totalCost.toFixed(2)+ ", P/L: $" + (totalValue-totalCost).toFixed(2) + ", Balance: $" + totalValue.toFixed(2) + ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2));
+  return ("Invested: $"+ totalCost.toFixed(2)+ ", P/L: $" + (totalValue-totalCost).toFixed(2) + ", Balance: $" + totalValue.toFixed(2) + ", Gain: " + gainLossPercentage.toFixed(2) + "%, Today: $"+currentDaysProfitLoss.toFixed(2) + " (" + todayGainPercentage.toFixed(2) + "%)");
 
 }
 
