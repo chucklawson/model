@@ -42,7 +42,6 @@ describe('FMP API E2E Tests', () => {
 
       // 1. Ensure Amplify is configured (simulating app initialization)
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -65,7 +64,6 @@ describe('FMP API E2E Tests', () => {
       // This specifically tests the reserved keyword fix
 
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -91,7 +89,6 @@ describe('FMP API E2E Tests', () => {
 
       // Now configure Amplify
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -139,7 +136,6 @@ describe('FMP API E2E Tests', () => {
       // (Tests the lazy initialization under concurrent load)
 
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -165,7 +161,6 @@ describe('FMP API E2E Tests', () => {
   describeE2E('Error Scenarios', () => {
     it('should handle missing API key in DynamoDB', async () => {
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -183,7 +178,6 @@ describe('FMP API E2E Tests', () => {
       // This tests that the Lambda correctly checks isActive flag
 
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -210,7 +204,6 @@ describe('FMP API E2E Tests', () => {
       // This tests robustness against unexpected data formats
 
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -233,7 +226,6 @@ describe('FMP API E2E Tests', () => {
   describeE2E('Performance and Reliability', () => {
     it('should complete API calls within acceptable time', async () => {
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
@@ -250,7 +242,6 @@ describe('FMP API E2E Tests', () => {
 
     it('should handle network failures gracefully', async () => {
       const { Amplify } = await import('aws-amplify');
-      // @ts-expect-error - amplify_outputs.json may not exist in CI
       const outputs = await import('../../amplify_outputs.json');
       Amplify.configure(outputs.default);
 
