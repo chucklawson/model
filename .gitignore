@@ -35,5 +35,5 @@ nul
 # amplify
 node_modules
 .amplify
-amplify_outputs*
+# amplify_outputs.json is committed — required for builds and local sandbox
 amplifyconfiguration*
