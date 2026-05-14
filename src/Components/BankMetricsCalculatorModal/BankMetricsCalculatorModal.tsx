@@ -186,7 +186,7 @@ function MetricCard({
   const gradientId = `gradient-${label.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { date: string; value: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const formattedValue = format === 'percentage'
@@ -436,8 +436,9 @@ function RecommendationSummaryCard({ recommendation }: RecommendationSummaryCard
   );
 }
 
+const client = generateClient<Schema>();
+
 export default function BankMetricsCalculatorModal({ onClose }: { onClose: () => void }) {
-  const client = generateClient<Schema>();
 
   const [formData, setFormData] = useState<BankMetricsFormData>({
     ticker: '',

@@ -4,7 +4,7 @@ import { parseVanguardCSV } from './src/utils/vanguardCsvParser';
 
 const filePath = 'D:\\Market\\VanguardTransactions\\OfxDownload.csv';
 
-function generateTransactionId(txn: any): string {
+function generateTransactionId(txn: Record<string, unknown>): string {
   // Convert principalAmount to fixed decimal string, handle undefined
   const principalAmt = txn.principalAmount !== undefined
     ? txn.principalAmount.toFixed(2)
@@ -26,7 +26,7 @@ async function analyzeDuplicates() {
 
     // Check for duplicates within transactions
     const seen = new Map<string, number>();
-    const duplicates: Array<{ txnId: string; count: number; firstOccurrence: any }> = [];
+    const duplicates: Array<{ txnId: string; count: number; firstOccurrence: unknown }> = [];
 
     parsed.transactions.forEach((txn, _index) => {
       const txnId = generateTransactionId(txn);

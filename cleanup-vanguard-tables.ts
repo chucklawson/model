@@ -24,7 +24,7 @@ async function cleanupVanguardTables() {
       let deletedCount = 0;
       for (const txn of transactions) {
         // Use the identifier field - could be 'id' (old schema) or 'transactionId' (new schema)
-        const identifier = txn.transactionId ? { transactionId: txn.transactionId } : { id: (txn as any).id };
+        const identifier = txn.transactionId ? { transactionId: txn.transactionId } : { id: (txn as { id?: string }).id };
         await client.models.Transaction.delete(identifier);
         deletedCount++;
         if (deletedCount % 100 === 0) {
@@ -47,7 +47,7 @@ async function cleanupVanguardTables() {
         // Use the identifier field - could be 'id' (old schema) or composite key (new schema)
         const identifier = ct.buyTransactionId && ct.sellTransactionId
           ? { buyTransactionId: ct.buyTransactionId, sellTransactionId: ct.sellTransactionId }
-          : { id: (ct as any).id };
+          : { id: (ct as { id?: string }).id };
         await client.models.CompletedTransaction.delete(identifier);
         deletedCount++;
         if (deletedCount % 100 === 0) {
@@ -68,7 +68,7 @@ async function cleanupVanguardTables() {
       let deletedCount = 0;
       for (const div of dividends) {
         // Use the identifier field - could be 'id' (old schema) or 'transactionId' (new schema)
-        const identifier = div.transactionId ? { transactionId: div.transactionId } : { id: (div as any).id };
+        const identifier = div.transactionId ? { transactionId: div.transactionId } : { id: (div as { id?: string }).id };
         await client.models.DividendTransaction.delete(identifier);
         deletedCount++;
         if (deletedCount % 100 === 0) {

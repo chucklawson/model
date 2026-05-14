@@ -22,10 +22,10 @@ function formatCurrency(value: number | undefined): string {
 }
 
 // Format field value for display
-function formatField(value: any): string {
+function formatField(value: unknown): string {
   if (value === undefined || value === null) return 'N/A';
   if (typeof value === 'number') return value.toString();
-  return value.toString();
+  return String(value);
 }
 
 async function analyzeEnhanced() {
@@ -118,7 +118,7 @@ async function analyzeEnhanced() {
       const differences: string[] = [];
 
       fields.forEach(field => {
-        const values = transactions.map(t => (t as any)[field]);
+        const values = transactions.map(t => (t as Record<string, unknown>)[field]);
         const uniqueValues = [...new Set(values.map(v => JSON.stringify(v)))];
 
         if (uniqueValues.length > 1) {
@@ -163,7 +163,7 @@ async function analyzeEnhanced() {
 
       let hasAnyDifference = false;
       fields.forEach(field => {
-        const values = transactions.map(t => (t as any)[field]);
+        const values = transactions.map(t => (t as Record<string, unknown>)[field]);
         const uniqueValues = [...new Set(values.map(v => JSON.stringify(v)))];
         if (uniqueValues.length > 1) {
           hasAnyDifference = true;

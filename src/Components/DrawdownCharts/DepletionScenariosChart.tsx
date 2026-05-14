@@ -73,7 +73,7 @@ export default function DepletionScenariosChart({
   };
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { name: string; drawdownRate: number; depletionMonths: number; depletionLabel: string } }> }) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { name: string; drawdownRate: number; months: number; years: string; depletes: boolean } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

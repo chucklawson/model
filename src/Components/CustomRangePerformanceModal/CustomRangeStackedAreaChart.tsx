@@ -14,6 +14,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import type { TooltipProps } from 'recharts';
 import type { DateRangePortfolioPerformance } from '../../types/customRange';
 import { formatDateShort } from '../../utils/dateRangeCalculations';
 
@@ -132,7 +133,7 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
     let cumulativeValue = 0;
 
     tickerKeys.forEach((ticker, index) => {
-      const value = lastPoint[ticker] || 0;
+      const value = Number(lastPoint[ticker] || 0);
       if (value > 0) {
         positions.push({
           ticker,
@@ -230,7 +231,7 @@ export default function CustomRangeStackedAreaChart({ customRangeData }: CustomR
               style: { fontSize: 14, fontWeight: 'bold' }
             }}
           />
-          <Tooltip content={customTooltip} />
+          <Tooltip content={customTooltip as unknown as React.FC<TooltipProps<number, string>>} />
           <Legend
             wrapperStyle={{
               paddingTop: '20px',
