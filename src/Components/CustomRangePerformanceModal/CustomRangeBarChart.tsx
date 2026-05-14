@@ -78,9 +78,10 @@ export default function CustomRangeBarChart({ customRangeData, onTickerClick }: 
     return null;
   };
 
-  const handleBarClick = (data: Record<string, unknown>) => {
-    if (onTickerClick && typeof data?.ticker === 'string') {
-      onTickerClick(data.ticker);
+  const handleBarClick = (data: object) => {
+    const d = data as Record<string, unknown>;
+    if (onTickerClick && typeof d?.ticker === 'string') {
+      onTickerClick(d.ticker);
     }
   };
 

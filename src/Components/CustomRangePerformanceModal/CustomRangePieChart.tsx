@@ -74,7 +74,7 @@ export default function CustomRangePieChart({ customRangeData, onTickerClick }: 
   };
 
   const renderCustomLabel = (entry: PieLabelRenderProps) => {
-    const pct = (entry.percent ?? 0) * 100;
+    const pct = Number(entry.percent ?? 0) * 100;
     if (pct < 3) return '';
     return `${entry.name ?? ''} ${pct.toFixed(1)}%`;
   };

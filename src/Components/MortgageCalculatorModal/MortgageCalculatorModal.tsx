@@ -150,7 +150,7 @@ export default function MortgageCalculatorModal({ onClose }: { onClose: () => vo
   };
 
   // Chart tabs
-  const chartTabs: { id: ChartTab; label: string; icon: React.ElementType }[] = [
+  const chartTabs: { id: ChartTab; label: string; icon: React.FC<{ size?: number }> }[] = [
     { id: 'principal-interest', label: 'Principal vs Interest', icon: PieChart },
     { id: 'balance', label: 'Remaining Balance', icon: TrendingDown },
     { id: 'comparison', label: 'Loan Term Comparison', icon: BarChart3 },
