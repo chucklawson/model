@@ -6,18 +6,16 @@ on:
   # Run on schedule (nightly at 2 AM UTC)
   schedule:
     - cron: '0 2 * * *'
-  # Run on release branches
+  # Run on main and release branches
   push:
     branches:
+      - main
       - 'release/**'
 
 jobs:
   e2e:
     name: End-to-End Tests
     runs-on: ubuntu-latest
-
-    # Only run if AWS credentials are available
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || startsWith(github.ref, 'refs/heads/release/')
 
     steps:
       - name: Checkout code
