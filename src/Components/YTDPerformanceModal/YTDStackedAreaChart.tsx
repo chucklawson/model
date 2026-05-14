@@ -88,7 +88,7 @@ export default function YTDStackedAreaChart({ ytdData }: YTDStackedAreaChartProp
     }).format(value);
   };
 
-  const customTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; payload?: { fullDate?: string } }>; label?: string }) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; payload?: { fullDate?: string } }>; label?: string }) => {
     if (active && payload && payload.length) {
       const total = payload.reduce((sum: number, entry: { value: number }) => sum + (entry.value || 0), 0);
 
@@ -150,7 +150,7 @@ export default function YTDStackedAreaChart({ ytdData }: YTDStackedAreaChartProp
               style: { fontSize: 14, fontWeight: 'bold' }
             }}
           />
-          <Tooltip content={customTooltip} />
+          <Tooltip content={<CustomTooltip />} />
           <Legend
             wrapperStyle={{
               paddingTop: '20px',

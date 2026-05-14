@@ -3,7 +3,7 @@
 // CSV Validator Test Suite
 // ============================================
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   validateRow,
   isDuplicateLot,

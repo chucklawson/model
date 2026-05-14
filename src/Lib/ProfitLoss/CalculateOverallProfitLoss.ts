@@ -77,7 +77,7 @@ async function batchQuote (tickersToObtain:string,tickerEntriesToSum:CostEntry[]
     let currentQuote:Quote_V3[]=[];
 
     try {
-        const data = await callFmpApi({
+        const data = await callFmpApi<Quote_V3[]>({
             endpoint: `/api/v3/quote/${tickersToObtain}`
         });
 

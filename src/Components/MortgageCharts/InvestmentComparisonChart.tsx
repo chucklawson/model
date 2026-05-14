@@ -14,7 +14,7 @@ import type { MonthlyPayment, MortgageInputs } from '../../Lib/MortgageCalculati
 import { calculateMonthlyPayment } from '../../Lib/MortgageCalculation';
 import { formatMonthLabel, sampleScheduleForChart } from '../../Lib/AmortizationSchedule';
 import { calculateInvestmentGrowth, calculateDrawDownInvestment, validateInvestmentInputs, calculateBreakevenRate } from '../../Lib/InvestmentCalculation';
-import type { DrawDownInvestmentInputs } from '../../Lib/InvestmentCalculation';
+import type { DrawDownInvestmentInputs, MonthlyInvestmentGrowth } from '../../Lib/InvestmentCalculation';
 
 interface InvestmentComparisonChartProps {
   mortgageSchedule: MonthlyPayment[];
@@ -84,7 +84,7 @@ export default function InvestmentComparisonChart({
   const sampledMortgageSchedule = sampleScheduleForChart(mortgageSchedule, 120);
 
   // Sample investment schedule manually to match
-  const sampleInvestmentSchedule = (schedule: Array<{ month: number; balance: number }>, maxPoints: number) => {
+  const sampleInvestmentSchedule = (schedule: MonthlyInvestmentGrowth[], maxPoints: number) => {
     if (schedule.length <= maxPoints) return schedule;
     const interval = Math.floor(schedule.length / maxPoints);
     const sampled = [];

@@ -138,7 +138,7 @@ export function useAfterHoursData({
             const aftermarketResults = await Promise.allSettled(aftermarketPromises);
             aftermarketResults.forEach((result) => {
               if (result.status === 'fulfilled' && result.value.data) {
-                aftermarketMap.set(result.value.ticker, result.value.data);
+                aftermarketMap.set(result.value.ticker, result.value.data as AftermarketData[]);
               }
             });
           }

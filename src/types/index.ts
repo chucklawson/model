@@ -4,6 +4,7 @@
 export interface Portfolio {
   id: string;
   name: string;
+  color?: string;
   description?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -15,22 +16,24 @@ export interface Ticker {
   symbol: string;
   companyName?: string;
   baseYield: number;
-  expectedFiveYearGrowth: number;
+  expectedFiveYearGrowth?: number;
   createdAt?: string;
   updatedAt?: string;
   owner?: string;
 }
 
 export interface TickerLot {
-  id: string;
+  id?: string;
   ticker: string;
+  companyName?: string;
   shares: number;
   costPerShare: number;
   purchaseDate: string;
   portfolios: string[];
-  calculateAccumulatedProfitLoss: boolean;
-  isDividend: boolean;
-  baseYield: number;
+  calculateAccumulatedProfitLoss?: boolean;
+  isDividend?: boolean;
+  baseYield?: number;
+  expectedFiveYearGrowth?: string | number;
   notes?: string;
   totalCost: number;
   createdAt?: string;
@@ -74,6 +77,7 @@ export interface ParsedCSVRow {
   purchaseDate: string;
   portfolios: string[];
   calculatePL?: boolean;
+  calculateAccumulatedProfitLoss?: boolean;
   isDividend?: boolean;
   notes?: string;
   rowIndex: number;

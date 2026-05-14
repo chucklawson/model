@@ -12,6 +12,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts';
+import type { PieLabelRenderProps } from 'recharts';
 import type { YTDPortfolioPerformance } from '../../types/ytd';
 
 interface YTDAllocationPieChartProps {
@@ -72,10 +73,10 @@ export default function YTDAllocationPieChart({ ytdData, onTickerClick }: YTDAll
     return null;
   };
 
-  const renderCustomLabel = (entry: { name: string; percentage: number }) => {
-    // Only show label if allocation is > 3%
-    if (entry.percentage < 3) return '';
-    return `${entry.name} ${entry.percentage.toFixed(1)}%`;
+  const renderCustomLabel = (entry: PieLabelRenderProps) => {
+    const pct = Number(entry.percent ?? 0) * 100;
+    if (pct < 3) return '';
+    return `${entry.name ?? ''} ${pct.toFixed(1)}%`;
   };
 
   const handlePieClick = (data: { name: string } | null) => {

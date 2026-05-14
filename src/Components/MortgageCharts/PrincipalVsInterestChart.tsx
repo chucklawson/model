@@ -49,7 +49,7 @@ export default function PrincipalVsInterestChart({ schedule }: PrincipalVsIntere
 
       return (
         <div className="bg-white p-4 rounded-lg shadow-xl border-2 border-blue-400">
-          <p className="font-bold text-blue-700 mb-2">{payload[0].payload.label}</p>
+          <p className="font-bold text-blue-700 mb-2">{payload[0].payload?.label}</p>
           <div className="space-y-1">
             <p className="text-slate-700">
               <span className="font-semibold text-blue-600">Principal:</span>{' '}

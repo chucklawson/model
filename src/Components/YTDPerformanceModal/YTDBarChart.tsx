@@ -78,9 +78,10 @@ export default function YTDBarChart({ ytdData, onTickerClick }: YTDBarChartProps
     return null;
   };
 
-  const handleBarClick = (data: { ticker: string } | null) => {
-    if (onTickerClick && data) {
-      onTickerClick(data.ticker);
+  const handleBarClick = (data: object) => {
+    const d = data as Record<string, unknown>;
+    if (onTickerClick && typeof d?.ticker === 'string') {
+      onTickerClick(d.ticker);
     }
   };
 

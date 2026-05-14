@@ -48,16 +48,16 @@ export function useStockQuote({
 
       try {
         const data = await Promise.all([
-          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
-          callFmpApi({
+          callFmpApi<Quote_V3[]>({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi<{ historical: HistoricalPriceFull_V3[] }>({
             endpoint: `/api/v3/historical-price-full/${stockSymbol}`,
             queryParams: { from: latestStartDate, to: latestEndDate }
           }),
-          callFmpApi({
+          callFmpApi<{ historical: HistoricalPriceFull_V3[] }>({
             endpoint: `/api/v3/historical-price-full/${stockSymbol}`,
             queryParams: { from: adjustedStartDate, to: latestEndDate }
           }),
-          callFmpApi({
+          callFmpApi<AnalysisKeyMetricsItem_V3[]>({
             endpoint: `/api/v3/key-metrics/${stockSymbol}`,
             queryParams: { period: 'quarter' }
           }),

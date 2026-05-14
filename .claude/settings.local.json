@@ -84,7 +84,9 @@
       "Bash(git diff:*)",
       "Bash(powershell:*)",
       "Bash(git reset:*)",
-      "Bash(cmd /c \"del /f D:\\\\awsGitRepos\\\\model\\\\nul\")"
+      "Bash(cmd /c \"del /f D:\\\\awsGitRepos\\\\model\\\\nul\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\" -Recurse -Filter \"*YTD*.tsx\")",
+      "Bash(Select-Object FullName)"
     ],
     "deny": [],
     "ask": []

@@ -365,15 +365,15 @@ describe('localStorage', () => {
       saveToLocalStorage('cycle.test', 1, data);
 
       // Load
-      let result = loadFromLocalStorage('cycle.test', 1, null);
+      const result = loadFromLocalStorage('cycle.test', 1, null);
       expect(result).toEqual(data);
 
       // Remove
       removeFromLocalStorage('cycle.test.v1');
 
       // Load after removal should return fallback
-      result = loadFromLocalStorage('cycle.test', 1, { fallback: true });
-      expect(result).toEqual({ fallback: true });
+      const resultAfterRemoval = loadFromLocalStorage('cycle.test', 1, { fallback: true });
+      expect(resultAfterRemoval).toEqual({ fallback: true });
     });
 
     it('should handle multiple keys with different versions', () => {

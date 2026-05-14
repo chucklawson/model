@@ -106,7 +106,7 @@ export default function TickerLotSpreadsheet({
         compareValue = new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime();
         break;
       case 'baseYield':
-        compareValue = a.baseYield - b.baseYield;
+        compareValue = (a.baseYield ?? 0) - (b.baseYield ?? 0);
         break;
       case 'notes':
         compareValue = (a.notes || '').localeCompare(b.notes || '');
@@ -125,8 +125,8 @@ export default function TickerLotSpreadsheet({
           <input
             type="checkbox"
             className="w-4 h-4 rounded border-slate-300"
-            checked={selectedRows.has(lot.id)}
-            onChange={() => onToggleRow(lot.id)}
+            checked={selectedRows.has(lot.id ?? '')}
+            onChange={() => onToggleRow(lot.id ?? '')}
           />
         );
       case 'ticker':
@@ -179,7 +179,7 @@ export default function TickerLotSpreadsheet({
       case 'baseYield':
         return (
           <span className="text-slate-700 font-mono">
-            {lot.baseYield.toFixed(2)}%
+            {(lot.baseYield ?? 0).toFixed(2)}%
           </span>
         );
       case 'notes':
@@ -201,7 +201,7 @@ export default function TickerLotSpreadsheet({
               onClick={(e) => {
                 e.stopPropagation();
                 if (confirm('Delete this lot?')) {
-                  onDelete(lot.id);
+                  onDelete(lot.id ?? '');
                 }
               }}
               className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all"
@@ -311,7 +311,7 @@ export default function TickerLotSpreadsheet({
           ) : (
             sortedLots.map((lot, idx) => (
               <tr
-                key={lot.id}
+                key={lot.id ?? ''}
                 className={`border-b border-slate-200 hover:bg-blue-50 transition-colors ${
                   idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
                 }`}

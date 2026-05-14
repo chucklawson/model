@@ -42,7 +42,7 @@ export function useCompanyProfile(symbol: string): UseCompanyProfileResult {
       setError(null);
 
       try {
-        const data = await callFmpApi({
+        const data = await callFmpApi<CompanyProfile[]>({
           endpoint: `/api/v3/profile/${symbol}`
         });
 

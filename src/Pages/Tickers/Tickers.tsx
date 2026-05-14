@@ -213,14 +213,14 @@ interface LegacyLot {
           // Case 1: Lot has no portfolios field (very old data)
           if (!lot.portfolios && !legacyLot.portfolio) {
             await client.models.TickerLot.update({
-              id: lot.id,
+              id: lot.id ?? '',
               portfolios: [fallbackPortfolioName],
             });
           }
           // Case 2: Lot has old 'portfolio' string field (needs migration)
           else if (legacyLot.portfolio && !lot.portfolios) {
             await client.models.TickerLot.update({
-              id: lot.id,
+              id: lot.id ?? '',
               portfolios: [legacyLot.portfolio],
             });
           }
@@ -333,22 +333,40 @@ interface LegacyLot {
 
       const tickerLots: TickerLot[] = allData
         .filter((item) => item !== null)
-        .map((item) => ({
-          id: item.id,
-          ticker: item.ticker,
-          shares: item.shares,
-          costPerShare: item.costPerShare,
-          purchaseDate: item.purchaseDate,
-          portfolios: (item.portfolios ?? []).filter((p: string | null): p is string => p !== null),
-          calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
-          isDividend: item.isDividend ?? false,
-          baseYield: item.baseYield ?? 0,
-          notes: item.notes ?? '',
-          totalCost: item.totalCost ?? item.shares * item.costPerShare,
-          createdAt: item.createdAt ?? undefined,
-          updatedAt: item.updatedAt ?? undefined,
-          owner: item.owner ?? undefined,
-        }));
+        .map((item) => {
+          const row = item as {
+            id?: string;
+            ticker: string;
+            shares: number;
+            costPerShare: number;
+            purchaseDate: string;
+            portfolios?: (string | null)[];
+            calculateAccumulatedProfitLoss?: boolean | null;
+            isDividend?: boolean | null;
+            baseYield?: number | null;
+            notes?: string | null;
+            totalCost?: number | null;
+            createdAt?: string | null;
+            updatedAt?: string | null;
+            owner?: string | null;
+          };
+          return {
+            id: row.id,
+            ticker: row.ticker,
+            shares: row.shares,
+            costPerShare: row.costPerShare,
+            purchaseDate: row.purchaseDate,
+            portfolios: (row.portfolios ?? []).filter((p): p is string => p !== null),
+            calculateAccumulatedProfitLoss: row.calculateAccumulatedProfitLoss ?? true,
+            isDividend: row.isDividend ?? false,
+            baseYield: row.baseYield ?? 0,
+            notes: row.notes ?? '',
+            totalCost: row.totalCost ?? row.shares * row.costPerShare,
+            createdAt: row.createdAt ?? undefined,
+            updatedAt: row.updatedAt ?? undefined,
+            owner: row.owner ?? undefined,
+          };
+        });
       setLots(tickerLots);
     } catch (err) {
       logger.error({ error: err }, 'Failed to load ticker lots');

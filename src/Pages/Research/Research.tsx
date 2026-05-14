@@ -28,22 +28,23 @@ function Research() {
   useEffect(() => {
     const loadTickers = async () => {
       const client = generateClient<Schema>();
-      let allData: Array<{ symbol?: string | null }> = [];
+      let allTickers: (string | null | undefined)[] = [];
       let nextToken: string | null | undefined = undefined;
 
       try {
-        do {
-          const response = await client.models.TickerLot.list({
-            limit: 1000,
-            nextToken: nextToken || undefined,
-          });
-          allData = [...allData, ...response.data];
+        let hasMore = true;
+        while (hasMore) {
+          const token: string | undefined = nextToken ?? undefined;
+          const response: Awaited<ReturnType<typeof client.models.TickerLot.list>> =
+            await client.models.TickerLot.list({ limit: 1000, nextToken: token });
+          allTickers = [...allTickers, ...response.data.map((item) => item.ticker)];
           nextToken = response.nextToken;
-        } while (nextToken);
+          hasMore = !!nextToken;
+        }
 
         // Extract unique ticker symbols and sort
         const uniqueTickers = Array.from(
-          new Set(allData.map(lot => lot.ticker))
+          new Set(allTickers.filter((t): t is string => t !== null && t !== undefined))
         ).sort();
 
         setTickerList(uniqueTickers);

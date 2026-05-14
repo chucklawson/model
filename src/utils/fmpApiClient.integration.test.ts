@@ -36,7 +36,7 @@ describe.skip('fmpApiClient Integration Tests', () => {
       }));
 
       // Import the module - this would have triggered the bug
-      const _startTime = Date.now();
+      Date.now();
       const { getUserFmpApiKey } = await import('./fmpApiClient');
       const importTime = Date.now();
 

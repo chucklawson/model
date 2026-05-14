@@ -96,7 +96,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setError(null);
 
     try {
-      const data = await callFmpApi({
+      const data = await callFmpApi<Quote_V3[]>({
         endpoint: `/api/v3/quote/${ticker}`
       });
 
@@ -159,7 +159,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setFetchingProfile(true);
 
     try {
-      const data = await callFmpApi({
+      const data = await callFmpApi<CompanyProfile[]>({
         endpoint: `/api/v3/profile/${ticker}`
       });
 
@@ -191,7 +191,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     try {
       // Use current date in YYYY-MM-DD format
       const currentDate = new Date().toISOString().split('T')[0];
-      const data = await callFmpApi({
+      const data = await callFmpApi<SectorPESnapshot[]>({
         endpoint: '/stable/sector-pe-snapshot',
         queryParams: { date: currentDate }
       });
@@ -215,7 +215,7 @@ export default function PEGrowthCalculatorModal({ onClose }: { onClose: () => vo
     setEstimatesError(null);
 
     try {
-      const data = await callFmpApi({
+      const data = await callFmpApi<AnalystEstimate_V3[]>({
         endpoint: '/stable/analyst-estimates',
         queryParams: {
           symbol: ticker,

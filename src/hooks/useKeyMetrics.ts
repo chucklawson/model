@@ -37,8 +37,8 @@ export function useKeyMetrics({
 
       try {
         const data = await Promise.all([
-          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
-          callFmpApi({
+          callFmpApi<Quote_V3[]>({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi<StatementAnalysisKeyMetricsData[]>({
             endpoint: `/api/v3/key-metrics/${stockSymbol}`,
             queryParams: { period }
           })

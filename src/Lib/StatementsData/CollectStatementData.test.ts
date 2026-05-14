@@ -74,6 +74,7 @@ describe('CollectStatementData', () => {
       capexPerShare: 5.0,
       xAxisDataKey: 'Q1 2024',
       priceToEarnings: '15.50',
+      toString: () => '',
       ...overrides
     };
     return new StatementAnalysisKeyMetricsData(defaultData);

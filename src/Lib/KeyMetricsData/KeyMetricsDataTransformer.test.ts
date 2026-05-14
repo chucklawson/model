@@ -73,6 +73,7 @@ describe('KeyMetricsDataTransformer', () => {
       capexPerShare: 0.5,
       xAxisDataKey: `${period} ${calendarYear}`,
       priceToEarnings: '30.50',
+      toString: () => '',
       ...overrides
     };
 

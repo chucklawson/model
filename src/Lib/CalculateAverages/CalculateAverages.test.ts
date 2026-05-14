@@ -132,7 +132,12 @@ function createMockLWData(count: number, startDate: string): LWChartData[] {
 
     data.push({
       date: dateStr,
-      value: -50 + (i % 100), // Oscillates between -50 and 50
+      open: 0,
+      high: 0,
+      low: 0,
+      close: 0,
+      volume: 0,
+      williams: -50 + (i % 100), // Oscillates between -50 and 50
     });
   }
 
@@ -564,8 +569,6 @@ describe('CalculateAverages', () => {
 
     it('should reverse the order of entries', () => {
       const keyMetrics = createMockKeyMetrics(10, '2024-01-01');
-      const _firstDateBefore = keyMetrics[0].date;
-
       const result = calculateAverages.getPriceToEarningsChartData(keyMetrics);
 
       // After reversing, the last item in result should have the first date from input
@@ -723,8 +726,8 @@ describe('CalculateAverages', () => {
           adjustedData,
           dailyResult!
         );
-        const _rsiResult = calculateAverages.getRsiChartData(standardData, adjustedData);
-        const _stochasticResult = calculateAverages.getStochasticChartData(
+        calculateAverages.getRsiChartData(standardData, adjustedData);
+        calculateAverages.getStochasticChartData(
           standardData,
           adjustedData
         );

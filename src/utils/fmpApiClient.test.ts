@@ -37,10 +37,15 @@ import { callFmpApi, getUserFmpApiKey, setUserFmpApiKey, deleteUserFmpApiKey } f
 import type { FmpApiClientOptions } from './fmpApiClient';
 
 // Get reference to the mock that was created in the vi.mock factory
-const mockAmplifyClient = (global as Record<string, unknown>).__mockFmpApiKeyModel;
+const mockAmplifyClient = (global as Record<string, unknown>).__mockFmpApiKeyModel as {
+  list: ReturnType<typeof vi.fn>;
+  create: ReturnType<typeof vi.fn>;
+  update: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
+};
 
 describe('fmpApiClient', () => {
-  let mockFetch: typeof global.fetch;
+  let mockFetch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -48,7 +53,7 @@ describe('fmpApiClient', () => {
 
     // Mock global fetch
     mockFetch = vi.fn();
-    global.fetch = mockFetch;
+    global.fetch = mockFetch as unknown as typeof fetch;
 
     // Set default environment variable to match actual AWS Lambda URL
     vi.stubEnv('VITE_FMP_PROXY_URL', 'https://qy2fvggpm4zwvqdg3x3sp23bx40llynx.lambda-url.us-east-2.on.aws/');
@@ -68,7 +73,7 @@ describe('fmpApiClient', () => {
           toString: () => 'mock-id-token',
         },
       },
-    };
+    } as any;
 
     it('should successfully call FMP API with valid parameters', async () => {
       // Arrange
@@ -832,7 +837,7 @@ describe('fmpApiClient', () => {
             toString: () => 'mock-token',
           },
         },
-      };
+      } as any;
 
       vi.mocked(fetchAuthSession).mockResolvedValue(mockSession);
       mockFetch.mockResolvedValue({
@@ -871,7 +876,7 @@ describe('fmpApiClient', () => {
             toString: () => 'mock-token',
           },
         },
-      };
+      } as any;
 
       vi.mocked(fetchAuthSession).mockResolvedValue(mockSession);
       mockFetch.mockResolvedValue({
@@ -911,7 +916,7 @@ describe('fmpApiClient', () => {
             toString: () => 'mock-token',
           },
         },
-      };
+      } as any;
 
       vi.mocked(fetchAuthSession).mockResolvedValue(mockSession);
       mockFetch.mockResolvedValue({
@@ -946,7 +951,7 @@ describe('fmpApiClient', () => {
             toString: () => 'mock-token',
           },
         },
-      };
+      } as any;
 
       vi.mocked(fetchAuthSession).mockResolvedValue(mockSession);
       mockFetch.mockResolvedValue({

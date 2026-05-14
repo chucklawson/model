@@ -69,7 +69,7 @@ export default function TickerDetailModal({
     setLots(tickerLots);
 
     // Clean up selectedRows - remove any IDs that no longer exist
-    const validIds = new Set(tickerLots.map(lot => lot.id));
+    const validIds = new Set(tickerLots.map(lot => lot.id ?? ''));
     setSelectedRows(prev => {
       const filtered = new Set(Array.from(prev).filter(id => validIds.has(id)));
       return filtered;
@@ -140,7 +140,7 @@ export default function TickerDetailModal({
     if (selectedRows.size === lots.length) {
       setSelectedRows(new Set());
     } else {
-      setSelectedRows(new Set(lots.map(l => l.id)));
+      setSelectedRows(new Set(lots.map(l => l.id ?? '')));
     }
   };
 
@@ -182,7 +182,7 @@ export default function TickerDetailModal({
             costPerShare: lot.costPerShare,
             purchaseDate: lot.purchaseDate,
             portfolios: mergedPortfolios,
-            calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss,
+            calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
             isDividend: lot.isDividend ?? false,
             notes: lot.notes ?? '',
           };

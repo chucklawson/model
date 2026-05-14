@@ -35,8 +35,8 @@ export function useDividendData({
 
       try {
         const data = await Promise.all([
-          callFmpApi({ endpoint: `/api/v3/quote/${stockSymbol}` }),
-          callFmpApi({ endpoint: `/api/v3/historical-price-full/stock_dividend/${stockSymbol}` })
+          callFmpApi<Quote_V3[]>({ endpoint: `/api/v3/quote/${stockSymbol}` }),
+          callFmpApi<{ historical: HistoricalDividendData[] }>({ endpoint: `/api/v3/historical-price-full/stock_dividend/${stockSymbol}` })
         ]);
 
         // Validate we got data

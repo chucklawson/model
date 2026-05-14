@@ -172,7 +172,7 @@ describe('csvImporter', () => {
         const tickerLotCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].ticker === 'AAPL'
         );
-        expect(tickerLotCall[0].totalCost).toBe(15050); // 100 * 150.50
+        expect(tickerLotCall![0].totalCost).toBe(15050); // 100 * 150.50
       });
 
       it('should use default values for optional fields', async () => {
@@ -199,9 +199,9 @@ describe('csvImporter', () => {
         const tickerLotCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].ticker === 'AAPL'
         );
-        expect(tickerLotCall[0].calculateAccumulatedProfitLoss).toBe(true);
-        expect(tickerLotCall[0].isDividend).toBe(false);
-        expect(tickerLotCall[0].notes).toBe('');
+        expect(tickerLotCall![0].calculateAccumulatedProfitLoss).toBe(true);
+        expect(tickerLotCall![0].isDividend).toBe(false);
+        expect(tickerLotCall![0].notes).toBe('');
       });
     });
 
@@ -228,7 +228,7 @@ describe('csvImporter', () => {
           call => call[0].name === 'NewPortfolio'
         );
         expect(portfolioCall).toBeDefined();
-        expect(portfolioCall[0].description).toBe('Auto-created from CSV import');
+        expect(portfolioCall![0].description).toBe('Auto-created from CSV import');
       });
 
       it('should not create portfolios that already exist (case-insensitive)', async () => {
@@ -315,7 +315,7 @@ describe('csvImporter', () => {
         const mockClient = createMockClient();
         const createdPortfolios: string[] = [];
         mockClient._mockCreate.mockImplementation((data: Record<string, unknown>) => {
-          if (data.name) {
+          if (typeof data.name === 'string') {
             createdPortfolios.push(data.name);
           }
           return Promise.resolve({ data: {} });
@@ -368,8 +368,8 @@ describe('csvImporter', () => {
           call => call[0].symbol === 'GOOGL'
         );
         expect(tickerCall).toBeDefined();
-        expect(tickerCall[0].companyName).toBe('Alphabet Inc.');
-        expect(tickerCall[0].baseYield).toBe(0.3);
+        expect(tickerCall![0].companyName).toBe('Alphabet Inc.');
+        expect(tickerCall![0].baseYield).toBe(0.3);
       });
 
       it('should skip creating tickers that already exist', async () => {
@@ -442,8 +442,8 @@ describe('csvImporter', () => {
         const tickerCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].symbol === 'GOOGL'
         );
-        expect(tickerCall[0].companyName).toBe('');
-        expect(tickerCall[0].baseYield).toBe(0);
+        expect(tickerCall![0].companyName).toBe('');
+        expect(tickerCall![0].baseYield).toBe(0);
       });
 
       it('should handle ticker creation errors gracefully', async () => {
@@ -894,7 +894,7 @@ describe('csvImporter', () => {
         const lotCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].ticker === 'AAPL'
         );
-        expect(lotCall[0].portfolios).toEqual(['Tech', 'Growth', 'Dividend']);
+        expect(lotCall![0].portfolios).toEqual(['Tech', 'Growth', 'Dividend']);
       });
 
       it('should handle rows with empty portfolio names (filtered out)', async () => {
@@ -909,7 +909,7 @@ describe('csvImporter', () => {
           }),
         ];
 
-        const _result = await importCSVData(
+        await importCSVData(
           validationResults,
           mockClient as any,
           mockExistingTickers,
@@ -978,7 +978,7 @@ describe('csvImporter', () => {
         const lotCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].ticker === 'AAPL'
         );
-        expect(lotCall[0].totalCost).toBe(1000); // 0.001 * 1000000
+        expect(lotCall![0].totalCost).toBe(1000); // 0.001 * 1000000
       });
 
       it('should handle rows with very long notes', async () => {
@@ -1003,7 +1003,7 @@ describe('csvImporter', () => {
         const lotCall = mockClient._mockCreate.mock.calls.find(
           call => call[0].ticker === 'AAPL'
         );
-        expect(lotCall[0].notes).toBe(longNotes);
+        expect(lotCall![0].notes).toBe(longNotes);
       });
     });
 

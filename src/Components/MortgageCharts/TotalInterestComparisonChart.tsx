@@ -74,9 +74,9 @@ export default function TotalInterestComparisonChart({
             <p className="text-slate-700 font-bold border-t pt-1 mt-1">
               <span>Total Cost:</span> {formatCurrency(data.totalCost)}
             </p>
-            {data.monthlySavings > 0 && (
+            {(data.monthlySavings ?? 0) > 0 && (
               <p className="text-green-600 font-bold">
-                Saves: {formatCurrency(data.monthlySavings)} vs 30yr
+                Saves: {formatCurrency(data.monthlySavings ?? 0)} vs 30yr
               </p>
             )}
           </div>
@@ -155,11 +155,11 @@ export default function TotalInterestComparisonChart({
                 </li>
               );
             }
-            if (data.monthlySavings > 0) {
+            if ((data.monthlySavings ?? 0) > 0) {
               return (
                 <li key={data.termValue}>
                   <span className="font-semibold">{data.term}:</span> Save{' '}
-                  {formatCurrency(data.monthlySavings)} in interest vs 30yr loan
+                  {formatCurrency(data.monthlySavings ?? 0)} in interest vs 30yr loan
                 </li>
               );
             }

@@ -48,7 +48,6 @@ describe('currentHoldingsCalculations', () => {
           expectedFiveYearGrowth:10,
           isDividend: false,
           calculateAccumulatedProfitLoss: true,
-          calculateAccumulatedProfitLoss: true,
         },
       ];
 
@@ -240,7 +239,6 @@ describe('currentHoldingsCalculations', () => {
           expectedFiveYearGrowth:0,
           isDividend: false,
           calculateAccumulatedProfitLoss: false,
-          calculateAccumulatedProfitLoss: false,
           companyName:'',
         },
         {
@@ -254,7 +252,6 @@ describe('currentHoldingsCalculations', () => {
           baseYield: 0,
           expectedFiveYearGrowth:0,
           isDividend: false,
-          calculateAccumulatedProfitLoss: true,
           calculateAccumulatedProfitLoss: true,
           companyName:'',
         },

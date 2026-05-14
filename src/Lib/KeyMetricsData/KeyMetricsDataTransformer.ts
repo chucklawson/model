@@ -140,13 +140,14 @@ function buildMetricRows(
 
     // Collect values for each period
     for (let i = 0; i < periods; i++) {
-      const value = data[i][metric.key];
+      const raw = data[i][metric.key];
+      const value = typeof raw === 'function' ? undefined : (raw as string | number | null | undefined);
       const formattedValue = formatValue(value);
       values.push(formattedValue);
 
       // Accumulate for average calculation
-      if (metric.includeAverage && typeof value === 'number') {
-        sum += value;
+      if (metric.includeAverage && typeof raw === 'number') {
+        sum += raw;
         count++;
       }
     }

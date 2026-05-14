@@ -79,7 +79,7 @@ export default function PortfolioManager({ portfolios, onClose }: Props) {
         }
 
         await client.models.TickerLot.update({
-          id: lot.id,
+          id: lot.id ?? '',
           portfolios: updatedPortfolios,
         });
       }
