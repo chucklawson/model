@@ -77,8 +77,10 @@ export default defineConfig({
       '**/node_modules/**',
       '**/dist/**',
       '**/*.e2e.test.{ts,tsx}', // Run separately with TEST_MODE=e2e
-      '**/fmpApiClient.integration.test.ts', // Skipped due to mocking complexity
-      '**/vanguardImporter.integration.test.ts', // Skipped due to mocking complexity
+      ...(process.env.VITEST_INTEGRATION ? [] : [
+        '**/fmpApiClient.integration.test.ts',
+        '**/vanguardImporter.integration.test.ts',
+      ]),
       '**/.{idea,git,cache,output,temp}/**',
     ],
   },
