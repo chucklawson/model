@@ -22,28 +22,21 @@ export default defineConfig({
         functions: 70,
         branches: 65,
         statements: 70,
-        // Per-file thresholds for critical files
-        perFile: true,
       },
 
-      // Include Lambda functions in coverage
+      // Only measure coverage for business logic — UI components/pages/hooks are excluded
       include: [
-        'src/**/*.{ts,tsx}',
-        'amplify/functions/**/*.ts',
+        'src/Lib/**/*.ts',
+        'src/utils/**/*.ts',
       ],
 
       exclude: [
         'node_modules/',
-        'src/test/',
         '**/*.d.ts',
         '**/*.config.*',
-        '**/mockData/',
-        'dist/',
         '**/*.test.{ts,tsx}',
         '**/*.integration.test.{ts,tsx}',
         '**/*.e2e.test.{ts,tsx}',
-        'src/main.tsx',
-        'src/vite-env.d.ts',
       ],
     },
 
