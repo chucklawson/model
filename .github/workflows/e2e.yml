@@ -6,11 +6,6 @@ on:
   # Run on schedule (nightly at 2 AM UTC)
   schedule:
     - cron: '0 2 * * *'
-  # Run on main and release branches
-  push:
-    branches:
-      - main
-      - 'release/**'
 
 jobs:
   e2e:
@@ -36,7 +31,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::181959490587:role/GitHubActions-model-E2E
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-2
 
       - name: Run E2E tests
