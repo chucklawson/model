@@ -573,6 +573,16 @@ interface LegacyLot {
           <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 py-2 px-4 text-white overflow-x-auto">
             <div className="flex gap-2 flex-nowrap min-w-max">
                 <button
+                  onClick={() => {
+                    loadLots();
+                    refetch();
+                  }}
+                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
+                >
+                  <RefreshCw size={16} strokeWidth={2.5} />
+                  Refresh
+                </button>
+                <button
                   onClick={() => setShowPortfolioManager(true)}
                   className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
                 >
@@ -609,16 +619,6 @@ interface LegacyLot {
                   Performance
                 </button>
                 <button
-                  onClick={() => {
-                    loadLots();
-                    refetch();
-                  }}
-                  className="bg-white bg-opacity-20 text-blue-500 px-3 py-1.5 rounded-lg hover:bg-opacity-30 transition-all flex items-center gap-1.5 font-medium text-sm whitespace-nowrap flex-shrink-0"
-                >
-                  <RefreshCw size={16} strokeWidth={2.5} />
-                  Refresh
-                </button>
-                <button
                   onClick={() => setSelectedTicker('NEW')}
                   className="bg-white text-blue-600 px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-50 transition-all flex items-center gap-1.5 shadow-lg text-sm whitespace-nowrap flex-shrink-0"
                 >
@@ -643,6 +643,20 @@ interface LegacyLot {
 
           {/* Portfolio Stats */}
           <div className="flex gap-2 px-6 py-2 bg-gradient-to-r from-slate-50 to-blue-50 overflow-x-auto">
+            <div className={`bg-white p-2 rounded-lg shadow border flex-shrink-0 min-w-[200px] ${totalTodaysChange >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+              <div className="flex items-center gap-2">
+                <div className={`${totalTodaysChange >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1 rounded`}>
+                  <TrendingUp className={`${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`} size={16} />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-600 font-semibold uppercase">Today's Change</p>
+                  <p className={`text-base font-bold ${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {totalTodaysChange >= 0 ? '+' : ''}${totalTodaysChange.toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white p-2 rounded-lg shadow border border-green-200 flex-shrink-0 min-w-[200px]">
               <div className="flex items-center gap-2">
                 <div className="bg-green-100 p-1 rounded">
@@ -666,20 +680,6 @@ interface LegacyLot {
                   <p className="text-xs text-slate-600 font-semibold uppercase">Value</p>
                   <p className="text-base font-bold text-blue-600">
                     ${totalValue.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className={`bg-white p-2 rounded-lg shadow border flex-shrink-0 min-w-[200px] ${totalTodaysChange >= 0 ? 'border-green-200' : 'border-red-200'}`}>
-              <div className="flex items-center gap-2">
-                <div className={`${totalTodaysChange >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1 rounded`}>
-                  <TrendingUp className={`${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`} size={16} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-600 font-semibold uppercase">Today's Change</p>
-                  <p className={`text-base font-bold ${totalTodaysChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {totalTodaysChange >= 0 ? '+' : ''}${totalTodaysChange.toFixed(2)}
                   </p>
                 </div>
               </div>
