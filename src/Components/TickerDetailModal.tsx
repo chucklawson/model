@@ -119,6 +119,15 @@ export default function TickerDetailModal({
   const plDollar = currentValue != null ? currentValue - totalCost : null;
   const plPercent = totalCost > 0 && plDollar != null ? (plDollar / totalCost) * 100 : null;
 
+  // Selected lots cost basis
+  const selectedLots = lots.filter(l => selectedRows.has(l.id ?? ''));
+  const selectedShares = selectedLots.reduce((sum, l) => sum + l.shares, 0);
+  const selectedCost = selectedLots.reduce((sum, l) => sum + l.totalCost, 0);
+  const selectedAvgCost = selectedShares > 0 ? selectedCost / selectedShares : 0;
+  const selectedCurrentValue = currentPrice != null ? currentPrice * selectedShares : null;
+  const selectedPL = selectedCurrentValue != null ? selectedCurrentValue - selectedCost : null;
+  const selectedPLPercent = selectedCost > 0 && selectedPL != null ? (selectedPL / selectedCost) * 100 : null;
+
   const handleEdit = (lot: TickerLot) => {
     setEditingLot(lot);
     setFormData({
@@ -443,6 +452,43 @@ export default function TickerDetailModal({
               )}
             </div>
           </div>
+
+          {/* Selected Lots Cost Basis */}
+          {selectedRows.size > 0 && (
+            <div className="bg-gradient-to-br from-sky-50 to-cyan-50 p-4 rounded-xl border-2 border-sky-200 mb-4 shadow">
+              <p className="text-sm font-bold text-sky-800 mb-3">
+                Cost Basis — {selectedRows.size} Selected Lot{selectedRows.size > 1 ? 's' : ''}
+              </p>
+              <div className="grid grid-cols-5 gap-3">
+                <div className="bg-white rounded-lg p-2 border border-sky-100">
+                  <p className="text-xs text-slate-500 font-semibold">Shares</p>
+                  <p className="text-base font-bold text-slate-800">{selectedShares.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                </div>
+                <div className="bg-white rounded-lg p-2 border border-sky-100">
+                  <p className="text-xs text-slate-500 font-semibold">Total Cost</p>
+                  <p className="text-base font-bold text-green-600">${selectedCost.toFixed(2)}</p>
+                </div>
+                <div className="bg-white rounded-lg p-2 border border-sky-100">
+                  <p className="text-xs text-slate-500 font-semibold">Avg Cost/Share</p>
+                  <p className="text-base font-bold text-purple-600">${selectedAvgCost.toFixed(2)}</p>
+                </div>
+                <div className="bg-white rounded-lg p-2 border border-sky-100">
+                  <p className="text-xs text-slate-500 font-semibold">Current Value</p>
+                  <p className="text-base font-bold text-teal-600">
+                    {selectedCurrentValue != null ? `$${selectedCurrentValue.toFixed(2)}` : '—'}
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-2 border border-sky-100">
+                  <p className="text-xs text-slate-500 font-semibold">P&L</p>
+                  <p className={`text-base font-bold ${selectedPL != null && selectedPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {selectedPL != null
+                      ? `${selectedPL >= 0 ? '+' : ''}$${selectedPL.toFixed(2)} (${selectedPLPercent!.toFixed(1)}%)`
+                      : '—'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Stock Split Panel */}
           {showSplitPanel && (
