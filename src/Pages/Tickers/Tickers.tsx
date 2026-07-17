@@ -43,6 +43,7 @@ interface LegacyLot {
   const client = generateClient<Schema>();
   const location = useLocation();
   const previousPathRef = useRef<string>('');
+  const previousSelectedTickerRef = useRef<string | null>(null);
   const [lots, setLots] = useState<TickerLot[]>([]);
   const [tickers, setTickers] = useState<Ticker[]>([]);
   const [summaries, setSummaries] = useState<TickerSummary[]>([]);
@@ -487,7 +488,10 @@ interface LegacyLot {
   const totalTickers = summaries.filter(s => s.totalCost > 0 && s.totalShares > 0).length;
 
   // Get ticker symbols for price data
-  const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [summaries]);
+  // Stabilize the array reference so it only changes when symbols actually change,
+  // not every time lot quantities update (which would restart the polling cycle).
+  const tickerSymbolsKey = useMemo(() => summaries.map(s => s.ticker).join(','), [summaries]);
+  const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [tickerSymbolsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch real-time price data for calculating today's change
   const { regularQuotes, regularPrices, data: afterHoursData, isAfterHours, refetch } = useAfterHoursData({
@@ -523,6 +527,14 @@ interface LegacyLot {
       previousPathRef.current = currentPath;
     }
   }, [location.pathname, tickerSymbols.length, refetch]);
+
+  // Refetch prices immediately when the detail modal closes
+  useEffect(() => {
+    if (previousSelectedTickerRef.current !== null && selectedTicker === null) {
+      refetch();
+    }
+    previousSelectedTickerRef.current = selectedTicker;
+  }, [selectedTicker, refetch]);
 
   // Calculate total today's change across all positions
   const totalTodaysChange = useMemo(() => {

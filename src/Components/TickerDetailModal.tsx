@@ -12,7 +12,8 @@ import {
   Package,
   BarChart3,
   Settings,
-  Loader2
+  Loader2,
+  Scissors
 } from 'lucide-react';
 import type { TickerLot, LotFormData, Portfolio, Ticker } from '../types';
 import { getLotsForTicker } from '../utils/tickerCalculations';
@@ -64,6 +65,14 @@ export default function TickerDetailModal({
 
   // Ticker Settings Modal
   const [showTickerSettingsModal, setShowTickerSettingsModal] = useState(false);
+
+  // Stock Split
+  const [showSplitPanel, setShowSplitPanel] = useState(false);
+  const [splitFrom, setSplitFrom] = useState(1);
+  const [splitTo, setSplitTo] = useState(2);
+  const [splitPending, setSplitPending] = useState(false);
+  const [pendingLots, setPendingLots] = useState<TickerLot[] | null>(null);
+  const [isSavingSplit, setIsSavingSplit] = useState(false);
 
   // Live price
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
@@ -231,6 +240,52 @@ export default function TickerDetailModal({
     }
   };
 
+  const handleApplySplit = () => {
+    if (splitFrom <= 0 || splitTo <= 0) return;
+    const ratio = splitTo / splitFrom;
+    const computed = lots.map(lot => ({
+      ...lot,
+      shares: lot.shares * ratio,
+      costPerShare: lot.costPerShare / ratio,
+      totalCost: lot.totalCost,
+    }));
+    setPendingLots(computed);
+    setSplitPending(true);
+  };
+
+  const handleSaveSplit = async () => {
+    if (!pendingLots) return;
+    setIsSavingSplit(true);
+    try {
+      for (const lot of pendingLots) {
+        await onSaveLot({
+          ticker: lot.ticker,
+          shares: lot.shares,
+          costPerShare: lot.costPerShare,
+          purchaseDate: lot.purchaseDate,
+          portfolios: lot.portfolios,
+          calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
+          isDividend: lot.isDividend ?? false,
+          notes: lot.notes ?? '',
+        }, lot.id);
+      }
+      setShowSplitPanel(false);
+      setSplitPending(false);
+      setPendingLots(null);
+      setSplitFrom(1);
+      setSplitTo(2);
+    } catch {
+      alert('Failed to save split');
+    } finally {
+      setIsSavingSplit(false);
+    }
+  };
+
+  const handleDiscardSplit = () => {
+    setSplitPending(false);
+    setPendingLots(null);
+  };
+
   const formTotalCost = formData.shares * formData.costPerShare;
 
   return (
@@ -369,6 +424,14 @@ export default function TickerDetailModal({
                 Configure Ticker Settings
               </button>
 
+              <button
+                onClick={() => setShowSplitPanel(prev => !prev)}
+                className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-violet-700 hover:to-purple-700 transition-all flex items-center gap-2 shadow-lg"
+              >
+                <Scissors size={20} />
+                Stock Split
+              </button>
+
               {selectedRows.size > 0 && (
                 <button
                   onClick={handleDeleteSelected}
@@ -380,6 +443,106 @@ export default function TickerDetailModal({
               )}
             </div>
           </div>
+
+          {/* Stock Split Panel */}
+          {showSplitPanel && (
+            <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-6 rounded-xl border-2 border-violet-200 mb-6 shadow-lg">
+              <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <Scissors size={22} className="text-violet-600" />
+                Stock Split — {ticker}
+              </h3>
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className="text-center">
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Old Shares</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={splitFrom}
+                    onChange={e => { setSplitFrom(Math.max(1, parseInt(e.target.value) || 1)); setSplitPending(false); setPendingLots(null); }}
+                    className="w-24 text-center px-3 py-2 border-2 border-slate-300 rounded-lg focus:border-violet-500 focus:outline-none text-lg font-bold"
+                  />
+                </div>
+                <span className="text-2xl font-bold text-slate-500 mt-5">:</span>
+                <div className="text-center">
+                  <label className="block text-sm font-bold text-slate-700 mb-2">New Shares</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={splitTo}
+                    onChange={e => { setSplitTo(Math.max(1, parseInt(e.target.value) || 1)); setSplitPending(false); setPendingLots(null); }}
+                    className="w-24 text-center px-3 py-2 border-2 border-slate-300 rounded-lg focus:border-violet-500 focus:outline-none text-lg font-bold"
+                  />
+                </div>
+                <div className="mt-5 text-sm text-slate-600 ml-4">
+                  <p>Each lot's shares × <span className="font-bold text-violet-700">{(splitTo / splitFrom).toFixed(4)}</span></p>
+                  <p>Each lot's cost ÷ <span className="font-bold text-violet-700">{(splitTo / splitFrom).toFixed(4)}</span></p>
+                </div>
+              </div>
+
+              {/* Preview table */}
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-violet-100">
+                      <th className="text-left p-2 font-bold text-slate-700">Purchase Date</th>
+                      <th className="text-right p-2 font-bold text-slate-700">Shares (before)</th>
+                      <th className="text-right p-2 font-bold text-slate-700">Shares (after)</th>
+                      <th className="text-right p-2 font-bold text-slate-700">Cost/Share (before)</th>
+                      <th className="text-right p-2 font-bold text-slate-700">Cost/Share (after)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lots.map(lot => {
+                      const ratio = splitTo / splitFrom;
+                      const newShares = lot.shares * ratio;
+                      const newCost = lot.costPerShare / ratio;
+                      return (
+                        <tr key={lot.id} className="border-b border-violet-100">
+                          <td className="p-2 text-slate-600">{lot.purchaseDate}</td>
+                          <td className="p-2 text-right text-slate-500">{lot.shares.toLocaleString()}</td>
+                          <td className="p-2 text-right font-bold text-violet-700">{newShares.toLocaleString(undefined, { maximumFractionDigits: 4 })}</td>
+                          <td className="p-2 text-right text-slate-500">${lot.costPerShare.toFixed(2)}</td>
+                          <td className="p-2 text-right font-bold text-violet-700">${newCost.toFixed(4)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {splitPending && (
+                <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-4 flex items-start gap-3">
+                  <span className="text-amber-500 text-xl font-bold mt-0.5">⚠</span>
+                  <div>
+                    <p className="font-bold text-amber-800">Split calculated — not yet saved.</p>
+                    <p className="text-amber-700 text-sm">Review the values above, then click <strong>Save Split</strong> at the bottom of the page to write the changes to the database.</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setShowSplitPanel(false); setSplitPending(false); setSplitFrom(1); setSplitTo(2); }}
+                  className="flex-1 px-6 py-3 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-all font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleApplySplit}
+                  disabled={splitPending}
+                  className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-lg ${
+                    splitPending
+                      ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-700 hover:to-purple-700'
+                  }`}
+                >
+                  <Scissors size={20} />
+                  {splitPending ? 'Applied' : `Apply Split to All ${lots.length} Lots`}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Bulk Portfolio Assignment */}
           {selectedRows.size > 0 && (
@@ -660,7 +823,7 @@ export default function TickerDetailModal({
 
           {/* Spreadsheet */}
           <TickerLotSpreadsheet
-            lots={lots}
+            lots={pendingLots ?? lots}
             onEdit={handleEdit}
             onDelete={onDeleteLot}
             selectedRows={selectedRows}
@@ -668,6 +831,38 @@ export default function TickerDetailModal({
             onToggleAll={handleToggleAll}
           />
         </div>
+
+        {/* Save Split Bar */}
+        {splitPending && (
+          <div className="border-t-2 border-violet-300 bg-violet-50 px-6 py-4 flex items-center justify-between gap-4">
+            <p className="text-violet-800 font-semibold">
+              ⚠ Split {splitFrom}:{splitTo} calculated for {lots.length} lots — <span className="font-bold">not yet saved.</span>
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleDiscardSplit}
+                className="px-5 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 transition-all font-semibold"
+              >
+                Discard
+              </button>
+              <button
+                onClick={handleSaveSplit}
+                disabled={isSavingSplit}
+                className={`px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg ${
+                  isSavingSplit
+                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-700 hover:to-purple-700'
+                }`}
+              >
+                {isSavingSplit ? (
+                  <><Loader2 size={18} className="animate-spin" /> Saving...</>
+                ) : (
+                  <><Save size={18} /> Save Split</>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Ticker Settings Modal */}
