@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { TickerLot, LotFormData, Portfolio, Ticker } from '../types';
 import { getLotsForTicker } from '../utils/tickerCalculations';
+import { callFmpApi } from '../utils/fmpApiClient';
 import TickerLotSpreadsheet from './TickerLotSpreadsheet';
 import TickerSettingsModal from './TickerSettingsModal';
 
@@ -64,6 +65,29 @@ export default function TickerDetailModal({
   // Ticker Settings Modal
   const [showTickerSettingsModal, setShowTickerSettingsModal] = useState(false);
 
+  // Live price
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const data = await callFmpApi<Array<{ price: number }>>({
+          endpoint: `/api/v3/quote/${ticker}`,
+        });
+        if (data?.[0]?.price != null) setCurrentPrice(data[0].price);
+      } catch {
+        // stale price stays displayed
+      } finally {
+        setPriceLoading(false);
+      }
+    };
+
+    fetchPrice();
+    const interval = setInterval(fetchPrice, 15000);
+    return () => clearInterval(interval);
+  }, [ticker]);
+
   useEffect(() => {
     const tickerLots = getLotsForTicker(allLots, ticker);
     setLots(tickerLots);
@@ -79,6 +103,10 @@ export default function TickerDetailModal({
   const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0);
   const totalCost = lots.reduce((sum, lot) => sum + lot.totalCost, 0);
   const avgCost = totalShares > 0 ? totalCost / totalShares : 0;
+
+  const currentValue = currentPrice != null ? currentPrice * totalShares : null;
+  const plDollar = currentValue != null ? currentValue - totalCost : null;
+  const plPercent = totalCost > 0 && plDollar != null ? (plDollar / totalCost) * 100 : null;
 
   const handleEdit = (lot: TickerLot) => {
     setEditingLot(lot);
@@ -212,6 +240,11 @@ export default function TickerDetailModal({
             <h2 className="text-xl font-bold flex items-center gap-2">
               <TrendingUp size={20} />
               {ticker} - Lot Details
+              {priceLoading ? (
+                <span className="text-sm font-normal opacity-75 ml-2">Loading...</span>
+              ) : currentPrice != null ? (
+                <span className="text-sm font-normal opacity-90 ml-2">${currentPrice.toFixed(2)}</span>
+              ) : null}
             </h2>
             <button
               onClick={onClose}
@@ -223,7 +256,7 @@ export default function TickerDetailModal({
         </div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-4 gap-2 p-3 bg-slate-50 border-b border-slate-200">
+        <div className="grid grid-cols-6 gap-2 p-3 bg-slate-50 border-b border-slate-200">
           <div className="bg-white p-2 rounded-lg shadow-md border border-blue-200">
             <div className="flex items-center gap-2">
               <div className="bg-blue-100 p-2 rounded-lg">
@@ -268,6 +301,36 @@ export default function TickerDetailModal({
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Total Lots</p>
                 <p className="text-lg font-bold text-orange-600">{lots.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-2 rounded-lg shadow-md border border-teal-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-teal-100 p-2 rounded-lg">
+                <DollarSign className="text-teal-600" size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600 font-semibold">Current Value</p>
+                <p className="text-lg font-bold text-teal-600">
+                  {currentValue != null ? `$${currentValue.toFixed(2)}` : '—'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`bg-white p-2 rounded-lg shadow-md border ${plDollar != null && plDollar >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+            <div className="flex items-center gap-2">
+              <div className={`${plDollar != null && plDollar >= 0 ? 'bg-green-100' : 'bg-red-100'} p-2 rounded-lg`}>
+                <TrendingUp className={plDollar != null && plDollar >= 0 ? 'text-green-600' : 'text-red-600'} size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600 font-semibold">P&L</p>
+                <p className={`text-lg font-bold ${plDollar != null && plDollar >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {plDollar != null
+                    ? `${plDollar >= 0 ? '+' : ''}$${plDollar.toFixed(2)} (${plPercent!.toFixed(1)}%)`
+                    : '—'}
+                </p>
               </div>
             </div>
           </div>
