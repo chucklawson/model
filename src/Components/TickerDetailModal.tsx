@@ -67,15 +67,17 @@ export default function TickerDetailModal({
 
   // Live price
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [todaysChange, setTodaysChange] = useState<number | null>(null);
   const [priceLoading, setPriceLoading] = useState(true);
 
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const data = await callFmpApi<Array<{ price: number }>>({
+        const data = await callFmpApi<Array<{ price: number; change: number }>>({
           endpoint: `/api/v3/quote/${ticker}`,
         });
         if (data?.[0]?.price != null) setCurrentPrice(data[0].price);
+        if (data?.[0]?.change != null) setTodaysChange(data[0].change);
       } catch {
         // stale price stays displayed
       } finally {
@@ -237,13 +239,22 @@ export default function TickerDetailModal({
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 p-3 text-white">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold flex items-center gap-2">
+            <h2 className="text-xl font-bold flex items-center gap-2 flex-wrap">
               <TrendingUp size={20} />
               {ticker} - Lot Details
               {priceLoading ? (
                 <span className="text-sm font-normal opacity-75 ml-2">Loading...</span>
               ) : currentPrice != null ? (
-                <span className="text-sm font-normal opacity-90 ml-2">${currentPrice.toFixed(2)}</span>
+                <>
+                  <span className="text-sm font-normal opacity-90 ml-2">
+                    Current: <span className="font-bold">${currentPrice.toFixed(2)}</span>
+                  </span>
+                  {todaysChange != null && (
+                    <span className={`text-sm font-normal ml-2 ${todaysChange >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+                      Change: {todaysChange >= 0 ? '+' : ''}${todaysChange.toFixed(2)}
+                    </span>
+                  )}
+                </>
               ) : null}
             </h2>
             <button
@@ -334,6 +345,7 @@ export default function TickerDetailModal({
               </div>
             </div>
           </div>
+
         </div>
 
         {/* Content Area */}
