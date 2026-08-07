@@ -115,18 +115,18 @@ export default function TickerDetailModal({
   const totalCost = lots.reduce((sum, lot) => sum + lot.totalCost, 0);
   const avgCost = totalShares > 0 ? totalCost / totalShares : 0;
 
-  const currentValue = currentPrice != null ? currentPrice * totalShares : null;
-  const plDollar = currentValue != null ? currentValue - totalCost : null;
-  const plPercent = totalCost > 0 && plDollar != null ? (plDollar / totalCost) * 100 : null;
+  const currentValue = currentPrice != null && totalShares > 0 ? currentPrice * totalShares : null;
+  const plDollar = currentValue != null && totalCost > 0 ? currentValue - totalCost : null;
+  const plPercent = plDollar != null && totalCost > 0 ? (plDollar / totalCost) * 100 : null;
 
   // Selected lots cost basis
   const selectedLots = lots.filter(l => selectedRows.has(l.id ?? ''));
   const selectedShares = selectedLots.reduce((sum, l) => sum + l.shares, 0);
   const selectedCost = selectedLots.reduce((sum, l) => sum + l.totalCost, 0);
   const selectedAvgCost = selectedShares > 0 ? selectedCost / selectedShares : 0;
-  const selectedCurrentValue = currentPrice != null ? currentPrice * selectedShares : null;
-  const selectedPL = selectedCurrentValue != null ? selectedCurrentValue - selectedCost : null;
-  const selectedPLPercent = selectedCost > 0 && selectedPL != null ? (selectedPL / selectedCost) * 100 : null;
+  const selectedCurrentValue = currentPrice != null && selectedShares > 0 ? currentPrice * selectedShares : null;
+  const selectedPL = selectedCurrentValue != null && selectedCost > 0 ? selectedCurrentValue - selectedCost : null;
+  const selectedPLPercent = selectedPL != null && selectedCost > 0 ? (selectedPL / selectedCost) * 100 : null;
 
   const handleEdit = (lot: TickerLot) => {
     setEditingLot(lot);
@@ -331,7 +331,8 @@ export default function TickerDetailModal({
         </div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-6 gap-2 p-3 bg-slate-50 border-b border-slate-200">
+        <div className="overflow-x-auto bg-slate-50 border-b border-slate-200">
+        <div className="grid grid-cols-6 gap-2 p-3 min-w-[960px]">
           <div className="bg-white p-2 rounded-lg shadow-md border border-blue-200">
             <div className="flex items-center gap-2">
               <div className="bg-blue-100 p-2 rounded-lg">
@@ -339,7 +340,7 @@ export default function TickerDetailModal({
               </div>
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Total Shares</p>
-                <p className="text-lg font-bold text-slate-800">{totalShares.toLocaleString()}</p>
+                <p className="text-lg font-bold text-slate-800 whitespace-nowrap">{totalShares.toLocaleString()}</p>
               </div>
             </div>
           </div>
@@ -351,7 +352,7 @@ export default function TickerDetailModal({
               </div>
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Total Investment</p>
-                <p className="text-lg font-bold text-green-600">${totalCost.toFixed(2)}</p>
+                <p className="text-lg font-bold text-green-600 whitespace-nowrap">${totalCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -363,7 +364,7 @@ export default function TickerDetailModal({
               </div>
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Avg Cost/Share</p>
-                <p className="text-lg font-bold text-purple-600">${avgCost.toFixed(2)}</p>
+                <p className="text-lg font-bold text-purple-600 whitespace-nowrap">${avgCost.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -375,7 +376,7 @@ export default function TickerDetailModal({
               </div>
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Total Lots</p>
-                <p className="text-lg font-bold text-orange-600">{lots.length}</p>
+                <p className="text-lg font-bold text-orange-600 whitespace-nowrap">{lots.length}</p>
               </div>
             </div>
           </div>
@@ -387,7 +388,7 @@ export default function TickerDetailModal({
               </div>
               <div>
                 <p className="text-xs text-slate-600 font-semibold">Current Value</p>
-                <p className="text-lg font-bold text-teal-600">
+                <p className="text-lg font-bold text-teal-600 whitespace-nowrap">
                   {currentValue != null ? `$${currentValue.toFixed(2)}` : '—'}
                 </p>
               </div>
@@ -410,6 +411,7 @@ export default function TickerDetailModal({
             </div>
           </div>
 
+        </div>
         </div>
 
         {/* Content Area */}
