@@ -8,6 +8,7 @@ import BasicTickerEvaluation from '../../Components/BasicTickerEvaluation/BasicT
 import PortfolioFilter from '../../Components/PortfolioFilter';
 import type { TickerLot, Ticker, Portfolio } from '../../types';
 import { calculateCurrentHoldings } from '../../utils/currentHoldingsCalculations';
+import { calculateTickerSummaries, calculateDividendMetrics } from '../../utils/tickerCalculations';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { STORAGE_KEYS, STORAGE_VERSIONS } from '../../utils/localStorage';
 
@@ -52,6 +53,14 @@ function FlexiblePortfolio() {
     : selectedPortfolios;          // Selected only
 
   const currentHoldings = calculateCurrentHoldings(filteredLots, tickers, portfolioNames);
+
+  const isDividendOnly = selectedPortfolios.length === 1 && selectedPortfolios[0] === 'Dividend';
+
+  const dividendMetrics = useMemo(() => {
+    if (!isDividendOnly) return null;
+    const summaries = calculateTickerSummaries(filteredLots, tickers);
+    return calculateDividendMetrics(summaries);
+  }, [isDividendOnly, filteredLots, tickers]);
 
   const onSelectTickerButtonHandler=(tickerToEvaluate:string)=>
   {
@@ -198,21 +207,47 @@ function FlexiblePortfolio() {
         <h1 className="text-lg font-bold text-amber-700">
           {headerValue}
         </h1>
-        <div className="bg-white rounded-md shadow-sm p-1.5">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-              Today's Change:
-            </span>
-            <span className={`text-sm font-bold ${
-              isTodaysChangePositive ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {isTodaysChangePositive ? '+' : ''}{todaysPercentageChange}%
-            </span>
-            {slope >= 0.0 ? (
-              <img className="w-4 h-4" src={upGreenRight} alt="Upward trend" />
-            ) : (
-              <img className="w-4 h-4" src={downRedRight} alt="Downward trend" />
-            )}
+        <div className="flex items-center gap-2">
+          {isDividendOnly && dividendMetrics && (
+            <>
+              <div className="bg-white rounded-md shadow-sm p-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    Weighted Yield:
+                  </span>
+                  <span className="text-sm font-bold text-green-600">
+                    {dividendMetrics.weightedYieldPercentage.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+              <div className="bg-white rounded-md shadow-sm p-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    Annual Income:
+                  </span>
+                  <span className="text-sm font-bold text-green-600">
+                    ${dividendMetrics.annualDividendIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+          <div className="bg-white rounded-md shadow-sm p-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                Today's Change:
+              </span>
+              <span className={`text-sm font-bold ${
+                isTodaysChangePositive ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {isTodaysChangePositive ? '+' : ''}{todaysPercentageChange}%
+              </span>
+              {slope >= 0.0 ? (
+                <img className="w-4 h-4" src={upGreenRight} alt="Upward trend" />
+              ) : (
+                <img className="w-4 h-4" src={downRedRight} alt="Downward trend" />
+              )}
+            </div>
           </div>
         </div>
       </div>

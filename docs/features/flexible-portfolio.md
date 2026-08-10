@@ -27,6 +27,28 @@ The page header displays:
   - Today's percentage change (green if positive, red if negative)
   - An up or down trend indicator arrow
 
+#### Dividend Portfolio Metrics
+
+When the **Dividend** portfolio is the only selected portfolio, two additional metric cards appear in the header to the left of Today's Change:
+
+| Card | Description |
+|------|-------------|
+| **Weighted Yield** | The portfolio's blended dividend yield, where each ticker's `baseYield` is weighted by its total cost (larger positions have proportionally more influence on the result) |
+| **Annual Income** | The projected annual dividend income in dollars across all tickers in the Dividend portfolio |
+
+**How the weighted yield is calculated:**
+
+```
+Annual Income per Ticker = baseYield (%) × Total Cost Basis
+Weighted Yield = (Sum of all Annual Incomes / Total Portfolio Cost) × 100
+```
+
+For example, if you hold $10,000 of a 3% yielding stock and $5,000 of a 5% yielding stock:
+- Annual income: $300 + $250 = $550
+- Weighted yield: $550 / $15,000 × 100 = **3.67%**
+
+These metrics only appear when **Dividend** is the sole selected portfolio. Selecting any other portfolio or "All Portfolios" hides them.
+
 ### Portfolio Filter
 
 A dropdown control to filter which portfolio(s) to display. Your selection is persisted to local storage so it remembers your choice between sessions.
@@ -272,6 +294,12 @@ A bar chart showing how the company's P/E ratio has changed over multiple report
 
 - Check **Today's Change** on the Portfolios page header for a quick daily pulse
 - The trend arrow gives you an instant visual signal
+
+### Dividend Portfolio Monitoring
+
+- Select only the **Dividend** portfolio to instantly see your **Weighted Yield** and projected **Annual Income** in the header
+- As you add or resize positions, the weighted yield updates automatically to reflect the new allocation
+- Use the weighted yield alongside the [Historical Dividends](historical-dividends.md) page to compare your portfolio's blended yield against individual ticker yields
 
 ### Performance Reviews
 
