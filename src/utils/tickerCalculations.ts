@@ -1,26 +1,28 @@
 import type { TickerLot, TickerSummary, Ticker } from '../types/index';
 
 export function calculateTickerSummaries(lots: TickerLot[], tickers: Ticker[] = []): TickerSummary[] {
+  // Group by ticker + positionType so long and short appear as separate rows
   const grouped = lots.reduce((acc, lot) => {
-    if (!acc[lot.ticker]) {
-      acc[lot.ticker] = [];
+    const positionType = lot.isShort ? 'short' : 'long';
+    const key = `${lot.ticker}|${positionType}`;
+    if (!acc[key]) {
+      acc[key] = [];
     }
-    acc[lot.ticker].push(lot);
+    acc[key].push(lot);
     return acc;
   }, {} as Record<string, TickerLot[]>);
 
-  return Object.entries(grouped).map(([ticker, tickerLots]) => {
+  return Object.entries(grouped).map(([key, tickerLots]) => {
+    const [ticker, positionType] = key.split('|') as [string, 'long' | 'short'];
     const totalShares = tickerLots.reduce((sum, lot) => sum + lot.shares, 0);
     const totalCost = tickerLots.reduce((sum, lot) => sum + lot.totalCost, 0);
     const dates = tickerLots.map(lot => lot.purchaseDate).sort();
 
-    // Aggregate all unique portfolios across all lots for this ticker
     const allPortfolios = new Set<string>();
     tickerLots.forEach(lot => {
       lot.portfolios.forEach(portfolio => allPortfolios.add(portfolio));
     });
 
-    // Find matching ticker data
     const tickerData = tickers.find(t => t.symbol === ticker);
 
     return {
@@ -35,6 +37,7 @@ export function calculateTickerSummaries(lots: TickerLot[], tickers: Ticker[] = 
       earliestPurchase: dates[0],
       latestPurchase: dates[dates.length - 1],
       portfolios: Array.from(allPortfolios).sort(),
+      positionType,
     };
   }).sort((a, b) => b.totalCost - a.totalCost);
 }

@@ -24,32 +24,34 @@ export function calculateCurrentHoldings(
     lot.portfolios.some(p => portfoliosToInclude.includes(p))
   );
 
-  // Step 2: Group lots by ticker symbol
+  // Step 2: Group lots by ticker symbol + positionType so long and short appear separately
   const groupedByTicker = matchingLots.reduce((acc, lot) => {
     const symbol = lot.ticker.toUpperCase();
-    if (!acc[symbol]) {
-      acc[symbol] = [];
+    const positionType = lot.isShort ? 'short' : 'long';
+    const key = `${symbol}|${positionType}`;
+    if (!acc[key]) {
+      acc[key] = [];
     }
-    acc[symbol].push(lot);
+    acc[key].push(lot);
     return acc;
   }, {} as Record<string, TickerLot[]>);
 
-  // Step 3: Calculate aggregated data for each ticker
-  const holdings: TickersToEvaluate[] = Object.entries(groupedByTicker).map(([symbol, tickerLots]) => {
+  // Step 3: Calculate aggregated data for each ticker+positionType group
+  const holdings: TickersToEvaluate[] = Object.entries(groupedByTicker).map(([key, tickerLots]) => {
+    const [symbol, positionType] = key.split('|') as [string, 'long' | 'short'];
+
     // Calculate total shares (rounded to 2 decimal places)
     const totalShares = tickerLots.reduce((sum, lot) => sum + lot.shares, 0);
     const unitsOnHand = Number(totalShares.toFixed(2));
 
-    // Calculate weighted average cost basis
+    // Calculate weighted average cost basis (or avg sale price for shorts)
     const totalCost = tickerLots.reduce((sum, lot) => sum + lot.totalCost, 0);
     const avgCostBasis = unitsOnHand > 0 ? totalCost / unitsOnHand : 0;
 
-    // Determine if any lot has calculateAccumulatedProfitLoss enabled
     const calculateAccumulatedProfitLoss = tickerLots.some(
       lot => lot.calculateAccumulatedProfitLoss === true
     );
 
-    // Get baseYield from Ticker model
     const tickerData = tickers.find(t => t.symbol.toUpperCase() === symbol);
     const baseYield = tickerData?.baseYield?.toString() ?? '';
 
@@ -59,6 +61,7 @@ export function calculateCurrentHoldings(
       unitsOnHand,
       calculateAccumulatedProfitLoss,
       baseYield,
+      positionType,
     };
   });
 

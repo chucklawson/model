@@ -32,6 +32,7 @@ const schema = a.schema({
       portfolios: a.string().array().required(),
       calculateAccumulatedProfitLoss: a.boolean(),
       isDividend: a.boolean(),
+      isShort: a.boolean(),
       baseYield: a.float(),
       notes: a.string(),
       totalCost: a.float(),

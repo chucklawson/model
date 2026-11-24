@@ -143,6 +143,7 @@ export async function importCSVData(
           portfolios: row.portfolios,
           calculateAccumulatedProfitLoss: row.calculatePL ?? true,
           isDividend: row.isDividend ?? false,
+          isShort: false,
           notes: row.notes ?? '',
           totalCost,
         });

@@ -49,6 +49,7 @@ interface Props {
 
 const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'ticker', label: 'Ticker', icon: TrendingUp, required: true, visible: true },
+  { id: 'positionType', label: 'Type', visible: true },
   { id: 'lastPrice', label: 'Last Price', icon: DollarSign, visible: true },
   { id: 'companyName', label: 'Company', icon: Building2, visible: true },
   { id: 'baseYield', label: 'Yield %', icon: Percent, visible: true },
@@ -191,6 +192,17 @@ export default function TickerSummarySpreadsheet({
             className="font-bold text-blue-600 text-base cursor-pointer hover:underline"
           >
             {summary.ticker}
+          </span>
+        );
+
+      case 'positionType':
+        return summary.positionType === 'short' ? (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-300">
+            SHORT
+          </span>
+        ) : (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-300">
+            LONG
           </span>
         );
 
@@ -420,13 +432,18 @@ export default function TickerSummarySpreadsheet({
       case 'totalShares':
         return <span className="text-slate-700 font-semibold text-sm">{summary.totalShares.toLocaleString()}</span>;
       case 'totalCost':
-        return <span className="font-bold text-green-600 text-sm">${summary.totalCost.toFixed(2)}</span>;
+        return summary.positionType === 'short'
+          ? <span className="font-bold text-orange-600 text-sm">${summary.totalCost.toFixed(2)} <span className="text-xs font-normal text-slate-500">(proceeds)</span></span>
+          : <span className="font-bold text-green-600 text-sm">${summary.totalCost.toFixed(2)}</span>;
       case 'value': {
         const regularPrice = regularPrices.get(summary.ticker);
         if (!regularPrice) {
           return <span className="text-slate-400 text-sm">—</span>;
         }
         const value = regularPrice * summary.totalShares;
+        if (summary.positionType === 'short') {
+          return <span className="font-bold text-slate-600 text-sm">${value.toFixed(2)} <span className="text-xs font-normal text-slate-500">(cover)</span></span>;
+        }
         return <span className="font-bold text-blue-600 text-sm">${value.toFixed(2)}</span>;
       }
       case 'weight': {
@@ -444,7 +461,9 @@ export default function TickerSummarySpreadsheet({
           return <span className="text-slate-400 text-sm">—</span>;
         }
 
-        const todaysChangeInDollars = regularQuote.change * summary.totalShares;
+        // For short positions, rising price = loss; falling price = gain
+        const changeSign = summary.positionType === 'short' ? -1 : 1;
+        const todaysChangeInDollars = regularQuote.change * summary.totalShares * changeSign;
         const isPositive = todaysChangeInDollars >= 0;
 
         return (
@@ -578,9 +597,11 @@ export default function TickerSummarySpreadsheet({
           ) : (
             filteredSummaries.map((summary, idx) => (
               <tr
-                key={summary.ticker}
+                key={`${summary.ticker}-${summary.positionType}`}
                 className={`border-b border-slate-200 transition-colors ${
-                  idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
+                  summary.positionType === 'short'
+                    ? 'bg-red-50 hover:bg-red-100'
+                    : idx % 2 === 0 ? 'bg-white hover:bg-blue-50' : 'bg-slate-50 hover:bg-blue-50'
                 }`}
               >
                 {visibleColumns.map(col => (

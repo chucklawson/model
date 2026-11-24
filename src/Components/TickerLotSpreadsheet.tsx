@@ -33,6 +33,7 @@ interface Props {
 
 const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'checkbox', label: 'Select', required: true, visible: true },
+  { id: 'type', label: 'Type', visible: true },
   { id: 'ticker', label: 'Ticker', icon: TrendingUp, visible: true },
   { id: 'portfolio', label: 'Portfolio', icon: Briefcase, visible: true },
   { id: 'shares', label: 'Shares', icon: Package, visible: true },
@@ -128,6 +129,16 @@ export default function TickerLotSpreadsheet({
             checked={selectedRows.has(lot.id ?? '')}
             onChange={() => onToggleRow(lot.id ?? '')}
           />
+        );
+      case 'type':
+        return lot.isShort ? (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-300">
+            SHORT
+          </span>
+        ) : (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-300">
+            LONG
+          </span>
         );
       case 'ticker':
         return <span className="font-bold text-blue-600 text-lg">{lot.ticker}</span>;
@@ -312,8 +323,10 @@ export default function TickerLotSpreadsheet({
             sortedLots.map((lot, idx) => (
               <tr
                 key={lot.id ?? ''}
-                className={`border-b border-slate-200 hover:bg-blue-50 transition-colors ${
-                  idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
+                className={`border-b border-slate-200 transition-colors ${
+                  lot.isShort
+                    ? 'bg-red-50 hover:bg-red-100'
+                    : idx % 2 === 0 ? 'bg-white hover:bg-blue-50' : 'bg-slate-50 hover:bg-blue-50'
                 }`}
               >
                 {visibleColumns.map(col => (

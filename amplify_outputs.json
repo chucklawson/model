@@ -257,6 +257,13 @@
               "isRequired": false,
               "attributes": []
             },
+            "isShort": {
+              "name": "isShort",
+              "isArray": false,
+              "type": "Boolean",
+              "isRequired": false,
+              "attributes": []
+            },
             "baseYield": {
               "name": "baseYield",
               "isArray": false,

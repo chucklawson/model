@@ -5,6 +5,7 @@ export interface TickersToEvaluate {
   unitsOnHand: number;
   calculateAccumulatedProfitLoss: boolean;
   baseYield?: string;
+  positionType: 'long' | 'short';
 }
 
 export interface PortfoliosToInclude{

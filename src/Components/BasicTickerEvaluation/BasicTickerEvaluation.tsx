@@ -48,6 +48,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     const [tickerToGet, setTickerToGet] = useState('');
     const [totalCost, setTotalCost]=useState(0.0);
     const [currentQuantityOnHand,setCurrentQuantityOnHand]=useState(0.0);
+    const [isShortPosition, setIsShortPosition] = useState(false);
+    const [selectedPositionType, setSelectedPositionType] = useState<'long' | 'short'>('long');
     const [profitLossOneEntry,setProfitLossOneEntry]=useState(0.0);
     const [percentGainLoss,setPercentGainLoss]=useState(0.0);
     const [startDate, setStartDate] = useState('');
@@ -406,7 +408,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         }
     };
 
-    const selectTickerButtonHandler = useCallback((tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number):void => {
+    const selectTickerButtonHandler = useCallback((tickerIn:string, currentQuantityOnHandIn:number, totalCostIn:number, positionType: 'long' | 'short' = 'long'):void => {
         // Clear any existing debounce timer
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
@@ -418,6 +420,8 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             setUpdateTickerValue(true);
             setCurrentQuantityOnHand(currentQuantityOnHandIn)
             setTotalCost(totalCostIn)
+            setIsShortPosition(positionType === 'short')
+            setSelectedPositionType(positionType)
             setRefreshTrigger(prev => prev + 1);  // Increment to force refresh
             props.onSetHeader(props.baseHeader + " - " + tickerIn);
             props.onSelectTickerButtonHandler(tickerIn)
@@ -437,10 +441,14 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
     }, [props.tickerEntries])
 
     const setProfitLoss = useCallback((currentQuoteIn:Quote_V3)=> {
-      //console.log("setProfitLoss" );
       let profitLoss = 0.0;
       if (currentQuantityOnHand !== 0) {
-        profitLoss = ((currentQuoteIn.price * currentQuantityOnHand) - totalCost)
+        const coverCost = currentQuoteIn.price * currentQuantityOnHand;
+        // Short: profit = proceeds - cover cost (price fell after shorting = gain)
+        // Long:  profit = current value - cost paid
+        profitLoss = isShortPosition
+          ? (totalCost - coverCost)
+          : (coverCost - totalCost);
       }
       setProfitLossOneEntry(Number(profitLoss.toFixed(2)))
       let percentGainLoss = 0.0;
@@ -452,7 +460,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
       } else {
         setPercentGainLoss(0)
       }
-    }, [currentQuantityOnHand, totalCost])
+    }, [currentQuantityOnHand, totalCost, isShortPosition])
 
     //const onSetCurrentQuote=(currentQuoteIn,timeSeriesIn,adjustedTimeSeriesIn,statementAnalysisKeyMetrics,larryWilliams)=>
     const onSetCurrentQuote=useCallback((currentQuoteIn:Quote_V3,timeSeriesIn:HistoricalPriceFull_V3[],adjustedTimeSeriesIn:HistoricalPriceFull_V3[],statementAnalysisKeyMetrics:AnalysisKeyMetricsItem_V3[]):void=>
@@ -655,6 +663,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
           <TickerChipBar
               tickerEntries={props.tickerEntries}
               selectedTicker={tickerToGet}
+              selectedPositionType={selectedPositionType}
               onSelectTicker={selectTickerButtonHandler}
               isLoading={isLoading}
           />
@@ -755,6 +764,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
           <TickerChipBar
               tickerEntries={props.tickerEntries}
               selectedTicker={tickerToGet}
+              selectedPositionType={selectedPositionType}
               onSelectTicker={selectTickerButtonHandler}
               isLoading={isLoading}
           />

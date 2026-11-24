@@ -22,6 +22,7 @@ export default function NewTickerModal({
     portfolios: portfolios.length > 0 ? [portfolios[0].name] : [],
     calculateAccumulatedProfitLoss: true,
     isDividend: false,
+    isShort: false,
     notes: '',
   });
 
@@ -74,6 +75,25 @@ export default function NewTickerModal({
                 placeholder="AAPL"
                 autoFocus
               />
+            </div>
+
+            <div className="flex items-end pb-1">
+              <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all w-full ${
+                formData.isShort ? 'bg-red-50 border-red-400' : 'bg-slate-50 border-slate-300 hover:border-slate-400'
+              }`}>
+                <input
+                  type="checkbox"
+                  checked={formData.isShort}
+                  onChange={(e) => setFormData({ ...formData, isShort: e.target.checked })}
+                  className="w-5 h-5 text-red-600 rounded"
+                />
+                <div>
+                  <span className={`font-bold text-sm ${formData.isShort ? 'text-red-700' : 'text-slate-700'}`}>
+                    Short Sale
+                  </span>
+                  <p className="text-xs text-slate-500">Sold short (bearish)</p>
+                </div>
+              </label>
             </div>
 
             <div className="col-span-2">
@@ -138,7 +158,7 @@ export default function NewTickerModal({
 
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
-                Cost Per Share *
+                {formData.isShort ? 'Sale Price Per Share *' : 'Cost Per Share *'}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-3 text-slate-500 text-lg font-bold">$</span>
@@ -198,10 +218,12 @@ export default function NewTickerModal({
             />
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-300">
+          <div className={`bg-gradient-to-r p-5 rounded-xl border-2 ${formData.isShort ? 'from-red-50 to-rose-50 border-red-300' : 'from-green-50 to-emerald-50 border-green-300'}`}>
             <div className="flex justify-between items-center">
-              <span className="text-lg font-bold text-slate-700">Total Cost:</span>
-              <span className="text-3xl font-bold text-green-600">
+              <span className="text-lg font-bold text-slate-700">
+                {formData.isShort ? 'Total Proceeds:' : 'Total Cost:'}
+              </span>
+              <span className={`text-3xl font-bold ${formData.isShort ? 'text-red-600' : 'text-green-600'}`}>
                 ${isNaN(totalCost) ? '0.00' : totalCost.toFixed(2)}
               </span>
             </div>

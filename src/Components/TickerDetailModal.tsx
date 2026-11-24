@@ -56,6 +56,7 @@ export default function TickerDetailModal({
     portfolios: portfolios.length > 0 ? [portfolios[0].name] : [],
     calculateAccumulatedProfitLoss: true,
     isDividend: false,
+    isShort: false,
     notes: '',
   });
 
@@ -111,22 +112,44 @@ export default function TickerDetailModal({
     });
   }, [allLots, ticker]);
 
-  const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0);
-  const totalCost = lots.reduce((sum, lot) => sum + lot.totalCost, 0);
-  const avgCost = totalShares > 0 ? totalCost / totalShares : 0;
+  // Split lots into long and short
+  const longLots = lots.filter(l => !l.isShort);
+  const shortLots = lots.filter(l => l.isShort);
 
-  const currentValue = currentPrice != null && totalShares > 0 ? currentPrice * totalShares : null;
-  const plDollar = currentValue != null && totalCost > 0 ? currentValue - totalCost : null;
-  const plPercent = plDollar != null && totalCost > 0 ? (plDollar / totalCost) * 100 : null;
+  // Long position stats
+  const totalLongShares = longLots.reduce((sum, lot) => sum + lot.shares, 0);
+  const totalLongCost = longLots.reduce((sum, lot) => sum + lot.totalCost, 0);
+  const avgLongCost = totalLongShares > 0 ? totalLongCost / totalLongShares : 0;
+  const longCurrentValue = currentPrice != null && totalLongShares > 0 ? currentPrice * totalLongShares : null;
+  const longPlDollar = longCurrentValue != null ? longCurrentValue - totalLongCost : null;
+  const longPlPercent = longPlDollar != null && totalLongCost > 0 ? (longPlDollar / totalLongCost) * 100 : null;
 
-  // Selected lots cost basis
+  // Short position stats (proceeds - cover cost)
+  const totalShortShares = shortLots.reduce((sum, lot) => sum + lot.shares, 0);
+  const totalShortProceeds = shortLots.reduce((sum, lot) => sum + lot.totalCost, 0);
+  const avgShortPrice = totalShortShares > 0 ? totalShortProceeds / totalShortShares : 0;
+  const shortCoverCost = currentPrice != null && totalShortShares > 0 ? currentPrice * totalShortShares : null;
+  const shortPlDollar = shortCoverCost != null ? totalShortProceeds - shortCoverCost : null;
+  const shortPlPercent = shortPlDollar != null && totalShortProceeds > 0 ? (shortPlDollar / totalShortProceeds) * 100 : null;
+
+  // Selected lots — separate long and short
   const selectedLots = lots.filter(l => selectedRows.has(l.id ?? ''));
-  const selectedShares = selectedLots.reduce((sum, l) => sum + l.shares, 0);
-  const selectedCost = selectedLots.reduce((sum, l) => sum + l.totalCost, 0);
-  const selectedAvgCost = selectedShares > 0 ? selectedCost / selectedShares : 0;
-  const selectedCurrentValue = currentPrice != null && selectedShares > 0 ? currentPrice * selectedShares : null;
-  const selectedPL = selectedCurrentValue != null && selectedCost > 0 ? selectedCurrentValue - selectedCost : null;
-  const selectedPLPercent = selectedPL != null && selectedCost > 0 ? (selectedPL / selectedCost) * 100 : null;
+  const selectedLongLots = selectedLots.filter(l => !l.isShort);
+  const selectedShortLots = selectedLots.filter(l => l.isShort);
+
+  const selectedLongShares = selectedLongLots.reduce((sum, l) => sum + l.shares, 0);
+  const selectedLongCost = selectedLongLots.reduce((sum, l) => sum + l.totalCost, 0);
+  const selectedLongAvgCost = selectedLongShares > 0 ? selectedLongCost / selectedLongShares : 0;
+  const selectedLongValue = currentPrice != null && selectedLongShares > 0 ? currentPrice * selectedLongShares : null;
+  const selectedLongPL = selectedLongValue != null ? selectedLongValue - selectedLongCost : null;
+  const selectedLongPLPct = selectedLongPL != null && selectedLongCost > 0 ? (selectedLongPL / selectedLongCost) * 100 : null;
+
+  const selectedShortShares = selectedShortLots.reduce((sum, l) => sum + l.shares, 0);
+  const selectedShortProceeds = selectedShortLots.reduce((sum, l) => sum + l.totalCost, 0);
+  const selectedShortAvgPrice = selectedShortShares > 0 ? selectedShortProceeds / selectedShortShares : 0;
+  const selectedShortCover = currentPrice != null && selectedShortShares > 0 ? currentPrice * selectedShortShares : null;
+  const selectedShortPL = selectedShortCover != null ? selectedShortProceeds - selectedShortCover : null;
+  const selectedShortPLPct = selectedShortPL != null && selectedShortProceeds > 0 ? (selectedShortPL / selectedShortProceeds) * 100 : null;
 
   const handleEdit = (lot: TickerLot) => {
     setEditingLot(lot);
@@ -138,6 +161,7 @@ export default function TickerDetailModal({
       portfolios: lot.portfolios,
       calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
       isDividend: lot.isDividend ?? false,
+      isShort: lot.isShort ?? false,
       notes: lot.notes || '',
     });
     setIsFormVisible(true);
@@ -153,6 +177,7 @@ export default function TickerDetailModal({
       portfolios: portfolios.length > 0 ? [portfolios[0].name] : [],
       calculateAccumulatedProfitLoss: true,
       isDividend: false,
+      isShort: false,
       notes: '',
     });
     setIsFormVisible(true);
@@ -232,6 +257,7 @@ export default function TickerDetailModal({
             portfolios: mergedPortfolios,
             calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
             isDividend: lot.isDividend ?? false,
+            isShort: lot.isShort ?? false,
             notes: lot.notes ?? '',
           };
           await onSaveLot(lotData, lot.id);
@@ -275,6 +301,7 @@ export default function TickerDetailModal({
           portfolios: lot.portfolios,
           calculateAccumulatedProfitLoss: lot.calculateAccumulatedProfitLoss ?? true,
           isDividend: lot.isDividend ?? false,
+          isShort: lot.isShort ?? false,
           notes: lot.notes ?? '',
         }, lot.id);
       }
@@ -332,86 +359,137 @@ export default function TickerDetailModal({
 
         {/* Stats Bar */}
         <div className="overflow-x-auto bg-slate-50 border-b border-slate-200">
-        <div className="grid grid-cols-6 gap-2 p-3 min-w-[960px]">
-          <div className="bg-white p-2 rounded-lg shadow-md border border-blue-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Package className="text-blue-600" size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600 font-semibold">Total Shares</p>
-                <p className="text-lg font-bold text-slate-800 whitespace-nowrap">{totalShares.toLocaleString()}</p>
-              </div>
-            </div>
-          </div>
+          <div className="p-3 space-y-2 min-w-[800px]">
 
-          <div className="bg-white p-2 rounded-lg shadow-md border border-green-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-green-100 p-2 rounded-lg">
-                <DollarSign className="text-green-600" size={18} />
-              </div>
+            {/* Long position stats */}
+            {longLots.length > 0 && (
               <div>
-                <p className="text-xs text-slate-600 font-semibold">Total Investment</p>
-                <p className="text-lg font-bold text-green-600 whitespace-nowrap">${totalCost.toFixed(2)}</p>
+                {shortLots.length > 0 && (
+                  <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1 pl-1">Long Position</p>
+                )}
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-blue-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-blue-100 p-1.5 rounded-lg"><Package className="text-blue-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Long Shares</p>
+                        <p className="text-base font-bold text-slate-800 whitespace-nowrap">{totalLongShares.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-green-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-green-100 p-1.5 rounded-lg"><DollarSign className="text-green-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Total Cost</p>
+                        <p className="text-base font-bold text-green-600 whitespace-nowrap">${totalLongCost.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-purple-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-purple-100 p-1.5 rounded-lg"><BarChart3 className="text-purple-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Avg Cost/Share</p>
+                        <p className="text-base font-bold text-purple-600 whitespace-nowrap">${avgLongCost.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-teal-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-teal-100 p-1.5 rounded-lg"><DollarSign className="text-teal-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Current Value</p>
+                        <p className="text-base font-bold text-teal-600 whitespace-nowrap">
+                          {longCurrentValue != null ? `$${longCurrentValue.toFixed(2)}` : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`bg-white p-2 rounded-lg shadow-sm border ${longPlDollar != null && longPlDollar >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`${longPlDollar != null && longPlDollar >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1.5 rounded-lg`}>
+                        <TrendingUp className={longPlDollar != null && longPlDollar >= 0 ? 'text-green-600' : 'text-red-600'} size={16} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Long P&L</p>
+                        <p className={`text-base font-bold ${longPlDollar != null && longPlDollar >= 0 ? 'text-green-600' : 'text-red-600'} whitespace-nowrap`}>
+                          {longPlDollar != null
+                            ? `${longPlDollar >= 0 ? '+' : ''}$${longPlDollar.toFixed(2)} (${longPlPercent!.toFixed(1)}%)`
+                            : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
 
-          <div className="bg-white p-2 rounded-lg shadow-md border border-purple-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <BarChart3 className="text-purple-600" size={18} />
-              </div>
+            {/* Short position stats */}
+            {shortLots.length > 0 && (
               <div>
-                <p className="text-xs text-slate-600 font-semibold">Avg Cost/Share</p>
-                <p className="text-lg font-bold text-purple-600 whitespace-nowrap">${avgCost.toFixed(2)}</p>
+                {longLots.length > 0 && (
+                  <p className="text-xs font-bold text-red-700 uppercase tracking-wide mb-1 pl-1">Short Position</p>
+                )}
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-red-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-red-100 p-1.5 rounded-lg"><Package className="text-red-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Short Shares</p>
+                        <p className="text-base font-bold text-slate-800 whitespace-nowrap">{totalShortShares.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-orange-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-orange-100 p-1.5 rounded-lg"><DollarSign className="text-orange-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Total Proceeds</p>
+                        <p className="text-base font-bold text-orange-600 whitespace-nowrap">${totalShortProceeds.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-pink-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-pink-100 p-1.5 rounded-lg"><BarChart3 className="text-pink-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Avg Sale Price</p>
+                        <p className="text-base font-bold text-pink-600 whitespace-nowrap">${avgShortPrice.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-slate-100 p-1.5 rounded-lg"><DollarSign className="text-slate-600" size={16} /></div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Cover Cost</p>
+                        <p className="text-base font-bold text-slate-700 whitespace-nowrap">
+                          {shortCoverCost != null ? `$${shortCoverCost.toFixed(2)}` : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`bg-white p-2 rounded-lg shadow-sm border ${shortPlDollar != null && shortPlDollar >= 0 ? 'border-green-200' : 'border-red-200'}`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`${shortPlDollar != null && shortPlDollar >= 0 ? 'bg-green-100' : 'bg-red-100'} p-1.5 rounded-lg`}>
+                        <TrendingUp className={shortPlDollar != null && shortPlDollar >= 0 ? 'text-green-600' : 'text-red-600'} size={16} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-semibold">Short P&L</p>
+                        <p className={`text-base font-bold ${shortPlDollar != null && shortPlDollar >= 0 ? 'text-green-600' : 'text-red-600'} whitespace-nowrap`}>
+                          {shortPlDollar != null
+                            ? `${shortPlDollar >= 0 ? '+' : ''}$${shortPlDollar.toFixed(2)} (${shortPlPercent!.toFixed(1)}%)`
+                            : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
 
-          <div className="bg-white p-2 rounded-lg shadow-md border border-orange-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-orange-100 p-2 rounded-lg">
-                <TrendingUp className="text-orange-600" size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600 font-semibold">Total Lots</p>
-                <p className="text-lg font-bold text-orange-600 whitespace-nowrap">{lots.length}</p>
-              </div>
-            </div>
           </div>
-
-          <div className="bg-white p-2 rounded-lg shadow-md border border-teal-200">
-            <div className="flex items-center gap-2">
-              <div className="bg-teal-100 p-2 rounded-lg">
-                <DollarSign className="text-teal-600" size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600 font-semibold">Current Value</p>
-                <p className="text-lg font-bold text-teal-600 whitespace-nowrap">
-                  {currentValue != null ? `$${currentValue.toFixed(2)}` : '—'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`bg-white p-2 rounded-lg shadow-md border ${plDollar != null && plDollar >= 0 ? 'border-green-200' : 'border-red-200'}`}>
-            <div className="flex items-center gap-2">
-              <div className={`${plDollar != null && plDollar >= 0 ? 'bg-green-100' : 'bg-red-100'} p-2 rounded-lg`}>
-                <TrendingUp className={plDollar != null && plDollar >= 0 ? 'text-green-600' : 'text-red-600'} size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600 font-semibold">P&L</p>
-                <p className={`text-lg font-bold ${plDollar != null && plDollar >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {plDollar != null
-                    ? `${plDollar >= 0 ? '+' : ''}$${plDollar.toFixed(2)} (${plPercent!.toFixed(1)}%)`
-                    : '—'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
         </div>
 
         {/* Content Area */}
@@ -457,38 +535,84 @@ export default function TickerDetailModal({
 
           {/* Selected Lots Cost Basis */}
           {selectedRows.size > 0 && (
-            <div className="bg-gradient-to-br from-sky-50 to-cyan-50 p-4 rounded-xl border-2 border-sky-200 mb-4 shadow">
-              <p className="text-sm font-bold text-sky-800 mb-3">
+            <div className="bg-gradient-to-br from-sky-50 to-cyan-50 p-4 rounded-xl border-2 border-sky-200 mb-4 shadow space-y-3">
+              <p className="text-sm font-bold text-sky-800">
                 Cost Basis — {selectedRows.size} Selected Lot{selectedRows.size > 1 ? 's' : ''}
               </p>
-              <div className="grid grid-cols-5 gap-3">
-                <div className="bg-white rounded-lg p-2 border border-sky-100">
-                  <p className="text-xs text-slate-500 font-semibold">Shares</p>
-                  <p className="text-base font-bold text-slate-800">{selectedShares.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+
+              {/* Long selection */}
+              {selectedLongLots.length > 0 && (
+                <div>
+                  {selectedShortLots.length > 0 && (
+                    <p className="text-xs font-bold text-blue-600 uppercase mb-1">Long</p>
+                  )}
+                  <div className="grid grid-cols-5 gap-3">
+                    <div className="bg-white rounded-lg p-2 border border-sky-100">
+                      <p className="text-xs text-slate-500 font-semibold">Shares</p>
+                      <p className="text-base font-bold text-slate-800">{selectedLongShares.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-sky-100">
+                      <p className="text-xs text-slate-500 font-semibold">Total Cost</p>
+                      <p className="text-base font-bold text-green-600">${selectedLongCost.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-sky-100">
+                      <p className="text-xs text-slate-500 font-semibold">Avg Cost/Share</p>
+                      <p className="text-base font-bold text-purple-600">${selectedLongAvgCost.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-sky-100">
+                      <p className="text-xs text-slate-500 font-semibold">Current Value</p>
+                      <p className="text-base font-bold text-teal-600">
+                        {selectedLongValue != null ? `$${selectedLongValue.toFixed(2)}` : '—'}
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-sky-100">
+                      <p className="text-xs text-slate-500 font-semibold">P&L</p>
+                      <p className={`text-base font-bold ${selectedLongPL != null && selectedLongPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {selectedLongPL != null
+                          ? `${selectedLongPL >= 0 ? '+' : ''}$${selectedLongPL.toFixed(2)} (${selectedLongPLPct!.toFixed(1)}%)`
+                          : '—'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-white rounded-lg p-2 border border-sky-100">
-                  <p className="text-xs text-slate-500 font-semibold">Total Cost</p>
-                  <p className="text-base font-bold text-green-600">${selectedCost.toFixed(2)}</p>
+              )}
+
+              {/* Short selection */}
+              {selectedShortLots.length > 0 && (
+                <div>
+                  {selectedLongLots.length > 0 && (
+                    <p className="text-xs font-bold text-red-600 uppercase mb-1">Short</p>
+                  )}
+                  <div className="grid grid-cols-5 gap-3">
+                    <div className="bg-white rounded-lg p-2 border border-red-100">
+                      <p className="text-xs text-slate-500 font-semibold">Shares</p>
+                      <p className="text-base font-bold text-slate-800">{selectedShortShares.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-red-100">
+                      <p className="text-xs text-slate-500 font-semibold">Proceeds</p>
+                      <p className="text-base font-bold text-orange-600">${selectedShortProceeds.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-red-100">
+                      <p className="text-xs text-slate-500 font-semibold">Avg Sale Price</p>
+                      <p className="text-base font-bold text-pink-600">${selectedShortAvgPrice.toFixed(2)}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-red-100">
+                      <p className="text-xs text-slate-500 font-semibold">Cover Cost</p>
+                      <p className="text-base font-bold text-slate-700">
+                        {selectedShortCover != null ? `$${selectedShortCover.toFixed(2)}` : '—'}
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-red-100">
+                      <p className="text-xs text-slate-500 font-semibold">Short P&L</p>
+                      <p className={`text-base font-bold ${selectedShortPL != null && selectedShortPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {selectedShortPL != null
+                          ? `${selectedShortPL >= 0 ? '+' : ''}$${selectedShortPL.toFixed(2)} (${selectedShortPLPct!.toFixed(1)}%)`
+                          : '—'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-white rounded-lg p-2 border border-sky-100">
-                  <p className="text-xs text-slate-500 font-semibold">Avg Cost/Share</p>
-                  <p className="text-base font-bold text-purple-600">${selectedAvgCost.toFixed(2)}</p>
-                </div>
-                <div className="bg-white rounded-lg p-2 border border-sky-100">
-                  <p className="text-xs text-slate-500 font-semibold">Current Value</p>
-                  <p className="text-base font-bold text-teal-600">
-                    {selectedCurrentValue != null ? `$${selectedCurrentValue.toFixed(2)}` : '—'}
-                  </p>
-                </div>
-                <div className="bg-white rounded-lg p-2 border border-sky-100">
-                  <p className="text-xs text-slate-500 font-semibold">P&L</p>
-                  <p className={`text-base font-bold ${selectedPL != null && selectedPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {selectedPL != null
-                      ? `${selectedPL >= 0 ? '+' : ''}$${selectedPL.toFixed(2)} (${selectedPLPercent!.toFixed(1)}%)`
-                      : '—'}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -689,6 +813,25 @@ export default function TickerDetailModal({
                   />
                 </div>
 
+                <div className="flex items-end pb-1">
+                  <label className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all w-full ${
+                    formData.isShort ? 'bg-red-50 border-red-400' : 'bg-slate-50 border-slate-300 hover:border-slate-400'
+                  }`}>
+                    <input
+                      type="checkbox"
+                      checked={formData.isShort}
+                      onChange={(e) => setFormData({ ...formData, isShort: e.target.checked })}
+                      className="w-5 h-5 text-red-600 rounded"
+                    />
+                    <div>
+                      <span className={`font-bold text-sm ${formData.isShort ? 'text-red-700' : 'text-slate-700'}`}>
+                        Short Sale
+                      </span>
+                      <p className="text-xs text-slate-500">Sold short (bearish)</p>
+                    </div>
+                  </label>
+                </div>
+
                 <div className="col-span-2">
                   <label className="block text-sm font-bold text-slate-700 mb-3">
                     Portfolios * (Select one or more)
@@ -751,7 +894,7 @@ export default function TickerDetailModal({
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Cost Per Share *
+                    {formData.isShort ? 'Sale Price Per Share *' : 'Cost Per Share *'}
                   </label>
                   <div className="relative">
                     <span className="absolute left-4 top-3 text-slate-500 text-lg font-bold">$</span>
@@ -839,10 +982,12 @@ export default function TickerDetailModal({
                 />
               </div>
 
-              <div className="bg-white p-4 rounded-xl border-2 border-green-300 mb-4">
+              <div className={`bg-white p-4 rounded-xl border-2 mb-4 ${formData.isShort ? 'border-red-300' : 'border-green-300'}`}>
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-slate-700">Lot Total Cost:</span>
-                  <span className="text-3xl font-bold text-green-600">
+                  <span className="text-lg font-bold text-slate-700">
+                    {formData.isShort ? 'Total Proceeds:' : 'Lot Total Cost:'}
+                  </span>
+                  <span className={`text-3xl font-bold ${formData.isShort ? 'text-red-600' : 'text-green-600'}`}>
                     ${isNaN(formTotalCost) ? '0.00' : formTotalCost.toFixed(2)}
                   </span>
                 </div>

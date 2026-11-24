@@ -95,6 +95,7 @@ interface LegacyLot {
             portfolios: (item.portfolios ?? []).filter((p: string | null): p is string => p !== null),
             calculateAccumulatedProfitLoss: item.calculateAccumulatedProfitLoss ?? true,
             isDividend: item.isDividend ?? false,
+            isShort: item.isShort ?? false,
             baseYield: item.baseYield ?? 0,
             notes: item.notes ?? '',
             totalCost: item.totalCost ?? item.shares * item.costPerShare,
@@ -344,6 +345,7 @@ interface LegacyLot {
             portfolios?: (string | null)[];
             calculateAccumulatedProfitLoss?: boolean | null;
             isDividend?: boolean | null;
+            isShort?: boolean | null;
             baseYield?: number | null;
             notes?: string | null;
             totalCost?: number | null;
@@ -360,6 +362,7 @@ interface LegacyLot {
             portfolios: (row.portfolios ?? []).filter((p): p is string => p !== null),
             calculateAccumulatedProfitLoss: row.calculateAccumulatedProfitLoss ?? true,
             isDividend: row.isDividend ?? false,
+            isShort: row.isShort ?? false,
             baseYield: row.baseYield ?? 0,
             notes: row.notes ?? '',
             totalCost: row.totalCost ?? row.shares * row.costPerShare,
@@ -391,6 +394,7 @@ interface LegacyLot {
           portfolios: lotData.portfolios,
           calculateAccumulatedProfitLoss: lotData.calculateAccumulatedProfitLoss,
           isDividend: lotData.isDividend,
+          isShort: lotData.isShort,
           notes: lotData.notes,
           totalCost,
         });
@@ -403,6 +407,7 @@ interface LegacyLot {
           portfolios: lotData.portfolios,
           calculateAccumulatedProfitLoss: lotData.calculateAccumulatedProfitLoss,
           isDividend: lotData.isDividend,
+          isShort: lotData.isShort,
           notes: lotData.notes,
           totalCost,
         });
@@ -487,11 +492,11 @@ interface LegacyLot {
   // Only count tickers with actual holdings (exclude watchlist entries with 0 cost or 0 shares)
   const totalTickers = summaries.filter(s => s.totalCost > 0 && s.totalShares > 0).length;
 
-  // Get ticker symbols for price data
+  // Get unique ticker symbols for price data (a ticker with both long+short entries must only be fetched once)
   // Stabilize the array reference so it only changes when symbols actually change,
   // not every time lot quantities update (which would restart the polling cycle).
-  const tickerSymbolsKey = useMemo(() => summaries.map(s => s.ticker).join(','), [summaries]);
-  const tickerSymbols = useMemo(() => summaries.map(s => s.ticker), [tickerSymbolsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const tickerSymbolsKey = useMemo(() => [...new Set(summaries.map(s => s.ticker))].join(','), [summaries]);
+  const tickerSymbols = useMemo(() => [...new Set(summaries.map(s => s.ticker))], [tickerSymbolsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch real-time price data for calculating today's change
   const { regularQuotes, regularPrices, data: afterHoursData, isAfterHours, refetch } = useAfterHoursData({
@@ -541,7 +546,8 @@ interface LegacyLot {
     return summaries.reduce((total, summary) => {
       const quote = regularQuotes.get(summary.ticker);
       if (quote) {
-        return total + (quote.change * summary.totalShares);
+        const changeSign = summary.positionType === 'short' ? -1 : 1;
+        return total + (quote.change * summary.totalShares * changeSign);
       }
       return total;
     }, 0);
@@ -552,7 +558,10 @@ interface LegacyLot {
     return summaries.reduce((total, summary) => {
       const price = regularPrices.get(summary.ticker);
       if (price) {
-        return total + (price * summary.totalShares);
+        const positionValue = summary.positionType === 'short'
+          ? summary.totalCost - (price * summary.totalShares)  // short: proceeds minus cover cost
+          : price * summary.totalShares;
+        return total + positionValue;
       }
       return total;
     }, 0);

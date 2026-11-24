@@ -32,6 +32,7 @@ export interface TickerLot {
   portfolios: string[];
   calculateAccumulatedProfitLoss?: boolean;
   isDividend?: boolean;
+  isShort?: boolean;
   baseYield?: number;
   expectedFiveYearGrowth?: string | number;
   notes?: string;
@@ -53,6 +54,7 @@ export interface TickerSummary {
   earliestPurchase: string;
   latestPurchase: string;
   portfolios: string[];
+  positionType: 'long' | 'short';
 }
 
 export interface LotFormData {
@@ -63,6 +65,7 @@ export interface LotFormData {
   portfolios: string[];
   calculateAccumulatedProfitLoss: boolean;
   isDividend: boolean;
+  isShort: boolean;
   notes: string;
 }
 
