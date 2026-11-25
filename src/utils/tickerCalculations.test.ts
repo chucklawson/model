@@ -271,6 +271,224 @@ describe('tickerCalculations', () => {
       expect(summaries).toEqual([]);
     });
 
+    // ── Short position tests ─────────────────────────────────────────────────
+
+    it('should assign positionType long for a normal lot', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AAPL', companyName: 'Apple Inc',
+          shares: 100, costPerShare: 150, totalCost: 15000,
+          purchaseDate: '2024-01-15', portfolios: ['Tech'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries[0].positionType).toBe('long');
+    });
+
+    it('should assign positionType long when isShort is undefined (backward compat)', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AAPL', companyName: 'Apple Inc',
+          shares: 100, costPerShare: 150, totalCost: 15000,
+          purchaseDate: '2024-01-15', portfolios: ['Tech'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          // isShort deliberately omitted
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries[0].positionType).toBe('long');
+    });
+
+    it('should assign positionType short for a short lot', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'NVDA', companyName: 'NVIDIA',
+          shares: 50, costPerShare: 800, totalCost: 40000,
+          purchaseDate: '2024-03-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries).toHaveLength(1);
+      expect(summaries[0].positionType).toBe('short');
+    });
+
+    it('should produce two rows when a ticker has both long and short lots', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 100, costPerShare: 200, totalCost: 20000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 30, costPerShare: 250, totalCost: 7500,
+          purchaseDate: '2024-06-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries).toHaveLength(2);
+      const types = summaries.map(s => s.positionType).sort();
+      expect(types).toEqual(['long', 'short']);
+    });
+
+    it('long row should only reflect long lots when ticker has mixed positions', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 100, costPerShare: 200, totalCost: 20000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 30, costPerShare: 250, totalCost: 7500,
+          purchaseDate: '2024-06-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      const longRow = summaries.find(s => s.positionType === 'long')!;
+      expect(longRow.totalShares).toBe(100);
+      expect(longRow.totalCost).toBe(20000);
+      expect(longRow.averageCostPerShare).toBe(200);
+      expect(longRow.lotCount).toBe(1);
+    });
+
+    it('short row should only reflect short lots when ticker has mixed positions', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 100, costPerShare: 200, totalCost: 20000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 30, costPerShare: 250, totalCost: 7500,
+          purchaseDate: '2024-06-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      const shortRow = summaries.find(s => s.positionType === 'short')!;
+      expect(shortRow.totalShares).toBe(30);
+      expect(shortRow.totalCost).toBe(7500);   // proceeds
+      expect(shortRow.averageCostPerShare).toBe(250); // avg sale price
+      expect(shortRow.lotCount).toBe(1);
+    });
+
+    it('should aggregate multiple short lots for the same ticker', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'GME', companyName: 'GameStop',
+          shares: 50, costPerShare: 100, totalCost: 5000,
+          purchaseDate: '2024-01-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+        {
+          id: '2', ticker: 'GME', companyName: 'GameStop',
+          shares: 50, costPerShare: 120, totalCost: 6000,
+          purchaseDate: '2024-02-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries).toHaveLength(1);
+      const shortRow = summaries[0];
+      expect(shortRow.positionType).toBe('short');
+      expect(shortRow.totalShares).toBe(100);        // 50 + 50
+      expect(shortRow.totalCost).toBe(11000);        // 5000 + 6000 (total proceeds)
+      expect(shortRow.averageCostPerShare).toBe(110); // 11000 / 100 (avg sale price)
+      expect(shortRow.lotCount).toBe(2);
+    });
+
+    it('short averageCostPerShare should be zero when totalShares is zero', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'GME', companyName: 'GameStop',
+          shares: 0, costPerShare: 100, totalCost: 0,
+          purchaseDate: '2024-01-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries[0].averageCostPerShare).toBe(0);
+    });
+
+    it('mixed ticker should produce two separate entries each with correct ticker and portfolios', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'NVDA', companyName: 'NVIDIA',
+          shares: 100, costPerShare: 500, totalCost: 50000,
+          purchaseDate: '2024-01-01', portfolios: ['Growth'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'NVDA', companyName: 'NVIDIA',
+          shares: 20, costPerShare: 700, totalCost: 14000,
+          purchaseDate: '2024-05-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const summaries = calculateTickerSummaries(lots);
+      expect(summaries).toHaveLength(2);
+      summaries.forEach(s => expect(s.ticker).toBe('NVDA'));
+      const longRow = summaries.find(s => s.positionType === 'long')!;
+      const shortRow = summaries.find(s => s.positionType === 'short')!;
+      expect(longRow.portfolios).toEqual(['Growth']);
+      expect(shortRow.portfolios).toEqual(['Trading']);
+    });
+
+    it('short lot should inherit ticker metadata (companyName, baseYield)', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'KO', companyName: '',
+          shares: 200, costPerShare: 60, totalCost: 12000,
+          purchaseDate: '2024-01-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const tickers: Ticker[] = [
+        { id: '1', symbol: 'KO', companyName: 'Coca-Cola', baseYield: 3.1, expectedFiveYearGrowth: 5 },
+      ];
+      const summaries = calculateTickerSummaries(lots, tickers);
+      expect(summaries[0].companyName).toBe('Coca-Cola');
+      expect(summaries[0].baseYield).toBe(3.1);
+    });
+
     it('should calculate fractional shares correctly', () => {
       const lots: TickerLot[] = [
         {

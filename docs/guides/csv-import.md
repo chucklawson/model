@@ -34,6 +34,8 @@ You can include additional columns, but they will be ignored during import:
 - Current Value (calculated automatically)
 - Any other custom fields
 
+**Short positions are not supported via CSV import.** All imported lots are treated as long positions. To record a short sale, use the **Add First Lot** form and check the **Short Sale** toggle.
+
 ### Column Details
 
 #### Ticker

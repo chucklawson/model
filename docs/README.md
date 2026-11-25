@@ -35,6 +35,9 @@ Investment Portfolio Manager is a comprehensive web application for tracking and
 ### Key Features
 
 - **Real-Time Portfolio Tracking** - Monitor your investments with live market data and after-hours quotes
+- **Long & Short Positions** - Track both long purchases and short sales with correct P&L sign for each; mixed tickers show as two separate rows
+- **Watchlist** - Add 0-share entries to monitor tickers you're considering without holding a position
+- **Stock Splits** - Apply split ratios to all lots of a ticker in one step
 - **Multi-Portfolio Support** - Organize investments across different portfolios (Retirement, Trading, Dividend, etc.)
 - **Performance Analytics** - Year-to-date and custom date range performance with four chart types (line, bar, pie, stacked area)
 - **Technical Indicators** - Moving averages, Bollinger Bands, RSI, and Stochastic Oscillator

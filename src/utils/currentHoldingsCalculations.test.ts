@@ -487,6 +487,217 @@ describe('currentHoldingsCalculations', () => {
       expect(holdings).toEqual([]);
     });
 
+    // ── Short position tests ─────────────────────────────────────────────────
+
+    it('should assign positionType long for a normal lot', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AAPL', companyName: 'Apple Inc',
+          shares: 100, costPerShare: 150, totalCost: 15000,
+          purchaseDate: '2024-01-15', portfolios: ['Tech'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Tech']);
+      expect(holdings[0].positionType).toBe('long');
+    });
+
+    it('should assign positionType long when isShort is undefined (backward compat)', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AAPL', companyName: 'Apple Inc',
+          shares: 100, costPerShare: 150, totalCost: 15000,
+          purchaseDate: '2024-01-15', portfolios: ['Tech'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          // isShort deliberately omitted
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Tech']);
+      expect(holdings[0].positionType).toBe('long');
+    });
+
+    it('should assign positionType short for a short lot', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'NVDA', companyName: 'NVIDIA',
+          shares: 50, costPerShare: 800, totalCost: 40000,
+          purchaseDate: '2024-03-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Trading']);
+      expect(holdings).toHaveLength(1);
+      expect(holdings[0].positionType).toBe('short');
+    });
+
+    it('should calculate costBasis as average sale price for short lots', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'GME', companyName: 'GameStop',
+          shares: 50, costPerShare: 100, totalCost: 5000,
+          purchaseDate: '2024-01-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+        {
+          id: '2', ticker: 'GME', companyName: 'GameStop',
+          shares: 50, costPerShare: 120, totalCost: 6000,
+          purchaseDate: '2024-02-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Trading']);
+      expect(holdings).toHaveLength(1);
+      expect(holdings[0].positionType).toBe('short');
+      expect(holdings[0].unitsOnHand).toBe(100);     // 50 + 50
+      expect(holdings[0].costBasis).toBe('110.00'); // (5000 + 6000) / 100
+    });
+
+    it('should produce two entries for a ticker with both long and short lots', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 100, costPerShare: 200, totalCost: 20000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 30, costPerShare: 250, totalCost: 7500,
+          purchaseDate: '2024-06-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Retirement']);
+      expect(holdings).toHaveLength(2);
+      const longEntry = holdings.find(h => h.positionType === 'long')!;
+      const shortEntry = holdings.find(h => h.positionType === 'short')!;
+      expect(longEntry.ticker).toBe('TSLA');
+      expect(longEntry.unitsOnHand).toBe(100);
+      expect(longEntry.costBasis).toBe('200.00');
+      expect(shortEntry.ticker).toBe('TSLA');
+      expect(shortEntry.unitsOnHand).toBe(30);
+      expect(shortEntry.costBasis).toBe('250.00');
+    });
+
+    it('long entry should not include short lot shares or cost', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 100, costPerShare: 200, totalCost: 20000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 999, costPerShare: 999, totalCost: 999000,
+          purchaseDate: '2024-06-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Retirement']);
+      const longEntry = holdings.find(h => h.positionType === 'long')!;
+      expect(longEntry.unitsOnHand).toBe(100);
+      expect(longEntry.costBasis).toBe('200.00');
+    });
+
+    it('short entry should not include long lot shares or cost', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 999, costPerShare: 999, totalCost: 999000,
+          purchaseDate: '2024-01-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'TSLA', companyName: 'Tesla',
+          shares: 30, costPerShare: 250, totalCost: 7500,
+          purchaseDate: '2024-06-01', portfolios: ['Retirement'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Retirement']);
+      const shortEntry = holdings.find(h => h.positionType === 'short')!;
+      expect(shortEntry.unitsOnHand).toBe(30);
+      expect(shortEntry.costBasis).toBe('250.00');
+    });
+
+    it('priority ticker (DIA) short position should still sort first', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AAPL', companyName: 'Apple Inc',
+          shares: 100, costPerShare: 150, totalCost: 15000,
+          purchaseDate: '2024-01-15', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: true,
+          isShort: false,
+        },
+        {
+          id: '2', ticker: 'DIA', companyName: 'Dow Jones ETF',
+          shares: 20, costPerShare: 390, totalCost: 7800,
+          purchaseDate: '2024-02-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Trading']);
+      expect(holdings[0].ticker).toBe('DIA');
+      expect(holdings[0].positionType).toBe('short');
+      expect(holdings[1].ticker).toBe('AAPL');
+    });
+
+    it('short lot filtered by portfolio should not appear for unrelated portfolio', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'GME', companyName: 'GameStop',
+          shares: 50, costPerShare: 100, totalCost: 5000,
+          purchaseDate: '2024-01-10', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Retirement']);
+      expect(holdings).toHaveLength(0);
+    });
+
+    it('short lot costBasis should be zero when shares are zero', () => {
+      const lots: TickerLot[] = [
+        {
+          id: '1', ticker: 'AMC', companyName: 'AMC Entertainment',
+          shares: 0, costPerShare: 10, totalCost: 0,
+          purchaseDate: '2024-01-01', portfolios: ['Trading'],
+          baseYield: 0, expectedFiveYearGrowth: 0,
+          isDividend: false, calculateAccumulatedProfitLoss: false,
+          isShort: true,
+        },
+      ];
+      const holdings = calculateCurrentHoldings(lots, tickers, ['Trading']);
+      expect(holdings[0].costBasis).toBe('0.00');
+      expect(holdings[0].positionType).toBe('short');
+    });
+
     it('should handle no matching portfolios', () => {
       const lots: TickerLot[] = [
         {

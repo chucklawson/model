@@ -107,7 +107,8 @@
       "Bash(python3 -c \"import json,sys; t=json.load\\(sys.stdin\\); [print\\(k\\) for k in t.get\\('Resources',{}\\).keys\\(\\)]\")",
       "Bash(aws ssm get-parameter *)",
       "Bash(python3 *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(npx vitest *)"
     ],
     "deny": [],
     "ask": []

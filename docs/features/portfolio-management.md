@@ -1,6 +1,6 @@
 # Portfolio Management
 
-Master the core features of the Tickers page - your central hub for tracking, managing, and analyzing your investment portfolio.
+Master the core features of the Tickers page — your central hub for tracking, managing, and analyzing your investment portfolio.
 
 ## Overview
 
@@ -8,573 +8,311 @@ The Tickers page is where you'll spend most of your time in the Investment Portf
 
 **Key Features:**
 - Real-time stock quotes and after-hours prices
-- Multi-portfolio organization
+- Multi-portfolio organization with persistent filtering
+- Long positions and short sale positions tracked separately
 - Manual position entry and CSV bulk import/export
 - Dividend tracking and yield calculations
-- Portfolio filtering and performance metrics
-- Position-level notes and annotations
+- Watchlist entries for monitoring potential purchases
+- Stock split adjustments
+- Performance analysis modal
 
 ## Page Layout
 
-### Header Section
+### Header Bar
 
-**Portfolio Filter (Left)**
-- Dropdown to filter by portfolio
-- Shows all portfolios you've created
-- "All Portfolios" view shows everything
+A scrollable action bar contains:
 
-**Action Buttons (Right)**
-- **+ Add Lot:** Manually add a new position
-- **Import CSV:** Bulk import positions
-- **Export to CSV:** Download all positions
+- **Refresh** — Re-fetches prices and reloads lots
+- **Manage Portfolios** — Opens the Portfolio Manager to create or delete portfolios
+- **Import CSV** — Bulk import positions from a CSV file
+- **Export Tickers** — Download all visible positions to CSV
+- **Performance** — Opens the Custom Range Performance modal
+- **Add First Lot** — Opens the new-ticker form to add a brand-new ticker to your portfolio
 
-### Portfolio Metrics Bar
+### Portfolio Stats Bar
 
-Real-time summary of your filtered portfolio:
-- **Total Cost:** Total amount invested (Quantity × Cost Per Share for all lots)
-- **Current Value:** Current market value (Quantity × Current Price)
-- **Today's Change:** Dollar and percentage change for the current trading day
-- **Total Gain/Loss:** Overall profit or loss (Current Value - Total Cost)
-- **Yield:** Estimated dividend yield across all positions
+Real-time summary cards below the header:
 
-### Positions Table
+| Card | Description |
+|------|-------------|
+| **Today's Change** | Dollar change for the current trading day across all positions (short positions invert the sign) |
+| **Total Cost** | Sum of all lot cost bases (or proceeds for short lots) |
+| **Value** | Current market value of the entire filtered portfolio |
+| **Tickers** | Count of distinct tickers with actual holdings (excludes watchlist entries) |
 
-Sortable table with all your stock lots:
-- Ticker symbol
-- Company name
-- Quantity (shares owned)
-- Cost per share
-- Total cost
-- Current price
-- Current value
-- Gain/Loss ($ and %)
-- Purchase date
-- Portfolio name
-- Action buttons (Edit, Delete)
+When only the **Dividend** portfolio is selected, two additional cards appear:
 
-## Adding Positions Manually
+| Card | Description |
+|------|-------------|
+| **Dividend Yield %** | Portfolio weighted yield based on `baseYield` × cost for each ticker |
+| **Annual Dividend Income** | Projected annual dividend income in dollars |
 
-### Step-by-Step: Add a New Lot
+### Positions Table (Summary Spreadsheet)
 
-1. Click the **+ Add Lot** button (top left)
-2. A form/modal will appear with the following fields:
+Each row represents a unique ticker + position type combination:
 
-#### Required Fields
+| Column | Description |
+|--------|-------------|
+| **Type** | Green **LONG** badge or red **SHORT** badge |
+| **Ticker** | Stock symbol |
+| **Company** | Company name |
+| **Shares** | Total shares across all lots |
+| **Avg Cost** | Weighted average cost per share |
+| **Total Cost** | Total invested (or total short proceeds) |
+| **Current Price** | Latest market price |
+| **Current Value** | Shares × current price |
+| **P&L ($)** | Gain or loss in dollars |
+| **P&L (%)** | Return percentage |
+| **Portfolios** | Portfolio(s) this ticker belongs to |
 
-**Ticker Symbol**
+**Important:** If you hold both long and short lots for the same ticker, they appear as **two separate rows** — one with a LONG badge and one with a SHORT badge.
+
+**Watchlist entries** (0 shares, $0 cost) appear in the table when you are viewing a specific portfolio. They are excluded from totals and the Tickers count.
+
+---
+
+## Adding a New Ticker
+
+Use **Add First Lot** in the header to add a ticker that is not yet in your portfolio.
+
+### Form Fields
+
+**Ticker Symbol** *(required)*
 - Enter the stock symbol (e.g., AAPL, MSFT, GOOGL)
 - Automatically converted to uppercase
-- App will fetch current quote to verify ticker exists
 
-**Quantity**
-- Number of shares purchased
-- Can include decimals for fractional shares (e.g., 10.5)
-- Must be greater than 0
+**Short Sale** *(optional toggle)*
+- Leave unchecked for a standard long purchase
+- Check to record a short sale (see [Short Positions](#short-positions) below)
 
-**Cost Per Share**
-- Price paid per share (not total cost)
-- Enter as decimal number (e.g., 150.25)
-- Total cost is calculated automatically
+**Portfolio** *(required — select at least one)*
+- Checkboxes for each portfolio you have created
+- Must select at least one to save
 
-**Purchase Date**
-- Date the shares were purchased
-- Use date picker or enter manually
-- Format: MM/DD/YYYY
+**Number of Shares** *(required)*
+- Supports decimals for fractional shares
+- Enter 0 to create a watchlist entry
 
-**Portfolio**
-- Select existing portfolio from dropdown
-- Or type a new portfolio name to create one
-- Portfolios are created automatically on save
+**Cost Per Share / Sale Price Per Share** *(required)*
+- For long positions: the price you paid per share
+- For short sales: the price at which you sold short
 
-#### Optional Fields
+**Purchase Date** *(required)*
 
-**Is Dividend**
-- Check this box if the lot represents dividend reinvestment
-- Helps separate dividend shares from original purchases
-- Affects yield calculations and reporting
+**Dividend Reinvestment** *(optional)*
+- Check if this lot represents dividend reinvestment shares
+- Dividend lots are excluded from purchase indicators on charts
 
-**Notes**
-- Free-form text field for annotations
-- Use for tracking: purchase reason, strategy, reminders
-- Examples: "Long-term hold", "Tech sector", "Earnings play"
+**Notes** *(optional)*
 
-3. Click **Save** or **Add Lot**
-4. The new position appears in the table immediately
+### Creating Portfolios
 
-### Example: Adding a Position
+Portfolios must be created before they appear in the checkbox list. Use **Manage Portfolios** in the header to create them first. CSV import creates portfolios automatically.
 
-**Scenario:** You bought 100 shares of Apple on January 15, 2024, at $150.25 per share.
+---
 
-1. Click **+ Add Lot**
-2. Fill in:
-   - Ticker: AAPL
-   - Quantity: 100
-   - Cost Per Share: 150.25
-   - Purchase Date: 01/15/2024
-   - Portfolio: Default (or "Tech Stocks")
-   - Notes: "Strong earnings growth, long-term hold"
-3. Click **Save**
-4. **Result:** New lot appears with:
-   - Total Cost: $15,025.00
-   - Current Value: (100 × current AAPL price)
-   - Gain/Loss: Calculated automatically
+## Adding Lots to an Existing Ticker
+
+Click any row in the summary table to open the **Ticker Detail Modal** for that ticker. Inside the modal you can add additional lots (e.g., subsequent purchases) using the same form fields described above.
+
+---
+
+## Short Positions
+
+The app fully supports recording short sales separately from long positions.
+
+### What is a Short Sale?
+
+A short sale is a bearish trade where you sell borrowed shares hoping to buy them back later at a lower price. Your profit is the difference between your sale price and the later cover price.
+
+### Recording a Short Sale
+
+1. Open **Add First Lot** (or click an existing ticker and add a lot)
+2. Check **Short Sale**
+3. The form relabels:
+   - "Cost Per Share" becomes **"Sale Price Per Share"** (the price at which you shorted)
+   - "Total Cost" becomes **"Total Proceeds"** (the cash you received)
+4. Fill in shares and sale price
+5. Save
+
+### How Short P&L Works
+
+| Metric | Calculation |
+|--------|-------------|
+| **Proceeds** | Shares × Sale Price (stored as `totalCost`) |
+| **Cover Cost** | Shares × Current Price |
+| **Short P&L** | Proceeds − Cover Cost |
+| **Profitable when** | Current price is **below** your sale price |
+
+A short is profitable when the stock price falls after you short it. The P&L shows green when positive (price fell) and red when negative (price rose against you).
+
+### Mixed Positions (Long + Short on Same Ticker)
+
+If you hold both long and short lots of the same ticker:
+- The summary table shows **two rows** — one LONG and one SHORT
+- The Ticker Detail Modal shows **separate stats sections** for long and short
+- The long stats show: Shares, Cost Basis, Avg Cost, Current Value, P&L
+- The short stats show: Short Shares, Proceeds, Avg Sale Price, Cover Cost, Short P&L
+- Today's Change inverts for the short row (rising price = negative change)
+
+---
+
+## Watchlist Entries
+
+You can add a ticker with 0 shares and $0 cost to monitor it without having a position.
+
+**Use case:** Track stocks you are considering buying.
+
+**Behavior:**
+- Appears in the table when viewing a specific portfolio
+- Excluded from portfolio totals and the Tickers count
+- Clicking the row opens the Ticker Detail Modal where you can add a real lot when you decide to buy
+
+---
+
+## Stock Splits
+
+When a stock in your portfolio undergoes a split, use the **Stock Split** feature inside the Ticker Detail Modal to automatically adjust all lots.
+
+1. Click the ticker row to open its detail modal
+2. Click the **Stock Split** button
+3. Enter the split ratio (e.g., 2 : 1 for a 2-for-1 split)
+4. Review the preview table showing the new share counts and adjusted cost per share
+5. Click **Save Split** to apply, or **Cancel** to discard
+
+The split multiplies shares by the ratio and divides the cost per share by the same ratio, preserving your total cost basis.
+
+---
 
 ## Managing Existing Positions
 
-### Editing a Position
+### Editing a Lot
 
-1. Locate the position in the table
-2. Click the **Edit** button (pencil icon)
-3. Modify any fields (except ticker symbol - this is usually locked)
-4. Click **Save**
+1. Click the ticker row in the summary table
+2. Find the lot in the detail modal's lot list
+3. Click the **Edit** button on the lot
+4. Modify fields and save
 
-**Common edits:**
-- Adjusting quantity (after selling partial shares)
-- Updating cost basis (after wash sales or adjustments)
-- Changing portfolio assignment
-- Adding or updating notes
+### Deleting a Lot
 
-### Deleting a Position
+1. Click the ticker row to open the detail modal
+2. Click the **Delete** button on the lot
+3. Confirm deletion
 
-1. Locate the position in the table
-2. Click the **Delete** button (trash icon)
-3. Confirm deletion in the popup
-4. **Note:** This action cannot be undone
+**Note:** Deletion cannot be undone. Export your data first if you need a record.
 
-**When to delete:**
-- Sold entire position
-- Entered position by mistake
-- Consolidating duplicate lots
+### Recording a Partial Sale
 
-**When NOT to delete:**
-- Partial sale: Edit the quantity instead
-- Moving to another portfolio: Edit the portfolio field instead
+Do not delete the lot. Instead:
+1. Open the lot for editing
+2. Reduce the quantity to the remaining shares
+3. Save
+
+---
 
 ## Portfolio Organization
 
 ### Creating Portfolios
 
-Portfolios help you organize positions by account, strategy, or goal.
+Use **Manage Portfolios** in the header to create, rename, or delete portfolios. Portfolios created via CSV import are added automatically.
 
-**Two ways to create:**
+### Portfolio Filter
 
-1. **When Adding a Lot:**
-   - Type a new portfolio name in the Portfolio field
-   - It's created automatically when you save
+The filter bar above the table lets you show positions from one or more portfolios. Your selection persists between sessions (stored in browser local storage).
 
-2. **When Importing CSV:**
-   - Use any portfolio name in the CSV
-   - All unique portfolio names are created automatically
+- Leave all portfolios deselected to view **All Portfolios**
+- Select one or more to filter to those portfolios
 
 ### Portfolio Use Cases
 
-**By Account Type:**
-- Retirement (IRA, 401k)
-- Taxable Brokerage
-- HSA or ESA
-- Trust Account
+**By Account Type:** Retirement (IRA, 401k), Taxable Brokerage, HSA
 
-**By Strategy:**
-- Dividend Growth
-- Growth Stocks
-- Value Investing
-- Trading / Active
+**By Strategy:** Dividend Growth, Growth Stocks, Value Investing, Trading
 
-**By Sector:**
-- Tech Stocks
-- Healthcare
-- Financials
-- Energy
+**By Goal:** Long-term Holds, Short-term Trades, Watchlist
 
-**By Goal:**
-- Long-term Holds
-- Short-term Trades
-- Retirement Income
-- Wealth Building
+---
 
-### Filtering by Portfolio
-
-1. Use the **Portfolio Filter** dropdown (top left)
-2. Select a specific portfolio to view only those positions
-3. Select "All Portfolios" to view everything
-
-**Benefits:**
-- Focus on specific accounts
-- Analyze strategy performance
-- Review sector allocation
-- Track individual account growth
-
-### Portfolio Metrics
-
-When filtered to a single portfolio, metrics update to show:
-- Total invested in that portfolio
-- Current value of that portfolio
-- Today's performance for that portfolio
-- Portfolio-specific gain/loss
-
-## Bulk Operations
+## Import / Export
 
 ### CSV Import
 
-Import multiple positions at once:
+Bulk-import positions from a CSV file. See the [CSV Import Guide](../guides/csv-import.md) for format details.
 
-1. Prepare a CSV file (see [CSV Import Guide](../guides/csv-import.md))
-2. Click **Import CSV**
-3. Select your file
-4. Review import preview
-5. Confirm import
-
-**Use cases:**
-- Migrating from another system
-- Bulk loading brokerage data
-- Initial portfolio setup
-- Quarterly updates
+**Note:** All CSV-imported lots are treated as long positions. Short sales must be entered manually.
 
 ### CSV Export
 
-Export your current positions:
+Click **Export Tickers** to download all currently visible lots as a CSV file. Use this for backups, Excel analysis, or tax records.
 
-1. (Optional) Filter to specific portfolio
-2. Click **Export to CSV**
-3. Choose save location
-4. File downloads with all visible positions
-
-**Use cases:**
-- Backup your data
-- Analyze in Excel/Google Sheets
-- Share with financial advisor
-- Tax reporting
-
-**Export includes:**
-- All fields: Ticker, Quantity, Cost, Date, Portfolio, Notes
-- Current prices and values
-- Calculated gain/loss
+---
 
 ## Understanding Position Data
 
-### Cost Basis
+### Long Position Math
 
-**Cost Per Share:**
-- The price you paid per share
-- Used for gain/loss calculations
-- Can be adjusted for wash sales or corporate actions
+| Metric | Calculation |
+|--------|-------------|
+| Total Cost | Shares × Cost Per Share |
+| Current Value | Shares × Current Price |
+| P&L ($) | Current Value − Total Cost |
+| P&L (%) | P&L ($) / Total Cost × 100 |
 
-**Total Cost:**
-- Quantity × Cost Per Share
-- Your total investment in this lot
+### Short Position Math
 
-### Current Value
+| Metric | Calculation |
+|--------|-------------|
+| Proceeds | Shares × Sale Price |
+| Cover Cost | Shares × Current Price |
+| P&L ($) | Proceeds − Cover Cost |
+| P&L (%) | P&L ($) / Proceeds × 100 |
 
-**Current Price:**
-- Latest market price (real-time or 15-min delayed)
-- Updates automatically when page loads
-- Shows after-hours price if available
-
-**Current Value:**
-- Quantity × Current Price
-- What your position is worth now
-
-### Gain/Loss
-
-**Dollar Gain/Loss:**
-- Current Value - Total Cost
-- Green if positive, red if negative
-
-**Percentage Gain/Loss:**
-- ((Current Value - Total Cost) / Total Cost) × 100
-- Shows return on investment for this lot
-
-### After-Hours Data
-
-If trading activity continues after market close:
-- After-hours price is displayed
-- Shows change from market close
-- Green/red indicator for after-hours movement
-
-**Example:**
-- Market Close: $150.00
-- After Hours: $151.50 (+1.00%)
-- Display shows both prices
-
-## Dividend Features
-
-### Marking Dividend Lots
-
-When you reinvest dividends, you can mark those lots separately:
-
-1. Add a lot as normal
-2. Check "Is Dividend" checkbox
-3. These lots are tracked separately
-
-**Benefits:**
-- Separate dividend reinvestment from original purchases
-- Calculate true cost basis
-- Track dividend accumulation
-- Analyze reinvestment impact
-
-### Dividend Yield Display
-
-For dividend-paying stocks:
-- Annual dividend yield is displayed
-- Based on current price and dividend rate
-- Helps evaluate income potential
-
-### Viewing Dividend History
-
-For detailed dividend tracking:
-- Visit the **Historical Dividends** page
-- See all dividend payments over time
-- Track dividend growth rates
-
-## Real-Time Data and Pricing
-
-### Market Hours
-
-**Regular Trading Hours:**
-- Monday-Friday: 9:30 AM - 4:00 PM Eastern
-- Prices update in real-time (or near real-time)
-
-**After-Hours Trading:**
-- After 4:00 PM Eastern
-- After-hours quotes shown when available
-- Not all stocks have active after-hours trading
-
-**Weekends and Holidays:**
-- Markets closed
-- Prices show last trading day's close
-
-### Price Updates
-
-**When Prices Refresh:**
-- Page load
-- Manual page refresh
-- After adding/editing positions
-
-**Note:** Prices don't auto-refresh while viewing the page. Refresh the page to get latest quotes.
-
-### Data Source
-
-All market data comes from the Financial Modeling Prep (FMP) API:
-- Configure your API key in Settings
-- See [API Setup Guide](../guides/api-setup.md) for details
-
-## Advanced Features
-
-### Multiple Lots of Same Stock
-
-You can have multiple lots of the same ticker:
-
-**Example: Apple positions**
-- Lot 1: 100 shares @ $150, purchased 1/15/2024
-- Lot 2: 50 shares @ $145, purchased 3/20/2024
-- Lot 3: 25 shares @ $155, purchased 5/10/2024
-
-**Benefits:**
-- Track separate purchases with different cost bases
-- Identify which lots to sell for tax purposes
-- Monitor timing of purchases
-- Calculate weighted average cost if needed
-
-### Position Notes and Annotations
-
-Use the Notes field to:
-- Document purchase rationale
-- Track strategy or thesis
-- Set price targets or stop losses
-- Note corporate actions or splits
-- Link to research or articles
-
-**Example notes:**
-- "Target price: $200, stop loss: $130"
-- "Hold until dividend reaches 4%"
-- "Rebalance quarterly to maintain 10% allocation"
-- "Monitor earnings - next report 10/15"
-
-### Sorting the Table
-
-Click column headers to sort:
-- Ticker (alphabetical)
-- Quantity (largest to smallest)
-- Total Cost (highest to lowest)
-- Current Value (highest to lowest)
-- Gain/Loss (best to worst)
-- Purchase Date (newest to oldest)
-
-**Use cases:**
-- Find largest positions
-- Identify biggest gainers/losers
-- Sort by purchase date to review holding periods
-
-## Performance Tracking
-
-### Today's Performance
-
-The metrics bar shows:
-- Today's dollar change across all positions
-- Today's percentage change
-- Green if up, red if down
-
-**Use case:** Quick daily portfolio check
-
-### Total Gain/Loss
-
-See overall performance:
-- Total Gain/Loss shows cumulative profit/loss
-- Percentage return shows ROI since purchase
-- Helps evaluate overall strategy success
-
-### Portfolio-Specific Performance
-
-Filter to a single portfolio:
-- See performance for that specific account/strategy
-- Compare portfolios against each other
-- Evaluate which strategies are working
+---
 
 ## Tips and Best Practices
 
-### 1. Organize with Portfolios
+### Organize with Portfolios
+Create separate portfolios that align with your brokerage accounts or strategies. Use **Manage Portfolios** before adding lots so your portfolios are ready to select.
 
-Don't put everything in "Default":
-- Create meaningful portfolios
-- Align with your brokerage accounts
-- Or organize by strategy/goal
+### Track Each Purchase Separately
+Keep separate lots for each buy — this simplifies tax-lot identification and lets you calculate time-weighted returns per entry.
 
-### 2. Use Notes Effectively
+### Use the Watchlist
+Add 0-share entries to track tickers you are researching. When you buy, open the detail modal and add the real lot.
 
-Document key information:
-- Why you bought
-- Target price or exit strategy
-- Important dates (earnings, ex-dividend)
-- Links to research
+### Export Regularly
+Export to CSV monthly or quarterly for backups and tax records.
 
-### 3. Track Lots Separately
+### Mark Dividend Reinvestments
+Check "Dividend Reinvestment" on DRIP lots to separate them from original purchases and keep accurate cost basis tracking.
 
-Avoid averaging down into one lot:
-- Keep separate lots for each purchase
-- Helps with tax-loss harvesting
-- Better tracking of performance by timing
-
-### 4. Regular Exports
-
-Export your data monthly or quarterly:
-- Creates backups
-- Allows Excel analysis
-- Useful for tax season
-
-### 5. Monitor After-Hours
-
-Check after-hours activity:
-- Earnings announcements often occur after close
-- Can inform next-day trading decisions
-
-### 6. Mark Dividend Reinvestments
-
-Always mark dividend lots:
-- Accurately calculates cost basis
-- Tracks true dividend accumulation
-- Better tax reporting
-
-### 7. Review and Rebalance
-
-Use the portfolio view to:
-- Identify overweight positions
-- Rebalance to target allocations
-- Monitor sector concentrations
-
-## Common Workflows
-
-### Workflow 1: Adding a New Purchase
-
-After buying stock at your brokerage:
-1. Go to Tickers page
-2. Click **+ Add Lot**
-3. Enter ticker, quantity, cost, date
-4. Assign to appropriate portfolio
-5. Add notes about purchase rationale
-6. Save
-7. Verify it appears in table
-
-### Workflow 2: Recording a Sale
-
-After selling shares:
-1. Find the lot you sold
-2. Option A: Sold entire lot → Click **Delete**
-3. Option B: Sold partial → Click **Edit** → Reduce quantity → Save
-
-**Tax Note:** Keep records of sales for tax reporting. Consider exporting before deleting.
-
-### Workflow 3: Monthly Review
-
-End of month portfolio review:
-1. Filter to "All Portfolios"
-2. Review Total Gain/Loss
-3. Check each portfolio individually
-4. Identify top gainers and losers
-5. Export to CSV for records
-6. Update notes with any strategy changes
-
-### Workflow 4: Quarterly Rebalancing
-
-1. Export current portfolio to CSV
-2. Open in Excel to calculate allocations
-3. Identify overweight/underweight positions
-4. Make trades at brokerage
-5. Update lots in app (sell some, buy others)
-6. Verify new allocations
+---
 
 ## Troubleshooting
 
 ### Prices Not Updating
+- Click **Refresh** in the header
+- Verify your API key is configured in Settings
+- Prices poll automatically every 10 minutes during regular trading hours
 
-**Solutions:**
-- Refresh the page (Ctrl+R or Cmd+R)
-- Verify API key is configured in Settings
-- Check if market is open
-- See [API Setup Guide](../guides/api-setup.md)
+### A Ticker Shows Two Rows
+This is expected when you hold both long and short lots of the same ticker. Each position type (LONG/SHORT) appears as a separate row.
 
-### Wrong Stock Quote
+### Watchlist Ticker Not Visible
+Watchlist entries (0 shares) only appear when you have a specific portfolio selected in the filter — they are hidden in the "All Portfolios" view.
 
-**Cause:** Ticker symbol is ambiguous or incorrect.
-
-**Solution:**
-- Verify ticker on Yahoo Finance or Google Finance
-- Some tickers have class distinctions (e.g., BRK.A vs BRK.B)
-- Edit the lot and correct the ticker
-
-### Portfolio Not Showing in Filter
-
-**Cause:** No positions in that portfolio, or data sync issue.
-
-**Solution:**
-- Refresh the page
-- Verify positions are assigned to that portfolio
-- Check for typos in portfolio names (case-sensitive)
+### Portfolio Not Appearing in Filter
+Create the portfolio first using **Manage Portfolios**, then assign lots to it.
 
 ### Metrics Don't Match Brokerage
+This app uses simple cost basis (price paid × shares). It does not apply wash-sale adjustments or lot-matching rules. Consult your brokerage for official tax reporting.
 
-**Possible causes:**
-- Different cost basis calculation methods
-- Wash sale adjustments not reflected
-- Fractional share rounding
-- Timing of price updates
-
-**Note:** This app shows simple cost basis (price paid × quantity). Consult your brokerage for official tax reporting.
+---
 
 ## Related Documentation
 
 - [Quick Start Guide](../getting-started/quick-start-guide.md) - Getting started
 - [CSV Import Guide](../guides/csv-import.md) - Bulk import instructions
 - [API Setup](../guides/api-setup.md) - Configuring market data
-- [Portfolio Visualization](flexible-portfolio.md) - Visual portfolio view
+- [Portfolio Visualization](flexible-portfolio.md) - Charts and performance analysis
 - [Historical Dividends](historical-dividends.md) - Dividend tracking
-
-## Summary
-
-The Tickers page is your portfolio command center:
-- **Add positions:** Manually or via CSV
-- **Organize:** Use portfolios strategically
-- **Track:** Real-time prices and performance
-- **Analyze:** Gain/loss, yields, and metrics
-- **Export:** Backup and analyze in Excel
-
-Master these features to effectively manage and grow your investment portfolio!

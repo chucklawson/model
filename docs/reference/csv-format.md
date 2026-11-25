@@ -121,6 +121,8 @@ Additional columns may be included but will be ignored during import:
 - `Gain/Loss`
 - Custom fields
 
+**Short positions:** All CSV-imported lots are treated as long positions. The `isShort` field is not supported in CSV import. Short sales must be entered manually through the Add First Lot form.
+
 ### Row Validation
 
 Each data row is validated:

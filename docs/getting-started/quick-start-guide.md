@@ -47,15 +47,16 @@ You have two options for adding investments: manual entry or CSV import.
 ### Option A: Manual Entry (Quick for Few Positions)
 
 1. Navigate to **Tickers** from the top navigation
-2. Click the **+ Add Lot** button (top left)
-3. Fill in the form:
+2. Click **Manage Portfolios** to create a portfolio first (e.g., "Default")
+3. Click the **Add First Lot** button (top right of the header bar)
+4. Fill in the form:
    - **Ticker**: Stock symbol (e.g., AAPL, MSFT)
-   - **Quantity**: Number of shares
-   - **Cost Per Share**: Purchase price
+   - **Portfolio**: Check one or more portfolios (at least one required)
+   - **Number of Shares**: How many shares you purchased
+   - **Cost Per Share**: Purchase price per share
    - **Purchase Date**: Date of purchase
-   - **Portfolio**: Choose "Default" or create a new portfolio name
    - **Notes**: (Optional) Add notes about this purchase
-4. Click **Save**
+5. Click **Create First Lot**
 
 Your position will now appear in the Tickers table with current value, gain/loss, and other metrics.
 
@@ -104,10 +105,11 @@ Now that you have data in the system, explore the main features:
 
 As you add more investments, you can organize them into multiple portfolios:
 
-1. When adding a lot (manual or CSV), specify a portfolio name
-2. Portfolios are automatically created when you first use them
-3. Use the portfolio filter dropdown to view specific portfolios
-4. Example portfolios: "Retirement", "Trading", "Dividend Growth", "Tech Stocks"
+1. Click **Manage Portfolios** in the Tickers header to create named portfolios
+2. When adding a lot manually, check one or more portfolios in the form
+3. When importing via CSV, portfolios are created automatically from the Portfolio column
+4. Use the portfolio filter to view specific portfolios
+5. Example portfolios: "Retirement", "Trading", "Dividend Growth", "Tech Stocks"
 
 ## Quick Tips for Success
 
@@ -118,24 +120,31 @@ Create separate portfolios for different investment strategies:
 - Trading vs long-term holds
 - Sector-specific portfolios
 
-### 2. Mark Dividend Lots
+### 2. Record Short Sales
+When you sell a stock short (bearish trade):
+- Check the **Short Sale** toggle in the lot form
+- "Cost Per Share" becomes "Sale Price Per Share"
+- P&L is positive when the stock price falls below your sale price
+- A ticker with both long and short lots appears as two separate rows in the table
+
+### 3. Mark Dividend Lots
 When adding dividend reinvestment positions:
-- Check the "Is Dividend" checkbox
+- Check the "Dividend Reinvestment" checkbox
 - This separates dividend reinvestments from your original purchases
 - Helps calculate accurate yield and cost basis
 
-### 3. Regular Updates
+### 4. Regular Updates
 - The app automatically fetches current prices when you load pages
-- Prices refresh to show live market data and after-hours quotes
-- No manual refresh needed!
+- Use the **Refresh** button in the Tickers header for an immediate update
+- Prices auto-poll during regular market hours
 
-### 4. Export Regularly
+### 5. Export Regularly
 Use the Export to CSV feature to:
 - Back up your portfolio data
 - Analyze in Excel or Google Sheets
 - Keep records for tax purposes
 
-### 5. Check After-Hours
+### 6. Check After-Hours
 The Tickers page shows after-hours price changes:
 - Green/red indicators for after-hours movement
 - Helps you stay informed outside market hours
