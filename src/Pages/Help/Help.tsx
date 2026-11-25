@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, ChevronUp, ChevronDown, X } from 'lucide-react';
 import HelpSidebar from './HelpSidebar';
 import MarkdownRenderer from './MarkdownRenderer';
 
@@ -86,16 +85,6 @@ export default function Help() {
     setCurrentMatchIndex(i => (i + 1) % matchCount);
   };
 
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      if (e.shiftKey) { handlePrev(); } else { handleNext(); }
-    } else if (e.key === 'Escape') {
-      setSearchTerm('');
-    }
-  };
-
-  const hasSearch = searchTerm.trim().length > 0;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -104,58 +93,9 @@ export default function Help() {
           <h1 className="text-4xl font-bold text-white mb-2">
             Help & Documentation
           </h1>
-          <p className="text-slate-300 mb-4">
+          <p className="text-slate-300">
             Comprehensive guide to using Investment Portfolio Manager
           </p>
-
-          {/* Search bar */}
-          <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-3 py-2 max-w-xl">
-            <Search className="text-slate-400 flex-shrink-0" size={16} />
-            <input
-              type="text"
-              placeholder="Search this page… (Enter = next, Shift+Enter = prev)"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              className="flex-1 bg-transparent text-white placeholder-slate-400 outline-none text-sm min-w-0"
-            />
-            {hasSearch && (
-              <>
-                {matchCount > 0 ? (
-                  <span className="text-slate-300 text-xs whitespace-nowrap">
-                    {currentMatchIndex + 1} of {matchCount}
-                  </span>
-                ) : (
-                  <span className="text-red-400 text-xs whitespace-nowrap">No matches</span>
-                )}
-                {matchCount > 1 && (
-                  <>
-                    <button
-                      onClick={handlePrev}
-                      title="Previous match (Shift+Enter)"
-                      className="text-slate-300 hover:text-white p-0.5 rounded"
-                    >
-                      <ChevronUp size={15} />
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      title="Next match (Enter)"
-                      className="text-slate-300 hover:text-white p-0.5 rounded"
-                    >
-                      <ChevronDown size={15} />
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={() => setSearchTerm('')}
-                  title="Clear search"
-                  className="text-slate-400 hover:text-white p-0.5 rounded"
-                >
-                  <X size={14} />
-                </button>
-              </>
-            )}
-          </div>
         </div>
 
         {/* Main Content Area */}
@@ -165,6 +105,12 @@ export default function Help() {
             <HelpSidebar
               activeSection={section}
               onSectionChange={handleSectionChange}
+              searchTerm={searchTerm}
+              matchCount={matchCount}
+              currentMatchIndex={currentMatchIndex}
+              onSearchChange={term => { setSearchTerm(term); setCurrentMatchIndex(0); }}
+              onPrev={handlePrev}
+              onNext={handleNext}
             />
           </div>
 

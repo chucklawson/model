@@ -1,9 +1,15 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, Lightbulb, Map, FileText } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, Lightbulb, Map, FileText, Search, X } from 'lucide-react';
 
 interface HelpSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  searchTerm: string;
+  matchCount: number;
+  currentMatchIndex: number;
+  onSearchChange: (term: string) => void;
+  onPrev: () => void;
+  onNext: () => void;
 }
 
 interface SectionGroup {
@@ -15,7 +21,16 @@ interface SectionGroup {
   }[];
 }
 
-export default function HelpSidebar({ activeSection, onSectionChange }: HelpSidebarProps) {
+export default function HelpSidebar({
+  activeSection,
+  onSectionChange,
+  searchTerm,
+  matchCount,
+  currentMatchIndex,
+  onSearchChange,
+  onPrev,
+  onNext,
+}: HelpSidebarProps) {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
     new Set(['getting-started', 'features', 'guides', 'reference'])
   );
@@ -77,9 +92,52 @@ export default function HelpSidebar({ activeSection, onSectionChange }: HelpSide
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl p-4 sticky top-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
-      <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-6">
+      <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-3">
         Documentation
       </h2>
+
+      {/* Search box — stays visible because the sidebar is sticky */}
+      <div className="mb-4">
+        <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-1.5">
+          <Search className="text-slate-400 flex-shrink-0" size={14} />
+          <input
+            type="text"
+            placeholder="Search this page…"
+            value={searchTerm}
+            onChange={e => onSearchChange(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                if (e.shiftKey) { onPrev(); } else { onNext(); }
+              } else if (e.key === 'Escape') {
+                onSearchChange('');
+              }
+            }}
+            className="flex-1 bg-transparent text-slate-800 placeholder-slate-400 outline-none text-xs min-w-0"
+          />
+          {searchTerm && (
+            <>
+              {matchCount > 0 ? (
+                <span className="text-slate-500 text-xs whitespace-nowrap">{currentMatchIndex + 1}/{matchCount}</span>
+              ) : (
+                <span className="text-red-500 text-xs whitespace-nowrap">0</span>
+              )}
+              {matchCount > 1 && (
+                <>
+                  <button onClick={onPrev} title="Previous (Shift+Enter)" className="text-slate-400 hover:text-slate-700 p-0.5">
+                    <ChevronDown size={13} className="rotate-180" />
+                  </button>
+                  <button onClick={onNext} title="Next (Enter)" className="text-slate-400 hover:text-slate-700 p-0.5">
+                    <ChevronDown size={13} />
+                  </button>
+                </>
+              )}
+              <button onClick={() => onSearchChange('')} title="Clear" className="text-slate-400 hover:text-slate-700 p-0.5">
+                <X size={12} />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
       <nav>
         {sectionGroups.map((group) => {

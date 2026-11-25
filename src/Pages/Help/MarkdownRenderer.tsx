@@ -72,13 +72,10 @@ export default function MarkdownRenderer({
       }
     }
 
-    const total = allMatches.length;
-    onMatchCount?.(total);
-
     // --- Apply highlights in REVERSE document order ---
     // Reverse processing ensures that earlier splitText calls don't invalidate
     // the offsets stored for earlier matches in the same text node.
-    for (let i = total - 1; i >= 0; i--) {
+    for (let i = allMatches.length - 1; i >= 0; i--) {
       const { node: textNode, start, end } = allMatches[i];
       if (!textNode.isConnected) continue;
 
@@ -96,6 +93,10 @@ export default function MarkdownRenderer({
         mark.appendChild(matched);
       }
     }
+
+    // Count actual marks created — avoids over-reporting if any replacements
+    // were silently skipped (e.g. disconnected nodes in React Strict Mode).
+    onMatchCount?.(container.querySelectorAll('mark[data-search]').length);
   }, [searchTerm, content]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll to and visually distinguish the current match
