@@ -11,6 +11,7 @@ interface TickerChipBarProps {
   selectedPositionType?: 'long' | 'short';
   onSelectTicker: (ticker: string, quantity: number, totalCost: number, positionType: 'long' | 'short') => void;
   isLoading?: boolean;
+  currentPrice?: number;
 }
 
 export default function TickerChipBar({
@@ -18,7 +19,8 @@ export default function TickerChipBar({
   selectedTicker,
   selectedPositionType,
   onSelectTicker,
-  isLoading = false
+  isLoading = false,
+  currentPrice,
 }: TickerChipBarProps) {
   // Find selected ticker entry for details display — match both ticker and positionType
   const selectedEntry = tickerEntries.find(
@@ -115,9 +117,21 @@ export default function TickerChipBar({
           <span className="text-slate-400">•</span>
           <span>{selectedEntry.unitsOnHand} shares</span>
           <span className="text-slate-400">•</span>
-          <span className="font-semibold">
-            {selectedEntry.positionType === 'short' ? 'Proceeds' : 'Total'}: ${(selectedEntry.unitsOnHand * Number(selectedEntry.costBasis)).toFixed(2)}
-          </span>
+          {selectedEntry.positionType === 'short' && currentPrice && currentPrice > 0 ? (() => {
+            const proceeds  = selectedEntry.unitsOnHand * Number(selectedEntry.costBasis);
+            const coverCost = selectedEntry.unitsOnHand * currentPrice;
+            const shortPL   = proceeds - coverCost;
+            const isPositive = shortPL >= 0;
+            return (
+              <span className={`font-semibold ${isPositive ? 'text-green-700' : 'text-red-700'}`}>
+                Short P&L: {isPositive ? '+' : ''}${shortPL.toFixed(2)}
+              </span>
+            );
+          })() : (
+            <span className="font-semibold">
+              {selectedEntry.positionType === 'short' ? 'Proceeds' : 'Total'}: ${(selectedEntry.unitsOnHand * Number(selectedEntry.costBasis)).toFixed(2)}
+            </span>
+          )}
           {counterpartEntry && (
             <>
               <span className="text-slate-400">•</span>
@@ -128,6 +142,23 @@ export default function TickerChipBar({
               }`}>
                 {counterpartEntry.positionType === 'short' ? 'Short' : 'Long'} position also open: {counterpartEntry.unitsOnHand} shares @ ${Number(counterpartEntry.costBasis).toFixed(2)}
               </span>
+              <span className="text-slate-400">•</span>
+              {currentPrice && currentPrice > 0 ? (() => {
+                const longEntry  = selectedEntry.positionType === 'long' ? selectedEntry : counterpartEntry;
+                const shortEntry = selectedEntry.positionType === 'short' ? selectedEntry : counterpartEntry;
+                const longValue    = longEntry.unitsOnHand * currentPrice;
+                const shortProceeds = shortEntry.unitsOnHand * Number(shortEntry.costBasis);
+                const coverCost    = shortEntry.unitsOnHand * currentPrice;
+                const combined     = longValue + shortProceeds - coverCost;
+                const isPositive   = combined >= 0;
+                return (
+                  <span className={`font-semibold ${isPositive ? 'text-purple-700' : 'text-red-700'}`}>
+                    Net proceeds if liquidated: ${combined.toFixed(2)}
+                  </span>
+                );
+              })() : (
+                <span className="text-slate-400 text-xs italic">Net proceeds if liquidated: awaiting price</span>
+              )}
             </>
           )}
           {isLoading && (

@@ -288,6 +288,53 @@ A bar chart showing how the company's P/E ratio has changed over multiple report
 
 ---
 
+## Ticker Selection Bar
+
+When you select a ticker from the portfolio cards, a **Ticker Selection Bar** appears showing details for that position. This bar also hosts the chip buttons for switching between tickers.
+
+### Standard Position Display
+
+For a normal long position, the bar shows:
+
+```
+AAPL • $150.25/share • 100 shares • Total: $15,025.00
+```
+
+### Short Positions
+
+Short positions are displayed with a red **SHORT** badge and relabeled fields:
+
+```
+COFSHORT • Sale: $192.00/share • 100 shares • Short P&L: +$992.00
+```
+
+- **Sale** — the price per share at which the short was opened
+- **Short P&L** — the profit or loss if covered at the current market price (green when positive, red when negative)
+  - Formula: `(shares × sale price) − (shares × current price)`
+  - Positive when the stock price has fallen since you shorted it
+
+### Boxed Positions
+
+A **boxed position** is when you hold both a long and a short on the same ticker simultaneously. When selected, the bar shows an additional indicator for the counterpart position and a combined value metric:
+
+```
+COF • $150.25/share • 500 shares • Total: $75,125.00 • Short position also open: 100 shares @ $192.00 • Net proceeds if liquidated: $89,125.00
+```
+
+**Net proceeds if liquidated** is the total cash you would receive if you simultaneously:
+1. Sold all long shares at the current market price
+2. Covered the short position at the current market price
+
+Formula:
+```
+(long shares × current price) + (short proceeds − short cover cost)
+= long market value + short P&L
+```
+
+This tells you the real worth of the combined position at today's prices — not what you paid, but what you'd walk away with. The label appears in purple when the net value is positive, red when negative. If no live price is available yet, the display shows "Net proceeds if liquidated: awaiting price."
+
+---
+
 ## Tips and Best Practices
 
 ### Daily Monitoring

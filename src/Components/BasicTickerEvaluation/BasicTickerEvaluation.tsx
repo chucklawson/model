@@ -666,6 +666,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
               selectedPositionType={selectedPositionType}
               onSelectTicker={selectTickerButtonHandler}
               isLoading={isLoading}
+              currentPrice={currentQuote.price > 0 ? currentQuote.price : undefined}
           />
         </div>
 
@@ -767,6 +768,7 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
               selectedPositionType={selectedPositionType}
               onSelectTicker={selectTickerButtonHandler}
               isLoading={isLoading}
+              currentPrice={currentQuote.price > 0 ? currentQuote.price : undefined}
           />
         </div>
 
