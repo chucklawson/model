@@ -9,23 +9,17 @@ export default function NewTickerModal({
                           onClose,
                           onSave,
                           portfolios,
-                          defaultPortfolios,
                         }: {
   onClose: () => void;
   onSave: (lotData: LotFormData) => Promise<void>;
   portfolios: Portfolio[];
-  defaultPortfolios?: string[];
 }) {
-  const initialPortfolios = defaultPortfolios && defaultPortfolios.length > 0
-    ? defaultPortfolios
-    : portfolios.length > 0 ? [portfolios[0].name] : [];
-
   const [formData, setFormData] = useState<LotFormData>({
     ticker: '',
     shares: 0,
     costPerShare: 0,
     purchaseDate: new Date().toISOString().split('T')[0],
-    portfolios: initialPortfolios,
+    portfolios: [],
     calculateAccumulatedProfitLoss: true,
     isDividend: false,
     isShort: false,

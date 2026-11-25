@@ -784,7 +784,6 @@ interface LegacyLot {
           allLots={lots}
           portfolios={portfolios}
           tickers={tickers}
-          defaultPortfolios={selectedPortfolios.length > 0 ? selectedPortfolios : undefined}
           onClose={() => setSelectedTicker(null)}
           onSaveLot={handleSaveLot}
           onDeleteLot={handleDeleteLot}
@@ -797,7 +796,6 @@ interface LegacyLot {
       {selectedTicker === 'NEW' && (
         <NewTickerModal
           portfolios={portfolios}
-          defaultPortfolios={selectedPortfolios.length > 0 ? selectedPortfolios : undefined}
           onClose={() => setSelectedTicker(null)}
           onSave={handleSaveLot}
         />

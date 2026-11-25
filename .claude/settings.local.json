@@ -97,7 +97,17 @@
       "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\" -Force)",
       "Bash(Select-Object Name, PSIsContainer)",
       "Bash(Format-Table -AutoSize)",
-      "Bash(Get-ChildItem -Path D:\\\\awsGitRepos\\\\model -Recurse -Include \"*.jsx\", \"*.tsx\")"
+      "Bash(Get-ChildItem -Path D:\\\\awsGitRepos\\\\model -Recurse -Include \"*.jsx\", \"*.tsx\")",
+      "Bash(aws appsync *)",
+      "Bash(python3 -c ' *)",
+      "Bash(aws amplify list-jobs *)",
+      "Bash(aws amplify get-job *)",
+      "Bash(aws s3 *)",
+      "Bash(aws cloudformation *)",
+      "Bash(python3 -c \"import json,sys; t=json.load\\(sys.stdin\\); [print\\(k\\) for k in t.get\\('Resources',{}\\).keys\\(\\)]\")",
+      "Bash(aws ssm get-parameter *)",
+      "Bash(python3 *)",
+      "Bash(git push *)"
     ],
     "deny": [],
     "ask": []

@@ -26,7 +26,6 @@ interface Props {
   allLots: TickerLot[];
   portfolios: Portfolio[];
   tickers: Ticker[];
-  defaultPortfolios?: string[];
   onClose: () => void;
   onSaveLot: (lotData: LotFormData, lotId?: string) => Promise<void>;
   onDeleteLot: (id: string) => Promise<void>;
@@ -39,17 +38,12 @@ export default function TickerDetailModal({
                                             allLots,
                                             portfolios,
                                             tickers,
-                                            defaultPortfolios,
                                             onClose,
                                             onSaveLot,
                                             onDeleteLot,
                                             onDeleteSelected,
                                             onUpdateTicker,
                                           }: Props) {
-  const defaultPortfolioSelection = defaultPortfolios && defaultPortfolios.length > 0
-    ? defaultPortfolios
-    : portfolios.length > 0 ? [portfolios[0].name] : [];
-
   const [lots, setLots] = useState<TickerLot[]>([]);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -59,7 +53,7 @@ export default function TickerDetailModal({
     shares: 0,
     costPerShare: 0,
     purchaseDate: new Date().toISOString().split('T')[0],
-    portfolios: defaultPortfolioSelection,
+    portfolios: [],
     calculateAccumulatedProfitLoss: true,
     isDividend: false,
     isShort: false,
@@ -180,7 +174,7 @@ export default function TickerDetailModal({
       shares: 0,
       costPerShare: 0,
       purchaseDate: new Date().toISOString().split('T')[0],
-      portfolios: defaultPortfolioSelection,
+      portfolios: [],
       calculateAccumulatedProfitLoss: true,
       isDividend: false,
       isShort: false,
