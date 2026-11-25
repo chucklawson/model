@@ -32,7 +32,7 @@ export function calculateTickerSummaries(lots: TickerLot[], tickers: Ticker[] = 
       expectedFiveYearGrowth: tickerData?.expectedFiveYearGrowth ?? 0,
       totalShares,
       totalCost,
-      averageCostPerShare: totalCost / totalShares,
+      averageCostPerShare: totalShares > 0 ? totalCost / totalShares : 0,
       lotCount: tickerLots.length,
       earliestPurchase: dates[0],
       latestPurchase: dates[dates.length - 1],
