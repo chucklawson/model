@@ -15,6 +15,7 @@ import {
 import StandardChartData from "../Lib/ChartData/StandardChartData.ts";
 import type { GroupedPurchase } from '../utils/purchaseIndicators';
 import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
+import type { AllTimeIndicator } from '../utils/allTimeHighLow';
 
 
 {/*
@@ -53,6 +54,10 @@ interface InvestmentComposedChartProps{
   showMean: boolean,
   purchaseData?: GroupedPurchase[],
   showPurchases?: boolean,
+  athLoData?: AllTimeIndicator[],
+  showAthLo?: boolean,
+  last12MoData?: AllTimeIndicator[],
+  showLast12Mo?: boolean,
 }
 const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
     // Match purchases with chart data
@@ -103,19 +108,41 @@ const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
                 {props.showMean && <Line type="monotone" dataKey="mean" strokeWidth={props.lineWidth} stroke="#f007d1" dot={false} /> }
                 {props.showBollingerbands && <Line type="monotone"  dataKey="lowerBollingerValue" strokeWidth={props.lineWidth} stroke="#99ADFF" dot={false} />}
 
+                {/* All-time high/low indicators */}
+                {props.showAthLo && props.athLoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`athl-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#22c55e' : '#ef4444'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
+
+                {/* Last 12 months high/low indicators */}
+                {props.showLast12Mo && props.last12MoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`l12-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#a855f7' : '#f97316'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
+
                 {/* Purchase indicators */}
                 {props.showPurchases && purchaseIndicators.map((indicator, index) => (
                     <React.Fragment key={`purchase-${indicator.date}-${index}`}>
                         {/* Vertical line to highlight purchase date */}
                         <ReferenceLine
                             x={indicator.date}
-                            stroke="#10b981"
+                            stroke="#3b82f6"
                             strokeWidth={2}
                             strokeDasharray="3 3"
                             label={{
                                 value: '↓',
                                 position: 'top',
-                                fill: '#10b981',
+                                fill: '#3b82f6',
                                 fontSize: 16,
                             }}
                         />
@@ -125,7 +152,7 @@ const InvestmentComposedChar = (props:InvestmentComposedChartProps) => {
                             x={indicator.date}
                             y={indicator.yValue}
                             r={6}
-                            fill="#10b981"
+                            fill="#3b82f6"
                             stroke="#fff"
                             strokeWidth={2}
                             label={{

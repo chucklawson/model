@@ -9,6 +9,7 @@ import type RSIChartData from '../../Lib/ChartData/RSIChartData';
 import type StochasticChartData from '../../Lib/ChartData/StochasticChartData';
 import type { TickerLot } from '../../types';
 import { groupLotsByDate } from '../../utils/purchaseIndicators';
+import type { AllTimeIndicator } from '../../utils/allTimeHighLow';
 
 interface StockChartDisplayProps {
   currentQuote: Quote_V3;
@@ -31,6 +32,10 @@ interface StockChartDisplayProps {
   slope: number;
   lots?: TickerLot[];
   buysChecked: boolean;
+  athLoChecked: boolean;
+  athLoData: AllTimeIndicator[];
+  last12MoChecked: boolean;
+  last12MoData: AllTimeIndicator[];
 }
 
 const StockChartDisplay = (props: StockChartDisplayProps) => {
@@ -57,6 +62,10 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
           showMean={props.bollingerChecked}
           purchaseData={groupedPurchases}
           showPurchases={props.buysChecked}
+          athLoData={props.athLoData}
+          showAthLo={props.athLoChecked}
+          last12MoData={props.last12MoData}
+          showLast12Mo={props.last12MoChecked}
         />
       </div>
 
@@ -75,6 +84,10 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             overSold={30}
             purchaseData={groupedPurchases}
             showPurchases={props.buysChecked}
+            athLoData={props.athLoData}
+            showAthLo={props.athLoChecked}
+            last12MoData={props.last12MoData}
+            showLast12Mo={props.last12MoChecked}
           />
         </div>
       ) : <React.Fragment />}
@@ -94,6 +107,10 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             overSold={20}
             purchaseData={groupedPurchases}
             showPurchases={props.buysChecked}
+            athLoData={props.athLoData}
+            showAthLo={props.athLoChecked}
+            last12MoData={props.last12MoData}
+            showLast12Mo={props.last12MoChecked}
           />
         </div>
       ) : <React.Fragment />}

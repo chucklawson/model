@@ -13,6 +13,7 @@ import {
 import RSIChartData from "../Lib/ChartData/RSIChartData.ts";
 import type { GroupedPurchase } from '../utils/purchaseIndicators';
 import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
+import type { AllTimeIndicator } from '../utils/allTimeHighLow';
 
 {/*
  <RelativeStrengthIndexChart
@@ -50,6 +51,10 @@ interface RelativeStrengthIndexChartProps{
   overSold: number;
   purchaseData?: GroupedPurchase[];
   showPurchases?: boolean;
+  athLoData?: AllTimeIndicator[];
+  showAthLo?: boolean;
+  last12MoData?: AllTimeIndicator[];
+  showLast12Mo?: boolean;
 }
 
   const RelativeStrengthIndexChart =(props:RelativeStrengthIndexChartProps)=>{
@@ -82,6 +87,28 @@ interface RelativeStrengthIndexChartProps{
                 <ReferenceLine y={props.overBought} label="Over Bought" stroke="red" />
                 <Line type="monotone" dataKey="rsiValue" strokeWidth={props.lineWidth} stroke="#45848f" />
                 <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />
+
+                {/* All-time high/low indicators */}
+                {props.showAthLo && props.athLoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`athl-rsi-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#22c55e' : '#ef4444'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
+
+                {/* Last 12 months high/low indicators */}
+                {props.showLast12Mo && props.last12MoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`l12-rsi-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#a855f7' : '#f97316'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
 
                 {/* Purchase indicators */}
                 {props.showPurchases && purchaseIndicators.map((indicator, index) => (

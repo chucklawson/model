@@ -108,7 +108,13 @@
       "Bash(aws ssm get-parameter *)",
       "Bash(python3 *)",
       "Bash(git push *)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\hooks\" -Name)",
+      "Bash(Head -50)",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\utils\" -Name)",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\Lib\" -Recurse -Name)"
     ],
     "deny": [],
     "ask": []

@@ -13,6 +13,7 @@ import {
 import StochasticChartData from "../Lib/ChartData/StochasticChartData.ts";
 import type { GroupedPurchase } from '../utils/purchaseIndicators';
 import { matchPurchasesWithChartData } from '../utils/purchaseIndicators';
+import type { AllTimeIndicator } from '../utils/allTimeHighLow';
 
 {/*
 
@@ -50,6 +51,10 @@ overBought: number;
 overSold: number;
 purchaseData?: GroupedPurchase[];
 showPurchases?: boolean;
+athLoData?: AllTimeIndicator[];
+showAthLo?: boolean;
+last12MoData?: AllTimeIndicator[];
+showLast12Mo?: boolean;
 }
 
   const StochasitcOscillatorChart =(props:StochasitcOscillatorChartProps)=>{
@@ -86,19 +91,41 @@ showPurchases?: boolean;
 
                 <ReferenceLine y={props.overSold} label="Over Sold"  strokeWidth={props.lineWidth} stroke="red" />
 
+                {/* All-time high/low indicators */}
+                {props.showAthLo && props.athLoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`athl-stoch-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#22c55e' : '#ef4444'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
+
+                {/* Last 12 months high/low indicators */}
+                {props.showLast12Mo && props.last12MoData?.map((indicator, index) => (
+                    <ReferenceLine
+                        key={`l12-stoch-${indicator.type}-${indicator.date}-${index}`}
+                        x={indicator.date}
+                        stroke={indicator.type === 'high' ? '#a855f7' : '#f97316'}
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                    />
+                ))}
+
                 {/* Purchase indicators */}
                 {props.showPurchases && purchaseIndicators.map((indicator, index) => (
                     <React.Fragment key={`purchase-stoch-${indicator.date}-${index}`}>
                         {/* Vertical line to highlight purchase date */}
                         <ReferenceLine
                             x={indicator.date}
-                            stroke="#a855f7"
+                            stroke="#3b82f6"
                             strokeWidth={2}
                             strokeDasharray="3 3"
                             label={{
                                 value: '↓',
                                 position: 'top',
-                                fill: '#a855f7',
+                                fill: '#3b82f6',
                                 fontSize: 16,
                             }}
                         />
@@ -108,7 +135,7 @@ showPurchases?: boolean;
                             x={indicator.date}
                             y={indicator.yValue}
                             r={6}
-                            fill="#a855f7"
+                            fill="#3b82f6"
                             stroke="#fff"
                             strokeWidth={2}
                             label={{

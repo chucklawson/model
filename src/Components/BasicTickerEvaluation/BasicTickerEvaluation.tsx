@@ -18,6 +18,8 @@ import ChartControls from '../ChartControls/ChartControls';
 import StockChartDisplay from '../StockChartDisplay/StockChartDisplay';
 import TradingRangeSidebar from '../TradingRangeSidebar/TradingRangeSidebar';
 import { useTechnicalIndicators } from '../../hooks/useTechnicalIndicators';
+import { useAllTimeHighLow } from '../../hooks/useAllTimeHighLow';
+import { useLast12MonthsHighLow } from '../../hooks/useLast12MonthsHighLow';
 import logger from '../../utils/logger';
 
 
@@ -560,6 +562,16 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
         setBuysChecked(!buysChecked);
     }, [buysChecked]);
 
+    const [athLoChecked, setAthLoChecked] = React.useState(false);
+    const athLoChangeHandler = useCallback(() => setAthLoChecked(v => !v), []);
+
+    const { athLoData } = useAllTimeHighLow(tickerToGet, athLoChecked);
+
+    const [last12MoChecked, setLast12MoChecked] = React.useState(false);
+    const last12MoChangeHandler = useCallback(() => setLast12MoChecked(v => !v), []);
+
+    const { last12MoData } = useLast12MonthsHighLow(tickerToGet, last12MoChecked, startDate, endDate);
+
     // Filter lots for current ticker and date range
     const filteredLots = useMemo(() => {
         if (!tickerToGet || !startDate || !endDate || !props.lots) return [];
@@ -572,9 +584,12 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             const purchaseDate = new Date(lot.purchaseDate);
             const isInDateRange = purchaseDate >= start && purchaseDate <= end;
             const isNotDividend = !lot.isDividend;
-            return isInDateRange && isNotDividend;
+            const matchesPositionType = selectedPositionType === 'short'
+                ? lot.isShort === true
+                : lot.isShort !== true;
+            return isInDateRange && isNotDividend && matchesPositionType;
         });
-    }, [props.lots, tickerToGet, startDate, endDate]);
+    }, [props.lots, tickerToGet, startDate, endDate, selectedPositionType]);
 
     // Use technical indicators hook
     const { graphData, rsiData, stochasticData, priceEarningsData, slope } = useTechnicalIndicators({
@@ -677,11 +692,15 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
             stochasticChecked={stochasticChecked}
             priceEquityChecked={priceEquityChecked}
             buysChecked={buysChecked}
+            athLoChecked={athLoChecked}
+            last12MoChecked={last12MoChecked}
             onBollingerChange={bollingerChangeHandler}
             onRsiChange={rsiChangeHandler}
             onStochasticChange={stochasticChangeHandler}
             onPriceEquityChange={priceEquityChangeHandler}
             onBuysChange={buysChangeHandler}
+            onAthLoChange={athLoChangeHandler}
+            onLast12MoChange={last12MoChangeHandler}
         />
 
         <div className='text-1xl text-gray-600 font-bold underline justify-start mt-3'>
@@ -730,6 +749,10 @@ const BasicTickerEvaluaton = (props:BasicTickerEvaluationProps) => {
                 slope={slope}
                 lots={filteredLots}
                 buysChecked={buysChecked}
+                athLoChecked={athLoChecked}
+                athLoData={athLoData}
+                last12MoChecked={last12MoChecked}
+                last12MoData={last12MoData}
             /> :
                 <div className="text-center text-gray-500 text-xl mt-10">
                     {showChart && dataFetched && graphData.length === 0 ? 'No data available for the selected date range' : ''}
