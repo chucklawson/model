@@ -39,11 +39,17 @@ interface StockChartDisplayProps {
 }
 
 const StockChartDisplay = (props: StockChartDisplayProps) => {
-  // Group lots by date (memoized)
   const groupedPurchases = useMemo(() => {
     if (!props.lots) return [];
     return groupLotsByDate(props.lots);
   }, [props.lots]);
+
+  // When both overlays are on, suppress 12-month lines that share a date with an all-time line
+  const filteredLast12MoData = useMemo(() => {
+    if (!props.athLoChecked || !props.last12MoChecked) return props.last12MoData;
+    const athLoDates = new Set(props.athLoData.map(d => d.date));
+    return props.last12MoData.filter(d => !athLoDates.has(d.date));
+  }, [props.last12MoData, props.athLoData, props.athLoChecked, props.last12MoChecked]);
 
   return (
     <div className='justify-self-auto'>
@@ -64,7 +70,7 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
           showPurchases={props.buysChecked}
           athLoData={props.athLoData}
           showAthLo={props.athLoChecked}
-          last12MoData={props.last12MoData}
+          last12MoData={filteredLast12MoData}
           showLast12Mo={props.last12MoChecked}
         />
       </div>
@@ -87,7 +93,7 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             athLoData={props.athLoData}
             showAthLo={props.athLoChecked}
             last12MoData={props.last12MoData}
-            showLast12Mo={props.last12MoChecked}
+            showLast12Mo={props.last12MoChecked && !props.athLoChecked}
           />
         </div>
       ) : <React.Fragment />}
@@ -110,7 +116,7 @@ const StockChartDisplay = (props: StockChartDisplayProps) => {
             athLoData={props.athLoData}
             showAthLo={props.athLoChecked}
             last12MoData={props.last12MoData}
-            showLast12Mo={props.last12MoChecked}
+            showLast12Mo={props.last12MoChecked && !props.athLoChecked}
           />
         </div>
       ) : <React.Fragment />}

@@ -114,7 +114,8 @@
       "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\hooks\" -Name)",
       "Bash(Head -50)",
       "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\utils\" -Name)",
-      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\Lib\" -Recurse -Name)"
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\\\\src\\\\Lib\" -Recurse -Name)",
+      "Bash(Get-ChildItem -Path \"D:\\\\awsGitRepos\\\\model\" -MaxDepth 2 -Filter \"*.md\")"
     ],
     "deny": [],
     "ask": []

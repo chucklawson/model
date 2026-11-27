@@ -11,6 +11,7 @@ The Portfolios page (also called Flexible Portfolio) provides a visual, performa
 - **Year-to-Date (YTD) Performance** analysis with four chart types
 - **Custom Range Performance** analysis for any date range you choose
 - **Technical indicators** including moving averages, Bollinger Bands, RSI, and Stochastic Oscillator
+- **High/Low overlays** marking all-time and rolling 52-week record dates directly on the chart timeline
 
 **Navigation:** Click **Portfolios** in the top navigation bar.
 
@@ -225,7 +226,32 @@ This chart provides a quick way to see which individual stocks are driving your 
 
 ## Technical Indicators
 
-When you drill into an individual ticker from the portfolio cards, the application can display several technical analysis charts:
+When you drill into an individual ticker from the portfolio cards, the application can display several technical analysis charts.
+
+### Chart Controls
+
+Two rows of checkboxes above the charts control which overlays are active:
+
+**Row 1 — Chart Panes & Core Overlays**
+
+| Checkbox | Description |
+|----------|-------------|
+| **Bollinger Bands** | Upper/lower bands and mean line overlaid on the price chart |
+| **RSI Oscillator** | Opens the RSI pane below the price chart |
+| **Stochastic Oscillator** | Opens the Stochastic pane below the price chart |
+| **Price to Earnings** | Opens the P/E bar chart pane |
+| **Purchase Indicators** | Blue dashed vertical lines marking your purchase dates |
+
+**Row 2 — High/Low Vertical Line Overlays**
+
+| Checkbox | Description |
+|----------|-------------|
+| **All-Time H/L** | Marks every date a new all-time high (green) or all-time low (red) was first set, from the beginning of available data for the ticker |
+| **Last 12 Months H/L** | Marks every date a new rolling 52-week high (purple) or rolling 52-week low (orange) was first set within the selected timeframe |
+
+All vertical line overlays span every open chart pane simultaneously (price, RSI, Stochastic).
+
+---
 
 ### Price & Moving Averages (Composed Chart)
 
@@ -242,7 +268,7 @@ An overlay chart combining price data with multiple moving average indicators:
 | **Lower Bollinger Band** | Light blue (optional) | 2 standard deviations below the SMA |
 | **Bollinger Mean** | Pink-magenta (optional) | Middle Bollinger Band (same as SMA) |
 
-**Purchase Indicators:** If you have purchase lots for this ticker, green dashed lines and dots can be overlaid on the chart showing where and at what price you bought.
+**Purchase Indicators:** Blue dashed vertical lines and dots mark the dates you purchased this ticker. When a ticker has both long and short positions, the chart shows only the purchases matching the currently selected position type — long purchases appear on the long button, short purchases on the short button.
 
 **How to read it:**
 - Price above the 200-day MA generally indicates an uptrend
@@ -277,6 +303,36 @@ A momentum indicator comparing a stock's closing price to its price range over a
 - Both lines below 20 = oversold condition
 - %K crossing above %D = potential buy signal
 - %K crossing below %D = potential sell signal
+
+### All-Time High/Low Overlay
+
+Dashed vertical lines marking every date a new all-time record was established for the selected ticker, going back to the earliest data available from the data provider.
+
+| Line | Color | Meaning |
+|------|-------|---------|
+| New all-time high | Green dashed | That day's high exceeded every prior high since the ticker's first available data point |
+| New all-time low | Red dashed | That day's low fell below every prior low since the ticker's first available data point |
+
+Lines appear on the main price chart and on any open RSI or Stochastic panes at the same dates. Only lines whose dates fall within the currently selected timeframe are shown; records set outside the visible window do not render.
+
+**Enable:** Check **All-Time H/L** in the second row of chart controls.
+
+---
+
+### Last 12 Months High/Low Overlay
+
+Dashed vertical lines marking every date a new **rolling 52-week** record was set within the selected timeframe. For each trading day D in the view, the prior 365 calendar days are scanned; if D's high exceeds every high in that window, or D's low falls below every low, that date is marked.
+
+| Line | Color | Meaning |
+|------|-------|---------|
+| New 52-week high | Purple dashed | That day's high exceeded the highest high in the prior 365 days |
+| New 52-week low | Orange dashed | That day's low broke the lowest low in the prior 365 days |
+
+**Precedence rule:** When both **All-Time H/L** and **Last 12 Months H/L** are enabled simultaneously, all-time lines take precedence on any date where both would otherwise appear. Dates where only the rolling 52-week window caught a record — not an all-time record — still render in purple/orange.
+
+**Enable:** Check **Last 12 Months H/L** in the second row of chart controls.
+
+---
 
 ### Price-to-Earnings (P/E) Chart
 
@@ -360,6 +416,9 @@ This tells you the real worth of the combined position at today's prices — not
 - Combine RSI and Stochastic readings for stronger signals
 - Watch for price approaching Bollinger Bands for potential reversal zones
 - The purchase overlay helps you visualize your entry points relative to technical levels
+- Use **All-Time H/L** to identify structural support/resistance levels where long-term records were set
+- Use **Last 12 Months H/L** to spot recent momentum shifts — purple lines show where the stock broke to new 52-week highs, orange lines show where it broke to new 52-week lows
+- When both H/L overlays are on, all-time records are shown in green/red and 52-week-only records fill in between in purple/orange, giving a layered view of price history significance
 
 ### Portfolio Allocation
 
