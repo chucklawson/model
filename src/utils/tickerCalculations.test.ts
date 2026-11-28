@@ -1,4 +1,4 @@
-// ============================================
+﻿// ============================================
 // FILE: src/utils/tickerCalculations.test.ts
 // Ticker Calculations Test Suite
 // ============================================
@@ -664,6 +664,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
         {
           ticker: 'MSFT',
@@ -677,6 +678,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-02-01',
           latestPurchase: '2024-02-01',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
       ];
 
@@ -706,6 +708,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
       ];
 
@@ -736,6 +739,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
         {
           ticker: 'T',
@@ -749,6 +753,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-02-01',
           latestPurchase: '2024-02-01',
           portfolios: ['Dividend'],
+          positionType: 'long'
         },
       ];
 
@@ -778,6 +783,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Dividend'],
+          positionType: 'long'
         },
       ];
 
@@ -801,6 +807,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
       ];
 
@@ -824,6 +831,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-01-15',
           latestPurchase: '2024-01-15',
           portfolios: ['Tech'],
+          positionType: 'long'
         },
         {
           ticker: 'HIGH_YIELD',
@@ -837,6 +845,7 @@ describe('tickerCalculations', () => {
           earliestPurchase: '2024-02-01',
           latestPurchase: '2024-02-01',
           portfolios: ['Dividend'],
+          positionType: 'long'
         },
       ];
 

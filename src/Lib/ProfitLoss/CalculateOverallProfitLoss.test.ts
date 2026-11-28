@@ -22,7 +22,8 @@ describe('CalculateOverallProfitLoss', () => {
     costBasis,
     unitsOnHand,
     calculateAccumulatedProfitLoss,
-    baseYield
+    baseYield,
+    positionType: 'long'
   });
 
   // Helper function to create mock quote data

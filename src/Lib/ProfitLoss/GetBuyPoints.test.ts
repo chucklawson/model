@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+﻿import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GetBuyPoints, type BuyPoints } from './GetBuyPoints';
 import type { TickersToEvaluate } from '../TickersToEvaluate/TickersToEvaluate';
 
@@ -232,7 +232,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         }
       ];
 
@@ -255,14 +256,16 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         },
         {
           ticker: 'MSFT',
           costBasis: '200.00',
           unitsOnHand: 5,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '4.00'
+          baseYield: '4.00',
+          positionType: 'long'
         }
       ];
 
@@ -286,7 +289,8 @@ describe('GetBuyPoints', () => {
           costBasis: '70.28',
           unitsOnHand: 40,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.74'
+          baseYield: '5.74',
+          positionType: 'long'
         }
       ];
 
@@ -323,7 +327,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '0.00'
+          baseYield: '0.00',
+          positionType: 'long'
         }
       ];
 
@@ -343,7 +348,8 @@ describe('GetBuyPoints', () => {
           costBasis: '50.00',
           unitsOnHand: 1,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '10.00'
+          baseYield: '10.00',
+          positionType: 'long'
         }
       ];
 
@@ -366,21 +372,24 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 100,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         },
         {
           ticker: 'TICK2',
           costBasis: '200.00',
           unitsOnHand: 50,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '6.00'
+          baseYield: '6.00',
+          positionType: 'long'
         },
         {
           ticker: 'TICK3',
           costBasis: '150.00',
           unitsOnHand: 75,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '4.50'
+          baseYield: '4.50',
+          positionType: 'long'
         }
       ];
 
@@ -405,7 +414,8 @@ describe('GetBuyPoints', () => {
           costBasis: '10.00',
           unitsOnHand: 100,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '25.00'
+          baseYield: '25.00',
+          positionType: 'long'
         }
       ];
 
@@ -428,7 +438,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.50',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.25'
+          baseYield: '5.25',
+          positionType: 'long'
         }
       ];
 
@@ -451,7 +462,8 @@ describe('GetBuyPoints', () => {
           costBasis: '33.33',
           unitsOnHand: 3,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '3.33'
+          baseYield: '3.33',
+          positionType: 'long'
         }
       ];
 
@@ -470,7 +482,8 @@ describe('GetBuyPoints', () => {
           ticker: 'NOYIELD',
           costBasis: '100.00',
           unitsOnHand: 10,
-          calculateAccumulatedProfitLoss: true
+          calculateAccumulatedProfitLoss: true,
+          positionType: 'long'
           // baseYield is optional and omitted
         }
       ];
@@ -493,21 +506,24 @@ describe('GetBuyPoints', () => {
           costBasis: '10.00',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '10.00'
+          baseYield: '10.00',
+          positionType: 'long'
         },
         {
           ticker: 'B',
           costBasis: '20.00',
           unitsOnHand: 20,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         },
         {
           ticker: 'C',
           costBasis: '30.00',
           unitsOnHand: 30,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '2.50'
+          baseYield: '2.50',
+          positionType: 'long'
         }
       ];
 
@@ -532,7 +548,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 0,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         }
       ];
 
@@ -553,7 +570,8 @@ describe('GetBuyPoints', () => {
           costBasis: '10000.00',
           unitsOnHand: 1000,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '3.50'
+          baseYield: '3.50',
+          positionType: 'long'
         }
       ];
 
@@ -576,7 +594,8 @@ describe('GetBuyPoints', () => {
           costBasis: '75.50',
           unitsOnHand: 25,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '4.75'
+          baseYield: '4.75',
+          positionType: 'long'
         }
       ];
 
@@ -597,7 +616,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.123456',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.123456'
+          baseYield: '5.123456',
+          positionType: 'long'
         }
       ];
 
@@ -638,7 +658,8 @@ describe('GetBuyPoints', () => {
           costBasis: '100.00',
           unitsOnHand: 10,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.00'
+          baseYield: '5.00',
+          positionType: 'long'
         }
       ];
       const mockSetBuyPoints = vi.fn();
@@ -662,21 +683,24 @@ describe('GetBuyPoints', () => {
           costBasis: '70.28',
           unitsOnHand: 40,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '5.74'
+          baseYield: '5.74',
+          positionType: 'long'
         },
         {
           ticker: 'AAPL',
           costBasis: '150.50',
           unitsOnHand: 20,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '0.50'
+          baseYield: '0.50',
+          positionType: 'long'
         },
         {
           ticker: 'MSFT',
           costBasis: '330.25',
           unitsOnHand: 15,
           calculateAccumulatedProfitLoss: true,
-          baseYield: '0.75'
+          baseYield: '0.75',
+          positionType: 'long'
         }
       ];
 
